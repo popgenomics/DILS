@@ -1,22 +1,85 @@
-mail_address: user@gmail.com
-infile: /shared/home/croux/scratch/myProject/mySequences.fas
-region: coding
-nspecies: 2
-nameA: NAMEA
-nameB: NAMEB
-nameOutgroup: NA
-config_yaml: /shared/home/croux/scratch/myProject/example_config_2pop.yaml  
-timeStamp: anyRandomName 
-population_growth: constant 
-modeBarrier: bimodal 
-max_N_tolerated: 0.2
-Lmin: 100
-nMin: 6
-mu: 0.00000002763
-rho_over_theta: 0.5
-N_min: 1000
-N_max: 500000 
-Tsplit_min: 10000
-Tsplit_max: 1750000
-M_min: 1
-M_max: 40
+{
+    "__default__" :
+    {
+        "node" : 1,
+        "ntasks" : 1,
+        "n" : 1,
+	"cpusPerTask" : 1,
+	"memPerCpu" : 3000,
+	"time" : "04:00:00"
+    },
+    "fasta2ABC_2pops" :
+    {
+	"cpusPerTask" : 10,
+	"time" : "01:00:00",
+	"memPerCpu" : 3000
+    },
+    "modelComparison" :
+    {
+	"cpusPerTask" : 8,
+	"time" : "03:00:00",
+	"memPerCpu" : 5000
+    },
+    "estimation" :
+    {
+	"cpusPerTask" : 8,
+	"time" : "03:00:00",
+	"memPerCpu" : 2500
+    },
+    "estimation_best_model" :
+    {
+	"cpusPerTask" : 8,
+	"time" : "24:00:00",
+	"memPerCpu" : 5000
+    },
+    "estimation_best_model_2" :
+    {
+	"cpusPerTask" : 8,
+	"time" : "03:00:00",
+	"memPerCpu" : 2500
+    },
+    "estimation_best_model_3" :
+    {
+	"cpusPerTask" : 8,
+	"time" : "03:00:00",
+	"memPerCpu" : 2500
+    },
+    "estimation_best_model_4" :
+    {
+	"cpusPerTask" : 8,
+	"time" : "03:00:00",
+	"memPerCpu" : 2500
+    },
+    "estimation_best_model_5" :
+    {
+	"cpusPerTask" : 8,
+	"time" : "03:00:00",
+	"memPerCpu" : 2500
+    },
+    "estimation_best_model_6" :
+    {
+	"cpusPerTask" : 8,
+	"time" : "03:00:00",
+	"memPerCpu" : 2500
+    },
+    "estimation_best_model_7" :
+    {
+	"cpusPerTask" : 8,
+	"time" : "03:00:00",
+	"memPerCpu" : 2500
+    },
+    "locus_modelComp" :
+    {
+	"cpusPerTask" : 8,
+	"time" : "03:00:00",
+	"memPerCpu" : 2500
+    },
+    "PCA_SS" :
+    {
+	"cpusPerTask" : 2,
+	"time" : "03:00:00",
+	"memPerCpu" : 7000
+    }
+}
+
+
