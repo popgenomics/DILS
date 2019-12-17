@@ -33,9 +33,9 @@ snakemake --snakefile /shared/mfs/data/home/croux/softwares/DILS/bin/Snakefile_2
 ## dependencies  
 Needs:  
 1 Snakefile  
-1 config.yaml file
+1 config.yaml file  
 1 cluster.json file  
-
+  
 # 2 - python  
 **Executables are all found in the bin/ subdirectory. The pathway of subdirectory has to be indicated in the Snakefiles. This is the only required file modification**  
 ## scripts  
