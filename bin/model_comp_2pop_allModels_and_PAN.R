@@ -1,6 +1,33 @@
 #!/shared/software/miniconda/envs/r-3.5.1/bin/Rscript
 # #!/shared/home/croux/.conda/envs/R_env/bin/Rscript
 # #!/usr/bin/Rscript
+
+#################################################################################################################################
+#################################################################################################################################
+#####                                                                                                                       #####
+#####    This file is part of Demographic Inferences with Linked Selection : DILS.                                          #####
+#####                                                                                                                       #####   
+#####    DILS is free software: you can redistribute it and/or modify                                                       #####
+#####    it under the terms of the GNU General Public License as published by                                               #####
+#####    the Free Software Foundation, either version 3 of the License, or                                                  #####
+#####    (at your option) any later version.                                                                                #####
+#####                                                                                                                       #####    
+#####    DILS is distributed in the hope that it will be useful,                                                            #####
+#####    but WITHOUT ANY WARRANTY; without even the implied warranty of                                                     #####
+#####    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                                                      #####
+#####    GNU General Public License for more details.                                                                       #####
+#####                                                                                                                       #####    
+#####    You should have received a copy of the GNU General Public License                                                  #####
+#####    along with DILS.  If not, see <https://www.gnu.org/licenses/>.                                                     #####
+#####                                                                                                                       #####    
+#####    Please send bugreports with examples or suggestions to                                                             #####
+#####    camille.roux@univ-lille.fr                                                                                         #####
+#####                                                                                                                       #####    
+#####    Or write a post on https://groups.google.com/forum/#!forum/dils---demographic-inferences-with-linked-selection     #####
+#####                                                                                                                       #####
+#################################################################################################################################
+#################################################################################################################################
+
 library('abcrf')
 library('viridis')
 # model_comp_2pop.R nameA=txn nameB=ama nSubdir=20  ntree=1000 
