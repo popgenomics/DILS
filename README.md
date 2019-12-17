@@ -26,7 +26,9 @@ https://snakemake.readthedocs.io/en/stable/
   
 ## execution  
 Please adapt the pathway to your system.  
+```  
 snakemake --snakefile /shared/mfs/data/home/croux/softwares/DILS/bin/Snakefile_2pop -p -j 50 --configfile /shared/home/croux/scratch/myProject/config.yaml --cluster-config /shared/home/croux/scratch/myProject/cluster.json --cluster "sbatch --nodes={cluster.node} --ntasks={cluster.n} --cpus-per-task={cluster.cpusPerTask} --time={cluster.time}"  
+```  
   
 ## dependencies  
 Needs:  
@@ -61,7 +63,7 @@ bin/submit_simulations_gof_2pop_popGrowth.py
 bin/submit_simulations_gof_2pop.py  
 
 ## dependencies  
-**uses pypy as python interpreter**    
+**some scripts uses pypy as python interpreter**    
 from math import ceil  
 from numpy import log  
 from numpy import median  
@@ -79,7 +81,6 @@ import sys
 import time  
    
 # 3 - R  
-**Executables have to be linked to a bin directory**  
 ## scripts  
 **uses Rscript from /usr/bin or elsewhere**  
 bin/collaborative_plot.R  
@@ -109,7 +110,6 @@ library(tidyverse)
 library(viridis)  
    
 # 4 - C
-**Executables have to be linked to a bin directory**  
 ## msnsam  
 ### info  
 C code, compiled by executing the command ```./clms``` (calling gcc) in the msnsam/ directory  
@@ -212,6 +212,7 @@ Tsplit_min: 10000
 Tsplit_max: 1750000  
 M_min: 1  
 M_max: 40  
+```  
    
 # 7 - workflow  
 ## two populations  
