@@ -4,27 +4,27 @@
 
 #################################################################################################################################
 #################################################################################################################################
-#####                                                                                                                       #####
-#####    This file is part of Demographic Inferences with Linked Selection : DILS.                                          #####
-#####                                                                                                                       #####   
-#####    DILS is free software: you can redistribute it and/or modify                                                       #####
-#####    it under the terms of the GNU General Public License as published by                                               #####
-#####    the Free Software Foundation, either version 3 of the License, or                                                  #####
-#####    (at your option) any later version.                                                                                #####
-#####                                                                                                                       #####    
-#####    DILS is distributed in the hope that it will be useful,                                                            #####
-#####    but WITHOUT ANY WARRANTY; without even the implied warranty of                                                     #####
-#####    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                                                      #####
-#####    GNU General Public License for more details.                                                                       #####
-#####                                                                                                                       #####    
-#####    You should have received a copy of the GNU General Public License                                                  #####
-#####    along with DILS.  If not, see <https://www.gnu.org/licenses/>.                                                     #####
-#####                                                                                                                       #####    
-#####    Please send bugreports with examples or suggestions to                                                             #####
-#####    camille.roux@univ-lille.fr                                                                                         #####
-#####                                                                                                                       #####    
+#####														       #####
+#####    This file is part of Demographic Inferences with Linked Selection : DILS.					  #####
+#####														       #####   
+#####    DILS is free software: you can redistribute it and/or modify						       #####
+#####    it under the terms of the GNU General Public License as published by					       #####
+#####    the Free Software Foundation, either version 3 of the License, or						  #####
+#####    (at your option) any later version.										#####
+#####														       #####    
+#####    DILS is distributed in the hope that it will be useful,							    #####
+#####    but WITHOUT ANY WARRANTY; without even the implied warranty of						     #####
+#####    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the						      #####
+#####    GNU General Public License for more details.								       #####
+#####														       #####    
+#####    You should have received a copy of the GNU General Public License						  #####
+#####    along with DILS.  If not, see <https://www.gnu.org/licenses/>.						     #####
+#####														       #####    
+#####    Please send bugreports with examples or suggestions to							     #####
+#####    camille.roux@univ-lille.fr											 #####
+#####														       #####    
 #####    Or write a post on https://groups.google.com/forum/#!forum/dils---demographic-inferences-with-linked-selection     #####
-#####                                                                                                                       #####
+#####														       #####
 #################################################################################################################################
 #################################################################################################################################
 
@@ -265,10 +265,10 @@ if sys.argv[1] == "SC_1M_2N":
 		priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7:.5f}\t{8:.5f}\n".format(N1[sim], N2[sim], Na[sim], shape_N_a[sim], shape_N_b[sim], Tsplit[sim], Tsc[sim], M12[sim], M21[sim])
 		# vectors of size 'nLoci' containing parameters
 		scalar_N = beta(shape_N_a[sim], shape_N_b[sim], size=nLoci)
-                rescale = shape_N_a[sim] / (shape_N_a[sim] + shape_N_b[sim])
-                N1_vec = [ N1[sim]*i/rescale for i in scalar_N ]
-                N2_vec = [ N2[sim]*i/rescale for i in scalar_N ]
-                Na_vec = [ Na[sim]*i/rescale for i in scalar_N ]
+		rescale = shape_N_a[sim] / (shape_N_a[sim] + shape_N_b[sim])
+		N1_vec = [ N1[sim]*i/rescale for i in scalar_N ]
+		N2_vec = [ N2[sim]*i/rescale for i in scalar_N ]
+		Na_vec = [ Na[sim]*i/rescale for i in scalar_N ]
 		for locus in range(nLoci):
 			print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\t{11:.5f}\t{12:.5f}\t{13:.5f}".format(nsam_tot[locus], theta[locus], rho[locus], L[locus], nsamA[locus], nsamB[locus], M12[sim], M21[sim], N1_vec[locus], N2_vec[locus], Tsc[sim], Tsplit[sim], Tsplit[sim], Na_vec[locus]))
 	outfile = open("priorfile.txt", "w")
@@ -276,26 +276,26 @@ if sys.argv[1] == "SC_1M_2N":
 	outfile.close()
 
 if sys.argv[1] == "SC_2M_1N":
-        if modeBarrier == "beta":
-                priorfile = "N1\tN2\tNa\tTsplit\tTsc\tM12\tshape_M12_a\tshape_M12_b\tM21\tshape_M21_a\tshape_M21_b\n"
-        else:
-                priorfile = "N1\tN2\tNa\tTsplit\tTsc\tM12\tnBarriersM12\tM21\tnBarriersM21\n"
+	if modeBarrier == "beta":
+		priorfile = "N1\tN2\tNa\tTsplit\tTsc\tM12\tshape_M12_a\tshape_M12_b\tM21\tshape_M21_a\tshape_M21_b\n"
+	else:
+		priorfile = "N1\tN2\tNa\tTsplit\tTsc\tM12\tnBarriersM12\tM21\tnBarriersM21\n"
 	for sim in range(nMultilocus):
-                if modeBarrier == "beta":
-                        priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\n".format(N1[sim], N2[sim], Na[sim], Tsplit[sim], Tsc[sim], M12[sim], shape_M12_a[sim], shape_M12_b[sim], M21[sim], shape_M21_a[sim], shape_M21_b[sim])
-                else:
-                        priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\t{6}\t{7:.5f}\t{8}\n".format(N1[sim], N2[sim], Na[sim], Tsplit[sim], Tsc[sim], M12[sim], nBarriersM12[sim], M21[sim], nBarriersM21[sim])
+		if modeBarrier == "beta":
+			priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\n".format(N1[sim], N2[sim], Na[sim], Tsplit[sim], Tsc[sim], M12[sim], shape_M12_a[sim], shape_M12_b[sim], M21[sim], shape_M21_a[sim], shape_M21_b[sim])
+		else:
+			priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\t{6}\t{7:.5f}\t{8}\n".format(N1[sim], N2[sim], Na[sim], Tsplit[sim], Tsc[sim], M12[sim], nBarriersM12[sim], M21[sim], nBarriersM21[sim])
 		# vectors of size 'nLoci' containing parameters
-                if modeBarrier == "beta":
-                        scalar_M12 = beta(shape_M12_a[sim], shape_M12_b[sim], size = nLoci)
-                        scalar_M21 = beta(shape_M21_a[sim], shape_M21_b[sim], size = nLoci)
-                        rescaleM12 = shape_M12_a[sim] / (shape_M12_a[sim] + shape_M12_b[sim])
-                        rescaleM21 = shape_M21_a[sim] / (shape_M21_a[sim] + shape_M21_b[sim])
-                        M12_vec = [ M12[sim] * i / rescaleM12 for i in scalar_M12 ]
-                        M21_vec = [ M21[sim] * i / rescaleM21 for i in scalar_M21 ]
-                else:
-                        M12_vec = [ M12[sim]*i for i in produceBarriers(nLoci, nBarriersM12[sim]) ]
-                        M21_vec = [ M21[sim]*i for i in produceBarriers(nLoci, nBarriersM21[sim]) ]
+		if modeBarrier == "beta":
+			scalar_M12 = beta(shape_M12_a[sim], shape_M12_b[sim], size = nLoci)
+			scalar_M21 = beta(shape_M21_a[sim], shape_M21_b[sim], size = nLoci)
+			rescaleM12 = shape_M12_a[sim] / (shape_M12_a[sim] + shape_M12_b[sim])
+			rescaleM21 = shape_M21_a[sim] / (shape_M21_a[sim] + shape_M21_b[sim])
+			M12_vec = [ M12[sim] * i / rescaleM12 for i in scalar_M12 ]
+			M21_vec = [ M21[sim] * i / rescaleM21 for i in scalar_M21 ]
+		else:
+			M12_vec = [ M12[sim]*i for i in produceBarriers(nLoci, nBarriersM12[sim]) ]
+			M21_vec = [ M21[sim]*i for i in produceBarriers(nLoci, nBarriersM21[sim]) ]
 		for locus in range(nLoci):
 			print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\t{11:.5f}\t{12:.5f}\t{13:.5f}".format(nsam_tot[locus], theta[locus], rho[locus], L[locus], nsamA[locus], nsamB[locus], M12_vec[locus], M21_vec[locus], N1[sim], N2[sim], Tsc[sim], Tsplit[sim], Tsplit[sim], Na[sim]))
 	
@@ -304,33 +304,33 @@ if sys.argv[1] == "SC_2M_1N":
 	outfile.close()
 
 if sys.argv[1] == "SC_2M_2N":
-        if modeBarrier == "beta":
-                priorfile = "N1\tN2\tNa\tshape_N_a\tshape_N_b\tTsplit\tTsc\tM12\tshape_M12_a\tshape_M12_b\tM21\tshape_M21_a\tshape_M21_b\n"
-        else:
-                priorfile = "N1\tN2\tNa\tshape_N_a\tshape_N_b\tTsplit\tTsc\tM12\tnBarriersM12\tM21\tnBarriersM21\n"
-        for sim in range(nMultilocus):
-                if modeBarrier == "beta":
-                        priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\t{11:.5f}\t{12:.5f}\n".format(N1[sim], N2[sim], Na[sim], shape_N_a[sim], shape_N_b[sim], Tsplit[sim], Tsc[sim], M12[sim], shape_M12_a[sim], shape_M12_b[sim], M21[sim], shape_M21_a[sim], shape_M21_b[sim])
-                else:
-                        priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7:.5f}\t{8}\t{9:.5f}\t{10}\n".format(N1[sim], N2[sim], Na[sim], shape_N_a[sim], shape_N_b[sim], Tsplit[sim], Tsc[sim], M12[sim], nBarriersM12[sim], M21[sim], nBarriersM21[sim])
+	if modeBarrier == "beta":
+		priorfile = "N1\tN2\tNa\tshape_N_a\tshape_N_b\tTsplit\tTsc\tM12\tshape_M12_a\tshape_M12_b\tM21\tshape_M21_a\tshape_M21_b\n"
+	else:
+		priorfile = "N1\tN2\tNa\tshape_N_a\tshape_N_b\tTsplit\tTsc\tM12\tnBarriersM12\tM21\tnBarriersM21\n"
+	for sim in range(nMultilocus):
+		if modeBarrier == "beta":
+			priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\t{11:.5f}\t{12:.5f}\n".format(N1[sim], N2[sim], Na[sim], shape_N_a[sim], shape_N_b[sim], Tsplit[sim], Tsc[sim], M12[sim], shape_M12_a[sim], shape_M12_b[sim], M21[sim], shape_M21_a[sim], shape_M21_b[sim])
+		else:
+			priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7:.5f}\t{8}\t{9:.5f}\t{10}\n".format(N1[sim], N2[sim], Na[sim], shape_N_a[sim], shape_N_b[sim], Tsplit[sim], Tsc[sim], M12[sim], nBarriersM12[sim], M21[sim], nBarriersM21[sim])
 		# vectors of size 'nLoci' containing parameters
-                scalar_N = beta(shape_N_a[sim], shape_N_b[sim], size=nLoci)
-                rescale = shape_N_a[sim] / (shape_N_a[sim] + shape_N_b[sim])
-                N1_vec = [ N1[sim]*i/rescale for i in scalar_N ]
-                N2_vec = [ N2[sim]*i/rescale for i in scalar_N ]
-                Na_vec = [ Na[sim]*i/rescale for i in scalar_N ]
+		scalar_N = beta(shape_N_a[sim], shape_N_b[sim], size=nLoci)
+		rescale = shape_N_a[sim] / (shape_N_a[sim] + shape_N_b[sim])
+		N1_vec = [ N1[sim]*i/rescale for i in scalar_N ]
+		N2_vec = [ N2[sim]*i/rescale for i in scalar_N ]
+		Na_vec = [ Na[sim]*i/rescale for i in scalar_N ]
 
-                # vectors of size 'nLoci' containing parameters
-                if modeBarrier == "beta":
-                        scalar_M12 = beta(shape_M12_a[sim], shape_M12_b[sim], size = nLoci)
-                        scalar_M21 = beta(shape_M21_a[sim], shape_M21_b[sim], size = nLoci)
-                        rescaleM12 = shape_M12_a[sim] / (shape_M12_a[sim] + shape_M12_b[sim])
-                        rescaleM21 = shape_M21_a[sim] / (shape_M21_a[sim] + shape_M21_b[sim])
-                        M12_vec = [ M12[sim] * i / rescaleM12 for i in scalar_M12 ]
-                        M21_vec = [ M21[sim] * i / rescaleM21 for i in scalar_M21 ]
-                else:
-                        M12_vec = [ M12[sim]*i for i in produceBarriers(nLoci, nBarriersM12[sim]) ]
-                        M21_vec = [ M21[sim]*i for i in produceBarriers(nLoci, nBarriersM21[sim]) ]
+		# vectors of size 'nLoci' containing parameters
+		if modeBarrier == "beta":
+			scalar_M12 = beta(shape_M12_a[sim], shape_M12_b[sim], size = nLoci)
+			scalar_M21 = beta(shape_M21_a[sim], shape_M21_b[sim], size = nLoci)
+			rescaleM12 = shape_M12_a[sim] / (shape_M12_a[sim] + shape_M12_b[sim])
+			rescaleM21 = shape_M21_a[sim] / (shape_M21_a[sim] + shape_M21_b[sim])
+			M12_vec = [ M12[sim] * i / rescaleM12 for i in scalar_M12 ]
+			M21_vec = [ M21[sim] * i / rescaleM21 for i in scalar_M21 ]
+		else:
+			M12_vec = [ M12[sim]*i for i in produceBarriers(nLoci, nBarriersM12[sim]) ]
+			M21_vec = [ M21[sim]*i for i in produceBarriers(nLoci, nBarriersM21[sim]) ]
 		for locus in range(nLoci):
 			print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\t{11:.5f}\t{12:.5f}\t{13:.5f}".format(nsam_tot[locus], theta[locus], rho[locus], L[locus], nsamA[locus], nsamB[locus], M12_vec[locus], M21_vec[locus], N1_vec[locus], N2_vec[locus], Tsc[sim], Tsplit[sim], Tsplit[sim], Na_vec[locus]))
 
@@ -355,11 +355,11 @@ if sys.argv[1] == "AM_1M_2N":
 	for sim in range(nMultilocus):
 		priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7:.5f}\t{8:.5f}\n".format(N1[sim], N2[sim], Na[sim], shape_N_a[sim], shape_N_b[sim], Tsplit[sim], Tam[sim], M12[sim], M21[sim])
 		# vectors of size 'nLoci' containing parameters
-                scalar_N = beta(shape_N_a[sim], shape_N_b[sim], size=nLoci)
-                rescale = shape_N_a[sim] / (shape_N_a[sim] + shape_N_b[sim])
-                N1_vec = [ N1[sim]*i/rescale for i in scalar_N ]
-                N2_vec = [ N2[sim]*i/rescale for i in scalar_N ]
-                Na_vec = [ Na[sim]*i/rescale for i in scalar_N ]
+		scalar_N = beta(shape_N_a[sim], shape_N_b[sim], size=nLoci)
+		rescale = shape_N_a[sim] / (shape_N_a[sim] + shape_N_b[sim])
+		N1_vec = [ N1[sim]*i/rescale for i in scalar_N ]
+		N2_vec = [ N2[sim]*i/rescale for i in scalar_N ]
+		Na_vec = [ Na[sim]*i/rescale for i in scalar_N ]
 		for locus in range(nLoci):
 			print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\t{11:.5f}\t{12:.5f}\t{13:.5f}".format(nsam_tot[locus], theta[locus], rho[locus], L[locus], nsamA[locus], nsamB[locus], N1_vec[locus], N2_vec[locus], Tam[sim], M12[sim], M21[sim], Tsplit[sim], Tsplit[sim], Na_vec[locus]))
 	outfile = open("priorfile.txt", "w")
@@ -367,26 +367,26 @@ if sys.argv[1] == "AM_1M_2N":
 	outfile.close()
 
 if sys.argv[1] == "AM_2M_1N":
-        if modeBarrier == "beta":
-                priorfile = "N1\tN2\tNa\tTsplit\tTam\tM12\tshape_M12_a\tshape_M12_b\tM21\tshape_M21_a\tshape_M21_b\n"
-        else:
-                priorfile = "N1\tN2\tNa\tTsplit\tTam\tM12\tnBarriersM12\tM21\tnBarriersM21\n"
-        for sim in range(nMultilocus):
-                if modeBarrier == "beta":
-                        priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\n".format(N1[sim], N2[sim], Na[sim], Tsplit[sim], Tam[sim], M12[sim], shape_M12_a[sim], shape_M12_b[sim], M21[sim], shape_M21_a[sim], shape_M21_b[sim])
-                else:
-                        priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\t{6}\t{7:.5f}\t{8}\n".format(N1[sim], N2[sim], Na[sim], Tsplit[sim], Tam[sim], M12[sim], nBarriersM12[sim], M21[sim], nBarriersM21[sim])
+	if modeBarrier == "beta":
+		priorfile = "N1\tN2\tNa\tTsplit\tTam\tM12\tshape_M12_a\tshape_M12_b\tM21\tshape_M21_a\tshape_M21_b\n"
+	else:
+		priorfile = "N1\tN2\tNa\tTsplit\tTam\tM12\tnBarriersM12\tM21\tnBarriersM21\n"
+	for sim in range(nMultilocus):
+		if modeBarrier == "beta":
+			priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\n".format(N1[sim], N2[sim], Na[sim], Tsplit[sim], Tam[sim], M12[sim], shape_M12_a[sim], shape_M12_b[sim], M21[sim], shape_M21_a[sim], shape_M21_b[sim])
+		else:
+			priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\t{6}\t{7:.5f}\t{8}\n".format(N1[sim], N2[sim], Na[sim], Tsplit[sim], Tam[sim], M12[sim], nBarriersM12[sim], M21[sim], nBarriersM21[sim])
 		# vectors of size 'nLoci' containing parameters
-                if modeBarrier == "beta":
-                        scalar_M12 = beta(shape_M12_a[sim], shape_M12_b[sim], size = nLoci)
-                        scalar_M21 = beta(shape_M21_a[sim], shape_M21_b[sim], size = nLoci)
-                        rescaleM12 = shape_M12_a[sim] / (shape_M12_a[sim] + shape_M12_b[sim])
-                        rescaleM21 = shape_M21_a[sim] / (shape_M21_a[sim] + shape_M21_b[sim])
-                        M12_vec = [ M12[sim] * i / rescaleM12 for i in scalar_M12 ]
-                        M21_vec = [ M21[sim] * i / rescaleM21 for i in scalar_M21 ]
-                else:
-                        M12_vec = [ M12[sim]*i for i in produceBarriers(nLoci, nBarriersM12[sim]) ]
-                        M21_vec = [ M21[sim]*i for i in produceBarriers(nLoci, nBarriersM21[sim]) ]
+		if modeBarrier == "beta":
+			scalar_M12 = beta(shape_M12_a[sim], shape_M12_b[sim], size = nLoci)
+			scalar_M21 = beta(shape_M21_a[sim], shape_M21_b[sim], size = nLoci)
+			rescaleM12 = shape_M12_a[sim] / (shape_M12_a[sim] + shape_M12_b[sim])
+			rescaleM21 = shape_M21_a[sim] / (shape_M21_a[sim] + shape_M21_b[sim])
+			M12_vec = [ M12[sim] * i / rescaleM12 for i in scalar_M12 ]
+			M21_vec = [ M21[sim] * i / rescaleM21 for i in scalar_M21 ]
+		else:
+			M12_vec = [ M12[sim]*i for i in produceBarriers(nLoci, nBarriersM12[sim]) ]
+			M21_vec = [ M21[sim]*i for i in produceBarriers(nLoci, nBarriersM21[sim]) ]
 		for locus in range(nLoci):
 			print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\t{11:.5f}\t{12:.5f}\t{13:.5f}".format(nsam_tot[locus], theta[locus], rho[locus], L[locus], nsamA[locus], nsamB[locus], N1[sim], N2[sim], Tam[sim], M12_vec[locus], M21_vec[locus], Tsplit[sim], Tsplit[sim], Na[sim]))
 	outfile = open("priorfile.txt", "w")
@@ -395,32 +395,32 @@ if sys.argv[1] == "AM_2M_1N":
 
 
 if sys.argv[1] == "AM_2M_2N":
-        if modeBarrier == "beta":
-                priorfile = "N1\tN2\tNa\tshape_N_a\tshape_N_b\tTsplit\tTam\tM12\tshape_M12_a\tshape_M12_b\tM21\tshape_M21_a\tshape_M21_b\n"
-        else:
-                priorfile = "N1\tN2\tNa\tshape_N_a\tshape_N_b\tTsplit\tTam\tM12\tnBarriersM12\tM21\tnBarriersM21\n"
-        for sim in range(nMultilocus):
-                if modeBarrier == "beta":
-                        priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\t{11:.5f}\t{12:.5f}\n".format(N1[sim], N2[sim], Na[sim], shape_N_a[sim], shape_N_b[sim], Tsplit[sim], Tam[sim], M12[sim], shape_M12_a[sim], shape_M12_b[sim], M21[sim], shape_M21_a[sim], shape_M21_b[sim])
-                else:
-                        priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7:.5f}\t{8}\t{9:.5f}\t{10}\n".format(N1[sim], N2[sim], Na[sim], shape_N_a[sim], shape_N_b[sim], Tsplit[sim], Tam[sim], M12[sim], nBarriersM12[sim], M21[sim], nBarriersM21[sim])
+	if modeBarrier == "beta":
+		priorfile = "N1\tN2\tNa\tshape_N_a\tshape_N_b\tTsplit\tTam\tM12\tshape_M12_a\tshape_M12_b\tM21\tshape_M21_a\tshape_M21_b\n"
+	else:
+		priorfile = "N1\tN2\tNa\tshape_N_a\tshape_N_b\tTsplit\tTam\tM12\tnBarriersM12\tM21\tnBarriersM21\n"
+	for sim in range(nMultilocus):
+		if modeBarrier == "beta":
+			priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\t{11:.5f}\t{12:.5f}\n".format(N1[sim], N2[sim], Na[sim], shape_N_a[sim], shape_N_b[sim], Tsplit[sim], Tam[sim], M12[sim], shape_M12_a[sim], shape_M12_b[sim], M21[sim], shape_M21_a[sim], shape_M21_b[sim])
+		else:
+			priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7:.5f}\t{8}\t{9:.5f}\t{10}\n".format(N1[sim], N2[sim], Na[sim], shape_N_a[sim], shape_N_b[sim], Tsplit[sim], Tam[sim], M12[sim], nBarriersM12[sim], M21[sim], nBarriersM21[sim])
 		# vectors of size 'nLoci' containing parameters
-                scalar_N = beta(shape_N_a[sim], shape_N_b[sim], size=nLoci)
-                rescale = shape_N_a[sim] / (shape_N_a[sim] + shape_N_b[sim])
-                N1_vec = [ N1[sim]*i/rescale for i in scalar_N ]
-                N2_vec = [ N2[sim]*i/rescale for i in scalar_N ]
-                Na_vec = [ Na[sim]*i/rescale for i in scalar_N ]
-                # vectors of size 'nLoci' containing parameters
-                if modeBarrier == "beta":
-                        scalar_M12 = beta(shape_M12_a[sim], shape_M12_b[sim], size = nLoci)
-                        scalar_M21 = beta(shape_M21_a[sim], shape_M21_b[sim], size = nLoci)
-                        rescaleM12 = shape_M12_a[sim] / (shape_M12_a[sim] + shape_M12_b[sim])
-                        rescaleM21 = shape_M21_a[sim] / (shape_M21_a[sim] + shape_M21_b[sim])
-                        M12_vec = [ M12[sim] * i / rescaleM12 for i in scalar_M12 ]
-                        M21_vec = [ M21[sim] * i / rescaleM21 for i in scalar_M21 ]
-                else:
-                        M12_vec = [ M12[sim]*i for i in produceBarriers(nLoci, nBarriersM12[sim]) ]
-                        M21_vec = [ M21[sim]*i for i in produceBarriers(nLoci, nBarriersM21[sim]) ]
+		scalar_N = beta(shape_N_a[sim], shape_N_b[sim], size=nLoci)
+		rescale = shape_N_a[sim] / (shape_N_a[sim] + shape_N_b[sim])
+		N1_vec = [ N1[sim]*i/rescale for i in scalar_N ]
+		N2_vec = [ N2[sim]*i/rescale for i in scalar_N ]
+		Na_vec = [ Na[sim]*i/rescale for i in scalar_N ]
+		# vectors of size 'nLoci' containing parameters
+		if modeBarrier == "beta":
+			scalar_M12 = beta(shape_M12_a[sim], shape_M12_b[sim], size = nLoci)
+			scalar_M21 = beta(shape_M21_a[sim], shape_M21_b[sim], size = nLoci)
+			rescaleM12 = shape_M12_a[sim] / (shape_M12_a[sim] + shape_M12_b[sim])
+			rescaleM21 = shape_M21_a[sim] / (shape_M21_a[sim] + shape_M21_b[sim])
+			M12_vec = [ M12[sim] * i / rescaleM12 for i in scalar_M12 ]
+			M21_vec = [ M21[sim] * i / rescaleM21 for i in scalar_M21 ]
+		else:
+			M12_vec = [ M12[sim]*i for i in produceBarriers(nLoci, nBarriersM12[sim]) ]
+			M21_vec = [ M21[sim]*i for i in produceBarriers(nLoci, nBarriersM21[sim]) ]
 		for locus in range(nLoci):
 			print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\t{11:.5f}\t{12:.5f}\t{13:.5f}".format(nsam_tot[locus], theta[locus], rho[locus], L[locus], nsamA[locus], nsamB[locus], N1_vec[locus], N2_vec[locus], Tam[sim], M12_vec[locus], M21_vec[locus], Tsplit[sim], Tsplit[sim], Na_vec[locus]))
 	outfile = open("priorfile.txt", "w")
@@ -444,11 +444,11 @@ if sys.argv[1] == "IM_1M_2N":
 	for sim in range(nMultilocus):
 		priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7:.5f}\n".format(N1[sim], N2[sim], Na[sim], shape_N_a[sim], shape_N_b[sim], Tsplit[sim], M12[sim], M21[sim])
 		# vectors of size 'nLoci' containing parameters
-                scalar_N = beta(shape_N_a[sim], shape_N_b[sim], size=nLoci)
-                rescale = shape_N_a[sim] / (shape_N_a[sim] + shape_N_b[sim])
-                N1_vec = [ N1[sim]*i/rescale for i in scalar_N ]
-                N2_vec = [ N2[sim]*i/rescale for i in scalar_N ]
-                Na_vec = [ Na[sim]*i/rescale for i in scalar_N ]
+		scalar_N = beta(shape_N_a[sim], shape_N_b[sim], size=nLoci)
+		rescale = shape_N_a[sim] / (shape_N_a[sim] + shape_N_b[sim])
+		N1_vec = [ N1[sim]*i/rescale for i in scalar_N ]
+		N2_vec = [ N2[sim]*i/rescale for i in scalar_N ]
+		Na_vec = [ Na[sim]*i/rescale for i in scalar_N ]
 		for locus in range(nLoci):
 			# SC print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\t{11:.5f}\t{12:.5f}\t{13:.5f}".format(nsam_tot[locus], theta[locus], rho[locus], L[locus], nsamA[locus], nsamB[locus], M12_vec[locus], M21_vec[locus], N1_vec[locus], N2_vec[locus], Tsc[sim], Tsplit[sim], Tsplit[sim], Na_vec[locus]))
 			print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\t{11:.5f}\t{12:.5f}".format(nsam_tot[locus], theta[locus], rho[locus], L[locus], nsamA[locus], nsamB[locus], N1_vec[locus], N2_vec[locus], M12[sim], M21[sim], Tsplit[sim], Tsplit[sim], Na_vec[locus]))
@@ -457,27 +457,27 @@ if sys.argv[1] == "IM_1M_2N":
 	outfile.close()
 
 if sys.argv[1] == "IM_2M_1N":
-        if modeBarrier == "beta":
-                priorfile = "N1\tN2\tNa\tTsplit\tM12\tshape_M12_a\tshape_M12_b\tM21\tshape_M21_a\tshape_M21_b\n"
-        else:
-                priorfile = "N1\tN2\tNa\tTsplit\tM12\tnBarriersM12\tM21\tnBarriersM21\n"
-        for sim in range(nMultilocus):
-                if modeBarrier == "beta":
-                        priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\n".format(N1[sim], N2[sim], Na[sim], Tsplit[sim], M12[sim], shape_M12_a[sim], shape_M12_b[sim], M21[sim], shape_M21_a[sim], shape_M21_b[sim])
-                else:
-                        priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5}\t{6:.5f}\t{7}\n".format(N1[sim], N2[sim], Na[sim], Tsplit[sim], M12[sim], nBarriersM12[sim], M21[sim], nBarriersM21[sim])
+	if modeBarrier == "beta":
+		priorfile = "N1\tN2\tNa\tTsplit\tM12\tshape_M12_a\tshape_M12_b\tM21\tshape_M21_a\tshape_M21_b\n"
+	else:
+		priorfile = "N1\tN2\tNa\tTsplit\tM12\tnBarriersM12\tM21\tnBarriersM21\n"
+	for sim in range(nMultilocus):
+		if modeBarrier == "beta":
+			priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\n".format(N1[sim], N2[sim], Na[sim], Tsplit[sim], M12[sim], shape_M12_a[sim], shape_M12_b[sim], M21[sim], shape_M21_a[sim], shape_M21_b[sim])
+		else:
+			priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5}\t{6:.5f}\t{7}\n".format(N1[sim], N2[sim], Na[sim], Tsplit[sim], M12[sim], nBarriersM12[sim], M21[sim], nBarriersM21[sim])
 	
 		# vectors of size 'nLoci' containing parameters
-                if modeBarrier == "beta":
-                        scalar_M12 = beta(shape_M12_a[sim], shape_M12_b[sim], size = nLoci)
-                        scalar_M21 = beta(shape_M21_a[sim], shape_M21_b[sim], size = nLoci)
-                        rescaleM12 = shape_M12_a[sim] / (shape_M12_a[sim] + shape_M12_b[sim])
-                        rescaleM21 = shape_M21_a[sim] / (shape_M21_a[sim] + shape_M21_b[sim])
-                        M12_vec = [ M12[sim] * i / rescaleM12 for i in scalar_M12 ]
-                        M21_vec = [ M21[sim] * i / rescaleM21 for i in scalar_M21 ]
-                else:
-                        M12_vec = [ M12[sim]*i for i in produceBarriers(nLoci, nBarriersM12[sim]) ]
-                        M21_vec = [ M21[sim]*i for i in produceBarriers(nLoci, nBarriersM21[sim]) ]
+		if modeBarrier == "beta":
+			scalar_M12 = beta(shape_M12_a[sim], shape_M12_b[sim], size = nLoci)
+			scalar_M21 = beta(shape_M21_a[sim], shape_M21_b[sim], size = nLoci)
+			rescaleM12 = shape_M12_a[sim] / (shape_M12_a[sim] + shape_M12_b[sim])
+			rescaleM21 = shape_M21_a[sim] / (shape_M21_a[sim] + shape_M21_b[sim])
+			M12_vec = [ M12[sim] * i / rescaleM12 for i in scalar_M12 ]
+			M21_vec = [ M21[sim] * i / rescaleM21 for i in scalar_M21 ]
+		else:
+			M12_vec = [ M12[sim]*i for i in produceBarriers(nLoci, nBarriersM12[sim]) ]
+			M21_vec = [ M21[sim]*i for i in produceBarriers(nLoci, nBarriersM21[sim]) ]
 
 		for locus in range(nLoci):
 			# SC print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\t{11:.5f}\t{12:.5f}\t{13:.5f}".format(nsam_tot[locus], theta[locus], rho[locus], L[locus], nsamA[locus], nsamB[locus], M12_vec[locus], M21_vec[locus], N1_vec[locus], N2_vec[locus], Tsc[sim], Tsplit[sim], Tsplit[sim], Na_vec[locus]))
@@ -489,32 +489,32 @@ if sys.argv[1] == "IM_2M_1N":
 
 
 if sys.argv[1] == "IM_2M_2N":
-        if modeBarrier == "beta":
-                priorfile = "N1\tN2\tNa\tshape_N_a\tshape_N_b\tTsplit\tM12\tshape_M12_a\tshape_M12_b\tM21\tshape_M21_a\tshape_M21_b\n"
-        else:
-                priorfile = "N1\tN2\tNa\tshape_N_a\tshape_N_b\tTsplit\tM12\tnBarriersM12\tM21\tnBarriersM21\n"
-        for sim in range(nMultilocus):
-                if modeBarrier == "beta":
-                        priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\t{11:.5f}\n".format(N1[sim], N2[sim], Na[sim], shape_N_a[sim], shape_N_b[sim], Tsplit[sim], M12[sim], shape_M12_a[sim], shape_M12_b[sim], M21[sim], shape_M21_a[sim], shape_M21_b[sim])
-                else:
-                       priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7}\t{8:.5f}\t{9}\n".format(N1[sim], N2[sim], Na[sim], shape_N_a[sim], shape_N_b[sim], Tsplit[sim], M12[sim], nBarriersM12[sim], M21[sim], nBarriersM21[sim])
+	if modeBarrier == "beta":
+		priorfile = "N1\tN2\tNa\tshape_N_a\tshape_N_b\tTsplit\tM12\tshape_M12_a\tshape_M12_b\tM21\tshape_M21_a\tshape_M21_b\n"
+	else:
+		priorfile = "N1\tN2\tNa\tshape_N_a\tshape_N_b\tTsplit\tM12\tnBarriersM12\tM21\tnBarriersM21\n"
+	for sim in range(nMultilocus):
+		if modeBarrier == "beta":
+			priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\t{11:.5f}\n".format(N1[sim], N2[sim], Na[sim], shape_N_a[sim], shape_N_b[sim], Tsplit[sim], M12[sim], shape_M12_a[sim], shape_M12_b[sim], M21[sim], shape_M21_a[sim], shape_M21_b[sim])
+		else:
+			priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7}\t{8:.5f}\t{9}\n".format(N1[sim], N2[sim], Na[sim], shape_N_a[sim], shape_N_b[sim], Tsplit[sim], M12[sim], nBarriersM12[sim], M21[sim], nBarriersM21[sim])
 		# vectors of size 'nLoci' containing parameters
-                scalar_N = beta(shape_N_a[sim], shape_N_b[sim], size=nLoci)
+		scalar_N = beta(shape_N_a[sim], shape_N_b[sim], size=nLoci)
 		rescale = shape_N_a[sim] / (shape_N_a[sim] + shape_N_b[sim])
-                N1_vec = [ N1[sim]*i/rescale for i in scalar_N ]
-                N2_vec = [ N2[sim]*i/rescale for i in scalar_N ]
-                Na_vec = [ Na[sim]*i/rescale for i in scalar_N ]
-                # vectors of size 'nLoci' containing parameters
-                if modeBarrier == "beta":
-                        scalar_M12 = beta(shape_M12_a[sim], shape_M12_b[sim], size = nLoci)
-                        scalar_M21 = beta(shape_M21_a[sim], shape_M21_b[sim], size = nLoci)
-                        rescaleM12 = shape_M12_a[sim] / (shape_M12_a[sim] + shape_M12_b[sim])
-                        rescaleM21 = shape_M21_a[sim] / (shape_M21_a[sim] + shape_M21_b[sim])
-                        M12_vec = [ M12[sim] * i / rescaleM12 for i in scalar_M12 ]
-                        M21_vec = [ M21[sim] * i / rescaleM21 for i in scalar_M21 ]
-                else:
-                        M12_vec = [ M12[sim]*i for i in produceBarriers(nLoci, nBarriersM12[sim]) ]
-                        M21_vec = [ M21[sim]*i for i in produceBarriers(nLoci, nBarriersM21[sim]) ]
+		N1_vec = [ N1[sim]*i/rescale for i in scalar_N ]
+		N2_vec = [ N2[sim]*i/rescale for i in scalar_N ]
+		Na_vec = [ Na[sim]*i/rescale for i in scalar_N ]
+		# vectors of size 'nLoci' containing parameters
+		if modeBarrier == "beta":
+			scalar_M12 = beta(shape_M12_a[sim], shape_M12_b[sim], size = nLoci)
+			scalar_M21 = beta(shape_M21_a[sim], shape_M21_b[sim], size = nLoci)
+			rescaleM12 = shape_M12_a[sim] / (shape_M12_a[sim] + shape_M12_b[sim])
+			rescaleM21 = shape_M21_a[sim] / (shape_M21_a[sim] + shape_M21_b[sim])
+			M12_vec = [ M12[sim] * i / rescaleM12 for i in scalar_M12 ]
+			M21_vec = [ M21[sim] * i / rescaleM21 for i in scalar_M21 ]
+		else:
+			M12_vec = [ M12[sim]*i for i in produceBarriers(nLoci, nBarriersM12[sim]) ]
+			M21_vec = [ M21[sim]*i for i in produceBarriers(nLoci, nBarriersM21[sim]) ]
 		for locus in range(nLoci):
 			# SC print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\t{11:.5f}\t{12:.5f}\t{13:.5f}".format(nsam_tot[locus], theta[locus], rho[locus], L[locus], nsamA[locus], nsamB[locus], M12_vec[locus], M21_vec[locus], N1_vec[locus], N2_vec[locus], Tsc[sim], Tsplit[sim], Tsplit[sim], Na_vec[locus]))
 			print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\t{11:.5f}\t{12:.5f}".format(nsam_tot[locus], theta[locus], rho[locus], L[locus], nsamA[locus], nsamB[locus], N1_vec[locus], N2_vec[locus], M12_vec[locus], M21_vec[locus], Tsplit[sim], Tsplit[sim], Na_vec[locus]))
@@ -539,11 +539,11 @@ if sys.argv[1] == "SI_2N":
 	for sim in range(nMultilocus):
 		priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\n".format(N1[sim], N2[sim], Na[sim], shape_N_a[sim], shape_N_b[sim], Tsplit[sim])
 		# vectors of size 'nLoci' containing parameters
-                scalar_N = beta(shape_N_a[sim], shape_N_b[sim], size=nLoci)
-                rescale = shape_N_a[sim] / (shape_N_a[sim] + shape_N_b[sim])
-                N1_vec = [ N1[sim]*i/rescale for i in scalar_N ]
-                N2_vec = [ N2[sim]*i/rescale for i in scalar_N ]
-                Na_vec = [ Na[sim]*i/rescale for i in scalar_N ]
+		scalar_N = beta(shape_N_a[sim], shape_N_b[sim], size=nLoci)
+		rescale = shape_N_a[sim] / (shape_N_a[sim] + shape_N_b[sim])
+		N1_vec = [ N1[sim]*i/rescale for i in scalar_N ]
+		N2_vec = [ N2[sim]*i/rescale for i in scalar_N ]
+		Na_vec = [ Na[sim]*i/rescale for i in scalar_N ]
 		for locus in range(nLoci):
 			print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}".format(nsam_tot[locus], theta[locus], rho[locus], L[locus], nsamA[locus], nsamB[locus], N1_vec[locus], N2_vec[locus], Tsplit[sim], Tsplit[sim], Na_vec[locus]))
 	outfile = open("priorfile.txt", "w")
@@ -568,9 +568,9 @@ if sys.argv[1] == "PAN_2N":
 	priorfile = "N1\tshape_N_a\tshape_N_b\n"
 	for sim in range(nMultilocus):
 		priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\n".format(N1[sim], shape_N_a[sim], shape_N_b[sim])
-                scalar_N = beta(shape_N_a[sim], shape_N_b[sim], size=nLoci) # beta distribution of scalars (size = nLoci)
+		scalar_N = beta(shape_N_a[sim], shape_N_b[sim], size=nLoci) # beta distribution of scalars (size = nLoci)
 		rescale = shape_N_a[sim] / (shape_N_a[sim] + shape_N_b[sim]) # rescaling factor in order to centered the beta distribution around 1
-                N1_vec = [ N1[sim]*i/rescale for i in scalar_N ] # local theta for eahc of the nLoci locus
+		N1_vec = [ N1[sim]*i/rescale for i in scalar_N ] # local theta for eahc of the nLoci locus
 		
 		for locus in range(nLoci):
 			print("{0}\t{1}\t{2}\t{3}\t{4}".format(nsam_tot[locus], theta[locus], rho[locus], L[locus], N1_vec[locus]))

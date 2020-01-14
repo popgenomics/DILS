@@ -419,6 +419,14 @@ get_posterior<-function(nameA='spA', nameB='spB', nSubdir=10, sub_dir_sim='itera
 	params_sim[[model]] = params_sim_tmp
 	nparams = ncol(params_sim[[model]])
 
+	### write the prior
+	nPrior = nrow(params_sim[[model]])
+	if(nPrior>10000){
+		write.table(params_sim[[model]][1:10000,], paste(timeStamp, '/', sub_dir_sim, '/priorfile.txt', sep=''), col.names=T, row.names=F, quote=F, sep='\t')
+	}else{
+		write.table(params_sim[[model]], paste(timeStamp, '/', sub_dir_sim, '/priorfile.txt', sep=''), col.names=T, row.names=F, quote=F, sep='\t')
+	}
+	
 	##############
 	# inferences
 	#ss = 2:40 # if remove only the 'min' and 'max' statistics

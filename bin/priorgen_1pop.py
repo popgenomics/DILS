@@ -5,27 +5,27 @@
 
 #################################################################################################################################
 #################################################################################################################################
-#####                                                                                                                       #####
-#####    This file is part of Demographic Inferences with Linked Selection : DILS.                                          #####
-#####                                                                                                                       #####   
-#####    DILS is free software: you can redistribute it and/or modify                                                       #####
-#####    it under the terms of the GNU General Public License as published by                                               #####
-#####    the Free Software Foundation, either version 3 of the License, or                                                  #####
-#####    (at your option) any later version.                                                                                #####
-#####                                                                                                                       #####    
-#####    DILS is distributed in the hope that it will be useful,                                                            #####
-#####    but WITHOUT ANY WARRANTY; without even the implied warranty of                                                     #####
-#####    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                                                      #####
-#####    GNU General Public License for more details.                                                                       #####
-#####                                                                                                                       #####    
-#####    You should have received a copy of the GNU General Public License                                                  #####
-#####    along with DILS.  If not, see <https://www.gnu.org/licenses/>.                                                     #####
-#####                                                                                                                       #####    
-#####    Please send bugreports with examples or suggestions to                                                             #####
-#####    camille.roux@univ-lille.fr                                                                                         #####
-#####                                                                                                                       #####    
+#####														       #####
+#####    This file is part of Demographic Inferences with Linked Selection : DILS.					  #####
+#####														       #####   
+#####    DILS is free software: you can redistribute it and/or modify						       #####
+#####    it under the terms of the GNU General Public License as published by					       #####
+#####    the Free Software Foundation, either version 3 of the License, or						  #####
+#####    (at your option) any later version.										#####
+#####														       #####    
+#####    DILS is distributed in the hope that it will be useful,							    #####
+#####    but WITHOUT ANY WARRANTY; without even the implied warranty of						     #####
+#####    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the						      #####
+#####    GNU General Public License for more details.								       #####
+#####														       #####    
+#####    You should have received a copy of the GNU General Public License						  #####
+#####    along with DILS.  If not, see <https://www.gnu.org/licenses/>.						     #####
+#####														       #####    
+#####    Please send bugreports with examples or suggestions to							     #####
+#####    camille.roux@univ-lille.fr											 #####
+#####														       #####    
 #####    Or write a post on https://groups.google.com/forum/#!forum/dils---demographic-inferences-with-linked-selection     #####
-#####                                                                                                                       #####
+#####														       #####
 #################################################################################################################################
 #################################################################################################################################
 
@@ -118,16 +118,16 @@ if sys.argv[1] == "Constant_2N":
 	rho = [ 4*L[i]*rec[i] for i in range(nLoci) ] # vector of rho/N
 
 	## bf = factor of local reduction in Ne. Model of "background selection"
-        shape_N_a = uniform(low = shape_bound[0], high=shape_bound[1], size = nMultilocus)
-        shape_N_b = uniform(low = shape_bound[0], high=shape_bound[1], size = nMultilocus)
+	shape_N_a = uniform(low = shape_bound[0], high=shape_bound[1], size = nMultilocus)
+	shape_N_b = uniform(low = shape_bound[0], high=shape_bound[1], size = nMultilocus)
 
 	# param monolocus: values that will be read by ms
 	priorfile = "N\tshape_N_a\tshape_N_b\n"
 	for sim in range(nMultilocus):
 		priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\n".format(N[sim], shape_N_a[sim], shape_N_b[sim])
 		# vectors of size 'nLoci' containing parameters
-                scalar_N = beta(shape_N_a[sim], shape_N_b[sim], size=nLoci)
-                rescale = shape_N_a[sim] / (shape_N_a[sim] + shape_N_b[sim])
+		scalar_N = beta(shape_N_a[sim], shape_N_b[sim], size=nLoci)
+		rescale = shape_N_a[sim] / (shape_N_a[sim] + shape_N_b[sim])
 	
 		for locus in range(nLoci):
 			theta_locus = theta[locus]*N[sim]*scalar_N[locus]/rescale
@@ -180,8 +180,8 @@ if sys.argv[1] == "Expansion_2N":
 	rho = [ 4*L[i]*rec[i] for i in range(nLoci) ] # vector of rho/N
 	
 	## bf = factor of local reduction in Ne. Model of "background selection"
-        shape_N_a = uniform(low = shape_bound[0], high=shape_bound[1], size = nMultilocus)
-        shape_N_b = uniform(low = shape_bound[0], high=shape_bound[1], size = nMultilocus)
+	shape_N_a = uniform(low = shape_bound[0], high=shape_bound[1], size = nMultilocus)
+	shape_N_b = uniform(low = shape_bound[0], high=shape_bound[1], size = nMultilocus)
 	
 #	T = uniform(low = T_bound[0], high = T_bound[1], size = nMultilocus)
 #	T = [ uniform(low = T_bound[0], high = 2*i, size = 1)[0] for i in N ]
@@ -193,8 +193,8 @@ if sys.argv[1] == "Expansion_2N":
 	priorfile = "N\tNpast\tshape_N_a\tshape_N_b\tTdem\n"
 	for sim in range(nMultilocus):
 		priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\n".format(N[sim], Nanc[sim], shape_N_a[sim], shape_N_b[sim], T[sim])
-                scalar_N = beta(shape_N_a[sim], shape_N_b[sim], size=nLoci)
-                rescale = shape_N_a[sim] / (shape_N_a[sim] + shape_N_b[sim])
+		scalar_N = beta(shape_N_a[sim], shape_N_b[sim], size=nLoci)
+		rescale = shape_N_a[sim] / (shape_N_a[sim] + shape_N_b[sim])
 		
 		for locus in range(nLoci):
 			theta_locus = theta[locus]*N[sim]*scalar_N[locus]/rescale
@@ -246,9 +246,9 @@ if sys.argv[1] == "Contraction_2N":
 	
 	Nanc = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
 	N = [ uniform(low = N_bound[0], high = 0.1*i, size = 1)[0] for i in Nanc ]
-        
+	
 	shape_N_a = uniform(low = shape_bound[0], high=shape_bound[1], size = nMultilocus)
-        shape_N_b = uniform(low = shape_bound[0], high=shape_bound[1], size = nMultilocus)
+	shape_N_b = uniform(low = shape_bound[0], high=shape_bound[1], size = nMultilocus)
 	
 #	T = uniform(low = T_bound[0], high = T_bound[1], size = nMultilocus)
 #	T = [ uniform(low = T_bound[0], high = 2*i, size = 1)[0] for i in N ]
@@ -258,8 +258,8 @@ if sys.argv[1] == "Contraction_2N":
 	priorfile = "N\tNpast\tshape_N_a\tshape_N_b\tTdem\n"
 	for sim in range(nMultilocus):
 		priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\n".format(N[sim], Nanc[sim], shape_N_a[sim], shape_N_b[sim], T[sim])
-                scalar_N = beta(shape_N_a[sim], shape_N_b[sim], size=nLoci)
-                rescale = shape_N_a[sim] / (shape_N_a[sim] + shape_N_b[sim])
+		scalar_N = beta(shape_N_a[sim], shape_N_b[sim], size=nLoci)
+		rescale = shape_N_a[sim] / (shape_N_a[sim] + shape_N_b[sim])
 		
 		for locus in range(nLoci):
 			theta_locus = theta[locus]*N[sim]*scalar_N[locus]/rescale

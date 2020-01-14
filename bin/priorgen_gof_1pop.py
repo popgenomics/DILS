@@ -180,8 +180,8 @@ if sys.argv[1] == "Constant_2N":
 	for sim in range(nMultilocus):
 		priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\n".format(N[sim], shape_N_a[sim], shape_N_b[sim])
 		# vectors of size 'nLoci' containing parameters
-                scalar_N = beta(shape_N_a[sim], shape_N_b[sim], size=nLoci)
-                rescale = shape_N_a[sim] / (shape_N_a[sim] + shape_N_b[sim])
+		scalar_N = beta(shape_N_a[sim], shape_N_b[sim], size=nLoci)
+		rescale = shape_N_a[sim] / (shape_N_a[sim] + shape_N_b[sim])
 		
 		for locus in range(nLoci):
 			theta_locus = theta[locus]*N[sim]*scalar_N[locus]/rescale # theta = (4.mu.N) * Beta / ( a / (a+b) )
@@ -227,8 +227,8 @@ if sys.argv[1] == "Expansion_2N":
 	priorfile = "N\tNpast\tshape_N_a\tshape_N_b\tTdem\n"
 	for sim in range(nMultilocus):
 		priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\n".format(N[sim], Npast[sim], shape_N_a[sim], shape_N_b[sim], Tdem[sim])
-                scalar_N = beta(shape_N_a[sim], shape_N_b[sim], size=nLoci)
-                rescale = shape_N_a[sim] / (shape_N_a[sim] + shape_N_b[sim])
+		scalar_N = beta(shape_N_a[sim], shape_N_b[sim], size=nLoci)
+		rescale = shape_N_a[sim] / (shape_N_a[sim] + shape_N_b[sim])
 		
 		for locus in range(nLoci):
 			theta_locus = theta[locus]*N[sim]*scalar_N[locus]/rescale
@@ -275,8 +275,8 @@ if sys.argv[1] == "Contraction_2N":
 	priorfile = "N\tNpast\tshape_N_a\tshape_N_b\tTdem\n"
 	for sim in range(nMultilocus):
 		priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\n".format(N[sim], Npast[sim], shape_N_a[sim], shape_N_b[sim], Tdem[sim])
-                scalar_N = beta(shape_N_a[sim], shape_N_b[sim], size=nLoci)
-                rescale = shape_N_a[sim] / (shape_N_a[sim] + shape_N_b[sim])
+		scalar_N = beta(shape_N_a[sim], shape_N_b[sim], size=nLoci)
+		rescale = shape_N_a[sim] / (shape_N_a[sim] + shape_N_b[sim])
 		
 		for locus in range(nLoci):
 			theta_locus = theta[locus]*N[sim]*scalar_N[locus]/rescale

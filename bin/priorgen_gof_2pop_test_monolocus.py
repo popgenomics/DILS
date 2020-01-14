@@ -279,7 +279,7 @@ if population_growth == 'constant':
 			if modeBarrier == "beta":
 				priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7:.5f}\t{8:.5f}\t{9:.5f}\t{10:.5f}\t{11:.5f}\n".format(N1[sim], N2[sim], Na[sim], shape_N_a[sim], shape_N_b[sim], Tsplit[sim], M12[sim], shape_M12_a[sim], shape_M12_b[sim], M21[sim], shape_M21_a[sim], shape_M21_b[sim])
 			else:
-			       priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7}\t{8:.5f}\t{9}\n".format(N1[sim], N2[sim], Na[sim], shape_N_a[sim], shape_N_b[sim], Tsplit[sim], M12[sim], nBarriersM12[sim], M21[sim], nBarriersM21[sim])
+				priorfile += "{0:.5f}\t{1:.5f}\t{2:.5f}\t{3:.5f}\t{4:.5f}\t{5:.5f}\t{6:.5f}\t{7}\t{8:.5f}\t{9}\n".format(N1[sim], N2[sim], Na[sim], shape_N_a[sim], shape_N_b[sim], Tsplit[sim], M12[sim], nBarriersM12[sim], M21[sim], nBarriersM21[sim])
 			# vectors of size 'nLoci' containing parameters
 			scalar_N = beta(shape_N_a[sim], shape_N_b[sim], size=nLoci)
 			rescale = shape_N_a[sim] / (shape_N_a[sim] + shape_N_b[sim])

@@ -26,11 +26,16 @@
 #################################################################################################################################
 #################################################################################################################################
 
+# argument 1: names of the directory (i.e, timestamp)
+# argument 2: 0: no outgroup; 1: outgroup
+# argument 3: number of arbitrary considered loci in the dataset
 import os
 import sys
 from random import sample
 project_name = sys.argv[1] # the name of the directory containing the project 
 outgroup = int(sys.argv[2]) # if 0: no outgroup, and so, no SFS. If 1: outgroup, and so, SFS
+threshold_sim = int(sys.argv[3]) # number of arbitrary considered loci in the dataset 
+
 #print("outgroup is {0}".format(outgroup))
 def cr_sqrt(x):
 	# returns the square root of a variable x
@@ -265,7 +270,6 @@ rho = [ float(i) for i in infile.readline().strip().split("\t") ]
 infile.close()
 
 nLoci = len(L)
-threshold_sim = 1000
 if nLoci < threshold_sim:
 	# if less than 1000 of loci
 	nLoci_sim = nLoci
