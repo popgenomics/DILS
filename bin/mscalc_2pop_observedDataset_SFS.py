@@ -1,41 +1,10 @@
 #!/shared/mfs/data/software/miniconda/envs/pypy-2.7-5.10.0/bin/pypy
 # #!/usr/local/bin/pypy
-#################################################################################################################################
-#################################################################################################################################
-#####                                                                                                                       #####
-#####    This file is part of Demographic Inferences with Linked Selection : DILS.                                          #####
-#####                                                                                                                       #####   
-#####    DILS is free software: you can redistribute it and/or modify                                                       #####
-#####    it under the terms of the GNU General Public License as published by                                               #####
-#####    the Free Software Foundation, either version 3 of the License, or                                                  #####
-#####    (at your option) any later version.                                                                                #####
-#####                                                                                                                       #####    
-#####    DILS is distributed in the hope that it will be useful,                                                            #####
-#####    but WITHOUT ANY WARRANTY; without even the implied warranty of                                                     #####
-#####    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                                                      #####
-#####    GNU General Public License for more details.                                                                       #####
-#####                                                                                                                       #####    
-#####    You should have received a copy of the GNU General Public License                                                  #####
-#####    along with DILS.  If not, see <https://www.gnu.org/licenses/>.                                                     #####
-#####                                                                                                                       #####    
-#####    Please send bugreports with examples or suggestions to                                                             #####
-#####    camille.roux@univ-lille.fr                                                                                         #####
-#####                                                                                                                       #####    
-#####    Or write a post on https://groups.google.com/forum/#!forum/dils---demographic-inferences-with-linked-selection     #####
-#####                                                                                                                       #####
-#################################################################################################################################
-#################################################################################################################################
-
-# argument 1: names of the directory (i.e, timestamp)
-# argument 2: 0: no outgroup; 1: outgroup
-# argument 3: number of arbitrary considered loci in the dataset
 import os
 import sys
 from random import sample
 project_name = sys.argv[1] # the name of the directory containing the project 
 outgroup = int(sys.argv[2]) # if 0: no outgroup, and so, no SFS. If 1: outgroup, and so, SFS
-threshold_sim = int(sys.argv[3]) # number of arbitrary considered loci in the dataset 
-
 #print("outgroup is {0}".format(outgroup))
 def cr_sqrt(x):
 	# returns the square root of a variable x
@@ -270,6 +239,7 @@ rho = [ float(i) for i in infile.readline().strip().split("\t") ]
 infile.close()
 
 nLoci = len(L)
+threshold_sim = 1000
 if nLoci < threshold_sim:
 	# if less than 1000 of loci
 	nLoci_sim = nLoci

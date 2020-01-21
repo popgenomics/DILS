@@ -1,33 +1,10 @@
 #!/shared/mfs/data/software/miniconda/envs/pypy-2.7-5.10.0/bin/pypy
 # #!/usr/local/bin/pypy
-# #!/gepv/home2/croux/bin/pypy
-# #!/usr/bin/python
+# #!/usr/local/bin/pypy
 
-#################################################################################################################################
-#################################################################################################################################
-#####                                                                                                                       #####
-#####    This file is part of Demographic Inferences with Linked Selection : DILS.                                          #####
-#####                                                                                                                       #####   
-#####    DILS is free software: you can redistribute it and/or modify                                                       #####
-#####    it under the terms of the GNU General Public License as published by                                               #####
-#####    the Free Software Foundation, either version 3 of the License, or                                                  #####
-#####    (at your option) any later version.                                                                                #####
-#####                                                                                                                       #####    
-#####    DILS is distributed in the hope that it will be useful,                                                            #####
-#####    but WITHOUT ANY WARRANTY; without even the implied warranty of                                                     #####
-#####    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                                                      #####
-#####    GNU General Public License for more details.                                                                       #####
-#####                                                                                                                       #####    
-#####    You should have received a copy of the GNU General Public License                                                  #####
-#####    along with DILS.  If not, see <https://www.gnu.org/licenses/>.                                                     #####
-#####                                                                                                                       #####    
-#####    Please send bugreports with examples or suggestions to                                                             #####
-#####    camille.roux@univ-lille.fr                                                                                         #####
-#####                                                                                                                       #####    
-#####    Or write a post on https://groups.google.com/forum/#!forum/dils---demographic-inferences-with-linked-selection     #####
-#####                                                                                                                       #####
-#################################################################################################################################
-#################################################################################################################################
+# #!/gepv/home2/croux/bin/pypy
+
+# #!/usr/bin/python
 
 
 import os
