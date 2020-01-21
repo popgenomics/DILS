@@ -24,7 +24,6 @@ library(yaml)
 library(ggpubr)
 library(FactoMineR)
 
-
 pvalue = function(distribution, obs){
 	obs = as.numeric(obs)
 	distribution = as.numeric(distribution)
@@ -585,7 +584,7 @@ prior <- fluidPage(
 				h3("If the ratio is (unnecessarily) setted to values above 10, simulations will take too long.")
 			),
 			
-			boxPlus(title = h2("Population size"), height = 250, width = NULL, closable = FALSE, status = "danger", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
+			boxPlus(title = h2("Population size"), height = 300, width = NULL, closable = FALSE, status = "danger", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
 				fluidRow(
 					column(width=5, numericInput("N_min", label = h5('min'), value = 100)),
 					column(width=5, numericInput("N_max", label = h5('max'), value = 1000000))
@@ -624,10 +623,13 @@ prior <- fluidPage(
 				h3("For each simulation in the ", strong("SC"), " and ", strong("AM"), " models, the time of secondary contact between lines", strong(em("(Tsc),")), " or old migration stop times", strong(em("(Tam)")), "are drawn uniformly between", strong(em("Tsplit_min")), "and", strong(em("Tsplit_sampled.")))
 			),
 		
-			boxPlus(title = h2("Migration rates"), height = 250, width = NULL, closable = FALSE, status = "success", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
+			boxPlus(title = h2("Migration rates"), height = 300, width = NULL, closable = FALSE, status = "success", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
 				fluidRow(
 					column(width=5, numericInput("M_min", label = h5('min'), value = 0.4)),
 					column(width=5, numericInput("M_max", label = h5('max'), value = 20))
+				),
+				fluidRow(
+					column(width=5,	selectInput("modeBarrier", label = h4("Model for barriers"), choices = list("bimodal" = 'bimodal', "beta" = 'beta'), selected = 'bimodal'))
 				)
 			),
 		
@@ -882,7 +884,7 @@ ui <- dashboardPage(
 				prior
 			),
 
-			# Run the BAC inferences
+			# Run the ABC inferences
 			tabItem(tabName = "run_abc",
 				run_ABC
 			),
@@ -948,6 +950,8 @@ server <- function(input, output, session = session) {
 		}
 	)
 	
+	## get the directory
+	global <- reactiveValues(datapath = getwd()) 
 	
 	## example of genomic heterogeneity
 	output$genomic_hetero <- renderPlot({
@@ -1158,8 +1162,8 @@ server <- function(input, output, session = session) {
 					h3("Timestamp of the last submitted analysis:"),
 					verbatimTextOutput('time_stamp'),
 					hr(),
-					h3("Snakemake command line:"),
-					verbatimTextOutput("snakemake_command")
+					h3("DILS command line:"),
+					verbatimTextOutput("DILS_command")
 				)
 			)
 		}else{return()}
@@ -1176,10 +1180,61 @@ server <- function(input, output, session = session) {
 	observeEvent( input$runABC, {time_stamp(system('echo $(mktemp -d -t XXXXXXXXXX | cut -d"/" -f3)', intern=T))})
 	output$time_stamp <- renderText({time_stamp()})
 
+	## write the yaml file
+	output$global <- renderText({global$datapath})
+
+	observeEvent(input$runABC, {	
+		if(input$presence_outgroup == 'yes'){
+			nameOutgroup = input$nameOutgroup
+		}else{
+			nameOutgroup = "NA"
+		}
+		
+		yaml_name = paste(global$datapath, '/', time_stamp(), '.yaml', sep='')
+		write(paste("mail_address:", input$mail_address, sep=' '), file = yaml_name, append=F)
+		write(paste("infile:", input$infile$name, sep=' '), file = yaml_name, append=T)
+		write(paste("region:", input$region, sep=' '), file = yaml_name, append=T)
+		write(paste("nspecies:", input$nspecies, sep=' '), file = yaml_name, append=T)
+		write(paste("nameA:", input$nameA, sep=' '), file = yaml_name, append=T)
+		if(input$nspecies == 2){
+			write(paste("nameB:", input$nameB, sep=' '), file = yaml_name, append=T)
+		}
+		
+		write(paste("nameOutgroup:", nameOutgroup, sep=' '), file = yaml_name, append=T)
+		write(paste("config_yaml:", yaml_name, sep=' '), file = yaml_name, append=T)
+		write(paste("timeStamp:", time_stamp(), sep=' '), file = yaml_name, append=T)
+		if(input$nspecies == 2){
+			write(paste("population_growth:", input$population_growth, sep=' '), file = yaml_name, append=T)
+			write(paste("modeBarrier:", input$modeBarrier, sep=' '), file = yaml_name, append=T)
+		}
+		
+		write(paste("max_N_tolerated:", input$max_N_tolerated, sep=' '), file = yaml_name, append=T)
+		write(paste("Lmin:", input$Lmin, sep=' '), file = yaml_name, append=T)
+		write(paste("nMin:", input$nMin, sep=' '), file = yaml_name, append=T)
+		write(paste("mu:", input$mu, sep=' '), file = yaml_name, append=T)
+		write(paste("rho_over_theta:", input$rho_over_theta, sep=' '), file = yaml_name, append=T)
+		write(paste("N_min:", input$N_min, sep=' '), file = yaml_name, append=T)
+		write(paste("N_max:", input$N_max, sep=' '), file = yaml_name, append=T)
+		if(input$nspecies == 1){
+			write(paste("Tchanges_min:", input$Tsplit_min, sep=' '), file = yaml_name, append=T)
+			write(paste("Tchanges_max:", input$Tsplit_max, sep=' '), file = yaml_name, append=T)
+		}
+		
+		if(input$nspecies == 2){
+			write(paste("Tsplit_min:", input$Tsplit_min, sep=' '), file = yaml_name, append=T)
+			write(paste("Tsplit_max:", input$Tsplit_max, sep=' '), file = yaml_name, append=T)
+			write(paste("M_min:", input$M_min, sep=' '), file = yaml_name, append=T)
+			write(paste("M_max:", input$M_max, sep=' '), file = yaml_name, append=T)
+		}
+	})
+		
+#	write.table(parameters(), yaml_name, col.names=F, row.names=F, quote=F)
+	
 	## snakemake command
-	snakemake_command <- reactiveVal(0)
-	observeEvent( input$runABC, {snakemake_command(paste('snakemake -p -j 999 --snakefile ../2pops/Snakefile --configfile config_', time_stamp(), '.yaml --cluster-config ../cluster.json --cluster "sbatch --nodes={cluster.node} --ntasks={cluster.n} --cpus-per-task={cluster.cpusPerTask} --time={cluster.time}"', sep=''))})
-	output$snakemake_command <- renderText({snakemake_command()})
+	DILS_command <- reactiveVal(0)
+	#observeEvent( input$runABC, {DILS_command(paste('snakemake -p -j 999 --snakefile ../2pops/Snakefile --configfile config_', time_stamp(), '.yaml --cluster-config ../cluster.json --cluster "sbatch --nodes={cluster.node} --ntasks={cluster.n} --cpus-per-task={cluster.cpusPerTask} --time={cluster.time}"', sep=''))})
+	observeEvent( input$runABC, {DILS_command(paste('DILS_', input$nspecies, 'pop.sh ', time_stamp(), '.yaml &', sep=''))})
+	output$DILS_command <- renderText({DILS_command()})
 	
 	## Check upload
 	output$check_upload_info <- renderUI({
@@ -2373,7 +2428,13 @@ server <- function(input, output, session = session) {
 			return(NULL)
 		}else{
 			if(input$PCA_gof_choice == 1){
-				fluidRow( width = 12, plotlyOutput(outputId = "plot_PCA_gof"))
+				fluidPage(
+					fluidRow( width = 12,  style="margin-top:-3em",
+						column(3, selectInput("axe1", label = h4("x-axis"), choices = list("PC1" = 1, "PC2" = 2, "PC3" = 3), selected = 1)),
+						column(3, selectInput("axe2", label = h4("y-axis"), choices = list("PC1" = 1, "PC2" = 2, "PC3" = 3), selected = 2))
+					),
+					fluidRow( width = 12, plotlyOutput(outputId = "plotly_PCA_gof_2D"))
+				)
 			}else if(input$PCA_gof_choice == 2){
 				fluidRow( width = 12, plotlyOutput(outputId = "table_PCA_gof"))
 			}
@@ -2546,7 +2607,7 @@ server <- function(input, output, session = session) {
 	})
 
 
-	output$plot_PCA_gof <- renderPlotly({
+	output$plotly_PCA_gof_3D <- renderPlotly({
 		fileName = input$results
 		
 		if (is.null(fileName)){
@@ -2555,6 +2616,7 @@ server <- function(input, output, session = session) {
 			untar(fileName$datapath, exdir = getwd())
 			rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
 			
+			nspecies = read.csv(paste(rootName, "/general_infos.txt", sep=''), h=F)
 			coord_PCA_SS = read.table(paste(rootName, "/table_coord_PCA_SS.txt", sep=''), h=T, sep='\t')
 			contrib_PCA_SS = read.table(paste(rootName, "/table_contrib_PCA_SS.txt", sep=''), h=T, sep='\t')
 			eigen = read.table(paste(rootName, "/table_eigenvalues_PCA_SS.txt", sep=''), h=T, sep='\t')
@@ -2565,10 +2627,12 @@ server <- function(input, output, session = session) {
 			observed = which(coord_PCA_SS$origin == 'observed dataset')
 			prior = which(coord_PCA_SS$origin == 'prior')
 			posterior = which(coord_PCA_SS$origin == 'posterior')
-			optimized_posterior1 = which(coord_PCA_SS$origin == 'optimized posterior1')
-#			optimized_posterior2 = which(coord_PCA_SS$origin == 'optimized posterior2')
-#			optimized_posterior3 = which(coord_PCA_SS$origin == 'optimized posterior3')
-#			optimized_posterior3 = which(coord_PCA_SS$origin == 'optimized posterior3')
+		
+			if(nspecies[1,2] == 2){	
+				optimized_posterior = which(coord_PCA_SS$origin == 'optimized posterior1')
+			}else{
+				optimized_posterior = which(coord_PCA_SS$origin == 'optimized posterior3')
+			}
 
 			trace1 <- list(
 				mode = "markers", 
@@ -2592,29 +2656,10 @@ server <- function(input, output, session = session) {
 				mode = "markers", 
 				name = "optimized posterior", 
 				type = "scatter3d", 
-				x = coord_PCA_SS[,1][optimized_posterior1],
-				y = coord_PCA_SS[,2][optimized_posterior1],
-				z = coord_PCA_SS[,3][optimized_posterior1]
+				x = coord_PCA_SS[,1][optimized_posterior],
+				y = coord_PCA_SS[,2][optimized_posterior],
+				z = coord_PCA_SS[,3][optimized_posterior]
 			)
-#			
-#			trace4 <- list(
-#				mode = "markers", 
-#				name = "second parameter optimization", 
-#				type = "scatter3d", 
-#				x = coord_PCA_SS[,1][optimized_posterior2],
-#				y = coord_PCA_SS[,2][optimized_posterior2],
-#				z = coord_PCA_SS[,3][optimized_posterior2]
-#			)
-
-#			trace5 <- list(
-#				mode = "markers", 
-##				name = "third parameter optimization", 
-#				name = "optimized posterior", 
-#				type = "scatter3d", 
-#				x = coord_PCA_SS[,1][optimized_posterior3],
-#				y = coord_PCA_SS[,2][optimized_posterior3],
-#				z = coord_PCA_SS[,3][optimized_posterior3]
-#			)
 
 			trace6 <- list(
 				mode = "markers", 
@@ -2636,45 +2681,125 @@ server <- function(input, output, session = session) {
 				), 
 				title = "PCA of goodness-of-fit (3D)"
 			)
-
+			
 			p <- plot_ly(type = 'scatter', mode = 'markers', width = (0.75*as.numeric(input$dimension[1])), height = 0.65*as.numeric(input$dimension[2])) %>%
 				add_trace( mode=trace1$mode, name=trace1$name, type=trace1$type, x=trace1$x, y=trace1$y, z=trace1$z, marker = list(size = 6, color = rgb(1, 1, 1, 0), line = list(color='darkgray', width=0.1))) %>%
 				add_trace( mode=trace2$mode, name=trace2$name, type=trace2$type, x=trace2$x, y=trace2$y, z=trace2$z, marker = list(size = 8, color = viridis_pal(option='D')(5)[1])) %>%
 				add_trace( mode=trace3$mode, name=trace3$name, type=trace3$type, x=trace3$x, y=trace3$y, z=trace3$z, marker = list(size = 8, color = viridis_pal(option='D')(5)[4])) %>%
-#				add_trace( mode=trace4$mode, name=trace4$name, type=trace4$type, x=trace4$x, y=trace4$y, z=trace4$z, marker = list(size = 8, color = viridis_pal(option='D')(5)[3])) %>%
-#				add_trace( mode=trace5$mode, name=trace5$name, type=trace5$type, x=trace5$x, y=trace5$y, z=trace5$z, marker = list(size = 10, color = viridis_pal(option='D')(5)[4])) %>%
 				add_trace( mode=trace6$mode, name=trace6$name, type=trace6$type, x=trace6$x, y=trace6$y, z=trace6$z, marker = list(size = 10, color = viridis_pal(option='D')(5)[5])) %>%
 				layout( scene=layout$scene, title=layout$title, legend=l, xaxis = list(showticklabels=F, zeroline=F, showline=F, showgrid=F), yaxis = list(showticklabels=F, zeroline=F, showline=F, showgrid=F))
 			return(p)
 	}})
 	
 	
-	output$table_PCA_gof <- renderPlotly({
+	output$plotly_PCA_gof_2D <- renderPlotly({
 		fileName = input$results
 		
 		if (is.null(fileName)){
 			return(NULL)
 		}else{
-			green = "#C7F464"
-			dark_grey = "#1e2b37"
-			light_grey = "#556270"
-			
 			untar(fileName$datapath, exdir = getwd())
 			rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
-			data = read.table( paste(rootName, "/table_contrib_PCA_SS.txt", sep=''), h=T, sep='\t')
-			
-			data = data[ order(data[,1], decreasing=T), ]
+			nspecies = read.csv(paste(rootName, "/general_infos.txt", sep=''), h=F)
+			coord_PCA_SS = read.table(paste(rootName, "/table_coord_PCA_SS.txt", sep=''), h=T, sep='\t')
+			contrib_PCA_SS = read.table(paste(rootName, "/table_contrib_PCA_SS.txt", sep=''), h=T, sep='\t')
+			eigen = read.table(paste(rootName, "/table_eigenvalues_PCA_SS.txt", sep=''), h=T, sep='\t')
 				
-			# delete the untar results
-			system(paste('rm -rf ', rootName, sep=''))
-			
-			x = t(round(data, 2))
-			x = rbind( paste('<b>', rownames(data), '</b>', sep=''), x)
-			p1 <- plot_ly(type = 'table',
-				header = list(values = c('<b>Parameters</b>', '<b>Dim. 1</b>', '<b>Dim. 2</b>', '<b>Dim. 3</b>'), line = list(color = dark_grey), fill = list(color = dark_grey), align = c('left','center'), font = list(color = green, size = 15)),
-				cells = list( values=x, line = list(color = dark_grey), fill = list(color = c(light_grey, 'GhostWhite')), align = c('left','center'), font = list(color = c(green, dark_grey), size = 15)), width = (0.75*as.numeric(input$dimension[1])), height = 0.5*as.numeric(input$dimension[2])
-				#cells = list( values=x, line = list(color = dark_grey), fill = list(color = c(light_grey, 'GhostWhite')), align = c('left','center'), font = list(color = c(green, dark_grey), size = 15))
+			nPoints = 5000	
+			observed = which(coord_PCA_SS$origin == 'observed dataset')
+			prior = sample(which(coord_PCA_SS$origin == 'prior'), nPoints, replace=F)
+			posterior = sample(which(coord_PCA_SS$origin == 'posterior'), nPoints, replace=F)
+
+			if(nspecies[1,2] == 2){	
+				optimized_posterior = sample(which(coord_PCA_SS$origin == 'optimized posterior1'), nPoints, replace=F)
+			}else{
+				optimized_posterior = sample(which(coord_PCA_SS$origin == 'optimized posterior3'), nPoints, replace=F)
+			}
+
+			axe1 = as.numeric(input$axe1)
+			axe2 = as.numeric(input$axe2)
+			trace1 <- list(
+				mode = "markers", 
+				name = "prior", 
+				type = "scatter", 
+				x = coord_PCA_SS[,axe1][prior],
+				y = coord_PCA_SS[,axe2][prior]
 			)
+
+			trace2 <- list(
+				mode = "markers", 
+				name = "posterior", 
+				type = "scatter", 
+				x = coord_PCA_SS[,axe1][posterior],
+				y = coord_PCA_SS[,axe2][posterior]
+			)
+
+			trace3 <- list(
+				mode = "markers", 
+				name = "optimized posterior", 
+				type = "scatter", 
+				x = coord_PCA_SS[,axe1][optimized_posterior],
+				y = coord_PCA_SS[,axe2][optimized_posterior]
+			)
+
+			trace6 <- list(
+				mode = "markers", 
+				name = "observed dataset", 
+				x = coord_PCA_SS[,axe1][observed],
+				y = coord_PCA_SS[,axe2][observed]
+			)
+
+			l <- list( font = list( family = "sans-serif", size = 19 ), orientation = 'v', marker = list( size = c(30,30,30,30,30,30) ))
+
+
+			layout <- list(
+				scene = list(
+					xaxis = list(title = paste("PC",axe1, " (", round(eigen[,2][axe1], 2), "%)", sep=''), showline = T), 
+					yaxis = list(title = paste("PC",axe2, " (", round(eigen[,2][axe2], 2), "%)", sep=''), showline = T)
+				), 
+				title = "PCA of goodness-of-fit (3D)"
+			)
+
+			xaxis = list(title = paste("PC", axe1, " (", round(eigen[,2][axe1], 2), "%)", sep=''), showline = T)
+			yaxis = list(title = paste("PC", axe2, " (", round(eigen[,2][axe2], 2), "%)", sep=''), showline = T)
+
+			#p <- plot_ly(type = 'scatter', mode = 'markers', width = (0.75*as.numeric(input$dimension[1])), height = 0.65*as.numeric(input$dimension[2])) %>%
+			p <- plot_ly(type = 'scatter', mode = 'markers', width = (0.5*as.numeric(input$dimension[1])), height = 0.5*as.numeric(input$dimension[2])) %>%
+				add_trace( mode=trace1$mode, name=trace1$name, type=trace1$type, x=trace1$x, y=trace1$y, marker = list(size = 8, color='darkgray')) %>%
+				add_trace( mode=trace2$mode, name=trace2$name, type=trace2$type, x=trace2$x, y=trace2$y, marker = list(size = 8, color = viridis_pal(option='D')(5)[1])) %>%
+				add_trace( mode=trace3$mode, name=trace3$name, type=trace3$type, x=trace3$x, y=trace3$y, marker = list(size = 8, color = viridis_pal(option='D')(5)[4])) %>%
+				add_trace( mode=trace6$mode, name=trace6$name, type=trace6$type, x=trace6$x, y=trace6$y, marker = list(size = 10, color = viridis_pal(option='D')(5)[5])) %>%
+				layout(xaxis = xaxis, yaxis = yaxis, font = list( family = "sans-serif", size = 19 ))
+
+					return(p)
+			}})
+			
+			output$table_PCA_gof <- renderPlotly({
+				fileName = input$results
+				
+				if (is.null(fileName)){
+					return(NULL)
+				}else{
+					green = "#C7F464"
+					dark_grey = "#1e2b37"
+					light_grey = "#556270"
+					
+					untar(fileName$datapath, exdir = getwd())
+					rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
+					data = read.table( paste(rootName, "/table_contrib_PCA_SS.txt", sep=''), h=T, sep='\t')
+					
+					data = data[ order(data[,1], decreasing=T), ]
+						
+					# delete the untar results
+					system(paste('rm -rf ', rootName, sep=''))
+					
+					x = t(round(data, 2))
+					x = rbind( paste('<b>', rownames(data), '</b>', sep=''), x)
+					p1 <- plot_ly(type = 'table',
+						header = list(values = c('<b>Parameters</b>', '<b>Dim. 1</b>', '<b>Dim. 2</b>', '<b>Dim. 3</b>'), line = list(color = dark_grey), fill = list(color = dark_grey), align = c('left','center'), font = list(color = green, size = 15)),
+						cells = list( values=x, line = list(color = dark_grey), fill = list(color = c(light_grey, 'GhostWhite')), align = c('left','center'), font = list(color = c(green, dark_grey), size = 15)), width = (0.75*as.numeric(input$dimension[1])), height = 0.5*as.numeric(input$dimension[2])
+						#cells = list( values=x, line = list(color = dark_grey), fill = list(color = c(light_grey, 'GhostWhite')), align = c('left','center'), font = list(color = c(green, dark_grey), size = 15))
+					)
 			return( p1 )
 
 	}})
