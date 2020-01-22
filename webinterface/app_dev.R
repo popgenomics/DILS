@@ -1363,10 +1363,53 @@ server <- function(input, output, session = session) {
 				# if number of species == 2
 				tabsetPanel(id = "observed_dataset",
 				type = "tabs",
-				tabPanel("Summarized jSFS", plotlyOutput("plot_obs_stats_sites")),
-				tabPanel("Polymorphism", plotlyOutput("plot_obs_stats_diversity")),
-				tabPanel("Tajima's D", plotlyOutput("plot_obs_stats_tajima")),
-				tabPanel("Differentiation and divergence", plotlyOutput("plot_obs_stats_divergence"))
+				tabPanel("Summarized jSFS",
+					fluidRow(
+						column( width = 12, style='padding:20px;',
+							prettyCheckbox(inputId = "show_points_stats_sites", shape = "round", value = FALSE, label = strong("Show individual loci"), icon = icon("check"), animation = "tada", status = "success", bigger = TRUE)
+							),
+						
+						column( width = 12, style="margin-top:-0.5em",
+							plotlyOutput("plot_obs_stats_sites")
+							)
+						)
+				),
+				
+				tabPanel("Polymorphism",
+					fluidRow(
+						column( width = 12, style='padding:20px;',
+							prettyCheckbox(inputId = "show_points_diversity", shape = "round", value = FALSE, label = strong("Show individual loci"), icon = icon("check"), animation = "tada", status = "success", bigger = TRUE)
+							),
+						
+						column( width = 12, style="margin-top:-0.5em",
+							plotlyOutput("plot_obs_stats_diversity")
+							)
+						)
+				),
+
+				tabPanel("Tajima's D",
+					fluidRow(
+						column( width = 12, style='padding:20px;',
+							prettyCheckbox(inputId = "show_points_Tajima", shape = "round", value = FALSE, label = strong("Show individual loci"), icon = icon("check"), animation = "tada", status = "success", bigger = TRUE)
+							),
+						
+						column( width = 12, style="margin-top:-0.5em",
+							plotlyOutput("plot_obs_stats_tajima")
+							)
+						)
+				),
+				
+				tabPanel("Differentiation and divergence",
+					fluidRow(
+						column( width = 12, style='padding:20px;',
+							prettyCheckbox(inputId = "show_points_divergence", shape = "round", value = FALSE, label = strong("Show individual loci"), icon = icon("check"), animation = "tada", status = "success", bigger = TRUE)
+							),
+						
+						column( width = 12, style="margin-top:-0.5em",
+							plotlyOutput("plot_obs_stats_divergence")
+							)
+						)
+					)
 				)
 			}else{
 				if(users_infos()[1,2]==1){
@@ -3029,7 +3072,13 @@ server <- function(input, output, session = session) {
 		locus_names_sites = rep(locus_spe()$dataset, 4)
 		
 		data_obs_sites = data.frame(statistics_obs_sites, statistics_names_sites, locus_names_sites)
-		graph_sites = plot_ly(data_obs_sites, y=~statistics_obs_sites, x=~statistics_names_sites, color=~statistics_names_sites, type="box", boxpoints="all", text = ~paste0("locus: ", locus_names_sites, "<br>", statistics_obs_sites), hoverinfo="text", width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(4)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )	
+		
+		if(input$show_points_stats_sites == T){
+			graph_sites = plot_ly(data_obs_sites, y=~statistics_obs_sites, x=~statistics_names_sites, color=~statistics_names_sites, type="box", boxpoints="all", text = ~paste0("locus: ", locus_names_sites, "<br>", statistics_obs_sites), hoverinfo="text", width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(4)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
+		}else{
+			graph_sites = plot_ly(data_obs_sites, y=~statistics_obs_sites, x=~statistics_names_sites, color=~statistics_names_sites, type="box", boxpoints="none", width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(4)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
+		}
+		
 		return(graph_sites)
 	})
 	
@@ -3058,7 +3107,12 @@ server <- function(input, output, session = session) {
 		
 		data_obs_diversity = data.frame(statistics_obs_diversity, statistics_names_diversity, locus_names_diversity)
 		
-		graph_diversity = plot_ly(data_obs_diversity, y=~statistics_obs_diversity, x=~statistics_names_diversity, color=~statistics_names_diversity, type="box", boxpoints="all", text = ~paste0("locus: ", locus_names_diversity, "<br>", statistics_obs_diversity), hoverinfo="text", width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(4)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
+		if(input$show_points_diversity == T){
+			graph_diversity = plot_ly(data_obs_diversity, y=~statistics_obs_diversity, x=~statistics_names_diversity, color=~statistics_names_diversity, type="box", boxpoints="all", text = ~paste0("locus: ", locus_names_diversity, "<br>", statistics_obs_diversity), hoverinfo="text", width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(4)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
+		}else{
+			graph_diversity = plot_ly(data_obs_diversity, y=~statistics_obs_diversity, x=~statistics_names_diversity, color=~statistics_names_diversity, type="box", boxpoints="none", width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(4)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
+		}
+		
 		return(graph_diversity)
 	})
 	
@@ -3086,7 +3140,11 @@ server <- function(input, output, session = session) {
 		locus_names_tajima = rep(locus_spe()$dataset, 2)
 		data_obs_tajima = data.frame(statistics_obs_tajima, statistics_names_tajima, locus_names_tajima)
 		
-		graph_tajima = plot_ly(data_obs_tajima, y=~statistics_obs_tajima, x=~statistics_names_tajima, color=~statistics_names_tajima, type="box", boxpoints="all", text = ~paste0("locus: ", locus_names_tajima, "<br>", statistics_obs_tajima), hoverinfo="text", width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(2)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
+		if(input$show_points_Tajima==T){
+			graph_tajima = plot_ly(data_obs_tajima, y=~statistics_obs_tajima, x=~statistics_names_tajima, color=~statistics_names_tajima, type="box", boxpoints="all", text = ~paste0("locus: ", locus_names_tajima, "<br>", statistics_obs_tajima), hoverinfo="text", width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(2)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
+		}else{
+			graph_tajima = plot_ly(data_obs_tajima, y=~statistics_obs_tajima, x=~statistics_names_tajima, color=~statistics_names_tajima, type="box", boxpoints="none", width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(2)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
+		}
 		
 		return(graph_tajima)
 	})
@@ -3117,7 +3175,11 @@ server <- function(input, output, session = session) {
 		locus_names_divergence = rep(locus_spe()$dataset, 3)
 		data_obs_divergence = data.frame(statistics_obs_divergence, statistics_names_divergence, locus_names_divergence)
 		
-		graph_divergence = plot_ly(data_obs_divergence, y=~statistics_obs_divergence, x=~statistics_names_divergence, color=~statistics_names_divergence, type="box", boxpoints="all", text = ~paste0("locus: ", locus_names_divergence, "<br>", statistics_obs_divergence), hoverinfo="text", width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(3)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
+		if(input$show_points_divergence==T){
+			graph_divergence = plot_ly(data_obs_divergence, y=~statistics_obs_divergence, x=~statistics_names_divergence, color=~statistics_names_divergence, type="box", boxpoints="all", text = ~paste0("locus: ", locus_names_divergence, "<br>", statistics_obs_divergence), hoverinfo="text", width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(3)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
+		}else{
+			graph_divergence = plot_ly(data_obs_divergence, y=~statistics_obs_divergence, x=~statistics_names_divergence, color=~statistics_names_divergence, type="box", boxpoints="none", width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(3)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
+		}
 		
 		return(graph_divergence)
 	})
