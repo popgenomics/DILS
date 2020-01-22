@@ -154,14 +154,22 @@ welcome_page <- fluidPage(
 	fluidRow(
 		#box(title = h2("Compared demographic models"), width = 12, solidHeader = TRUE, background = NULL, status = "primary",
 		boxPlus(title = h2("Compared demographic models"), width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
-			mainPanel(width=NULL, htmlOutput("models_picture"),
+			mainPanel(width=NULL, 
+				h3(strong("1 population/species")),
+				htmlOutput("models_picture_1pop"),
+				h3(strong("Constant"), "= single panmictic population of effective size", em("Ne"), "constant over time."),
+				h3(strong("Expansion"), "= the size of the current population has suddenly become larger than in the past", em("Tdem"), "generations ago."),
+				h3(strong("Contraction"), "= the current population experienced a decline in its size", em("Tdem"), "generations ago."),
+				hr(),
 				h3(strong("2 populations/species")),
+				htmlOutput("models_picture_2pop"),
 				h3(strong("SI"), "= strict isolation: subdivision of an ancestral diploid panmictic population (of size Nanc) in two diploid populations (of constant sizes Npop1 and Npop2) at time Tsplit."),
 				h3(strong("AM"), "= ancestral migration: the two newly formed populations continue to exchange alleles until time TAM."),
 				h3(strong("IM"), "= isolation with migration: the two daughter populations continuously exchange alleles until present time."),
 				h3(strong("SC"), "= secondary contact: the daughter populations first evolve in isolation (forward in time), then experience a secondary contact and start exchanging alleles at time TSC. Red phylogenies represent possible gene trees under each alternative model."),
 				hr(),
 				h3(strong("4 populations/species")),
+				htmlOutput("models_picture_4pop"),
 				h3("A single generalist model, declined in 64 sub-models according to if there is one:"),
 				h3("migration (bidirectional) or no migration between A and B, and/or between C and D."),
 				h3("bidirectional, unidirectional or no migration between A and C, and/or between B and D."),
@@ -253,8 +261,17 @@ welcome_page <- fluidPage(
 	),
 	
 #	box(title = h2("Model comparisons for 2 populations/species"), width = 12, solidHeader = TRUE, background = NULL, status = "primary",
+	boxPlus(title = h2("Model comparisons for 1 population"), width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+		htmlOutput("model_comparisons_1pop"),
+		h3(strong("DILS"), "performs hierarchical model comparisons."),
+		h3(strong("1."), "comparison between all models with", strong("current isolation"), "({SI; AM} x {Ne_homo; Ne_hetero} x {M_homo; M_hetero}) versus", strong("ongoing migration"), "({IM; SC} x {Ne_homo; Ne_hetero} x {M_homo; M_hetero})"),
+		h3(strong("2. if current isolation ->"), "comparison between", strong("SI"), "({Ne_homo; Ne_hetero}) versus", strong("AM"), "({Ne_homo; Ne_hetero} x {M_homo; M_hetero})"),
+		h3(strong("2. if ongoing migration ->"), "comparison between", strong("IM"), "({Ne_homo; Ne_hetero} x {M_homo; M_hetero}) versus", strong("SC"), "({Ne_homo; Ne_hetero} x {M_homo; M_hetero})"),
+		h3(strong("3."), "the last step is to determine whether effective size", strong("(Ne)"), "and migration rates", strong("(N.m)"), "are homogeneously or heterogenously distributed in genomes.")
+	),
+	
 	boxPlus(title = h2("Model comparisons for 2 populations/species"), width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
-		htmlOutput("model_comparisons"),
+		htmlOutput("model_comparisons_2pop"),
 		h3(strong("DILS"), "performs hierarchical model comparisons."),
 		h3(strong("1."), "comparison between all models with", strong("current isolation"), "({SI; AM} x {Ne_homo; Ne_hetero} x {M_homo; M_hetero}) versus", strong("ongoing migration"), "({IM; SC} x {Ne_homo; Ne_hetero} x {M_homo; M_hetero})"),
 		h3(strong("2. if current isolation ->"), "comparison between", strong("SI"), "({Ne_homo; Ne_hetero}) versus", strong("AM"), "({Ne_homo; Ne_hetero} x {M_homo; M_hetero})"),
@@ -926,18 +943,42 @@ server <- function(input, output, session = session) {
 		}
 	)
 	
-	output$models_picture <-
+	output$models_picture_1pop <-
 		renderText({
 		c(
-		'<img src=https://raw.githubusercontent.com/popgenomics/ABConline/master/webinterface/pictures_folder/models.png align="middle" height="auto" width="100%" margin="0 auto">'
+		'<img src=https://raw.githubusercontent.com/popgenomics/ABConline/master/webinterface/pictures_folder/models_onePop.png align="middle" height="auto" width="30%" margin="0 auto">'
 		)
 		}
 	)
 	
-	output$model_comparisons <-
+	output$models_picture_2pop <-
 		renderText({
 		c(
-		'<img src=https://raw.githubusercontent.com/popgenomics/ABConline/master/webinterface/pictures_folder/model_comparisons.png align="middle" height="auto" width="100%" margin="0 auto">'
+		'<img src=https://raw.githubusercontent.com/popgenomics/ABConline/master/webinterface/pictures_folder/models_2pops.png align="middle" height="auto" width="30%" margin="0 auto">'
+		)
+		}
+	)
+	
+	output$models_picture_4pop <-
+		renderText({
+		c(
+		'<img src=https://raw.githubusercontent.com/popgenomics/ABConline/master/webinterface/pictures_folder/models_4pops.png align="middle" height="auto" width="50%" margin="0 auto">'
+		)
+		}
+	)
+	
+	output$model_comparisons_1pop <-
+		renderText({
+		c(
+		'<img src=https://raw.githubusercontent.com/popgenomics/ABConline/master/webinterface/pictures_folder/figure_2.png align="middle" height="auto" width="50%" margin="0 auto">'
+		)
+		}
+	)
+	
+	output$model_comparisons_2pop <-
+		renderText({
+		c(
+		'<img src=https://raw.githubusercontent.com/popgenomics/ABConline/master/webinterface/pictures_folder/figure_3.png align="middle" height="auto" width="50%" margin="0 auto">'
 		)
 		}
 	)
@@ -2084,19 +2125,6 @@ server <- function(input, output, session = session) {
 					sfs_name = paste(rootName, "/gof_2/gof_sfs.txt", sep='')
 				}
 				
-#				if( input$posterior_choice == 3){
-#					# if interested by the second optimized posterior
-#					sfs_name = paste(rootName, "/gof_3/gof_sfs.txt", sep='')
-#				}
-#				
-#				if( input$posterior_choice == 4){
-#					# if interested by the third optimized posterior
-#					sfs_name = paste(rootName, "/gof_4/gof_sfs.txt", sep='')
-#				}
-#				if( input$posterior_choice == 2){
-#					# if interested by the third optimized posterior
-#					sfs_name = paste(rootName, "/gof_4/gof_sfs.txt", sep='')
-#				}
 			}
 			
 			table_sfs = read.table(sfs_name, h=T)
@@ -2150,14 +2178,29 @@ server <- function(input, output, session = session) {
 				titlefont=f,
 				tickfont=f2
 			)
-
-			nsamA = length(grep('fA0', names(table_sfs())))
-			sfs_mat = matrix(as.numeric(table_sfs()[1,]), byrow=F, ncol=nsamA)
-			sfs_mat_log10 = log10(sfs_mat)
-			sfs_mat_log10[sfs_mat_log10==-Inf]=NA
-			sfs_mat_log10[1,2]=NA;sfs_mat_log10[2,1]=NA
-			plot_obs = plot_ly(z=sfs_mat_log10, type = "heatmap", colors=rev(viridis_pal(option='D')(100)), width = 0.75*as.numeric(input$dimension[1])/2, height = 0.42*as.numeric(input$dimension[2])) %>% layout(xaxis=xlab, yaxis=ylab, legend=list(orientation = 'h', y=1.05, font=f_legend), hoverlabel = list(font=list(size=20)), annotations = list( text = 'observed jSFS (log10(nSNPs))', font=list(size=22), xanchor = "center", yanchor="bottom", xref="paper", yref="paper", align="center", showarrow=FALSE, x=0.5, y=1), autosize = T, margin = list(l=50, r=50, b=80, t=40, pad=2))
+			
+			nameA = users_infos()[2,2]
+			nameB = users_infos()[3,2]
+			noms=matrix(unlist(strsplit(names(table_sfs()), '_')), byrow=T, ncol=2)
+			dat = data.frame(x=as.numeric(substr(noms[,1], 3, 10)), y=as.numeric(substr(noms[,2], 3, 10)), z=log10(as.numeric(table_sfs()[1,]))) # f(A) // f(B) // nSNPs
+			dat$z[dat$z==-Inf] = NA
+			dat$z[which(dat[,1]==0 & dat[,2]==1 | dat[,1]==1 & dat[,2]==0)] = NA
+			
+			plot_obs = plot_ly(width = 0.75*as.numeric(input$dimension[1])/2, height = 0.42*as.numeric(input$dimension[2]), colors=rev(viridis_pal(option='D')(100))) %>%
+			  layout(autosize = FALSE,
+				legend=list(orientation = 'h', y=1.05, font=f_legend),
+				hoverlabel = list(font=list(size=20, color='#C7F464'), bordercolor='#556270', bgcolor='#556270'),
+				annotations = list( text = 'observed jSFS (log10(nSNPs))', font=list(size=22), xanchor = "center", yanchor="bottom", xref="paper", yref="paper", align="center", showarrow=FALSE, x=0.5, y=1),
+				autosize = T, margin = list(l=50, r=50, b=80, t=40, pad=2),
+				xaxis=xlab, yaxis=ylab) %>%
+			  add_trace(data = dat, x = ~x, y = ~y, z = ~z, type = "heatmap",
+				    hoverinfo = 'text',
+				    text = ~paste(paste(nameA, ': ', sep=''), dat$x,
+						  paste('<br>', nameB, ': ', sep=''), dat$y,
+						  paste('<br>#SNPs: ', 10**dat$z, sep=''))
+				)
 			return(plot_obs)
+
 		}
 	})
 
@@ -2197,12 +2240,27 @@ server <- function(input, output, session = session) {
 				tickfont=f2
 			)
 			
-			nsamA = length(grep('fA0', names(table_sfs())))
-			sfs_mat = matrix(as.numeric(table_sfs()[2,]), byrow=F, ncol=nsamA)
-			sfs_mat_log10 = log10(sfs_mat)
-			sfs_mat_log10[sfs_mat_log10==-Inf]=NA
-			sfs_mat_log10[1,2]=NA;sfs_mat_log10[2,1]=NA
-			plot_exp = plot_ly(z=sfs_mat_log10, type = "heatmap", colors=rev(viridis_pal(option='D')(100)), width = 0.75*as.numeric(input$dimension[1])/2, height = 0.42*as.numeric(input$dimension[2])) %>% layout(xaxis=xlab, yaxis=ylab, legend=list(orientation = 'h', y=1.05, font=f_legend), hoverlabel = list(font=list(size=20)), annotations = list( text = 'expected jSFS (log10(nSNPs))', font=list(size=22), xanchor = "center", yanchor="bottom", xref="paper", yref="paper", align="center", showarrow=FALSE, x=0.5, y=1), autosize = T, margin = list(l=50, r=50, b=80, t=40, pad=2))
+			nameA = users_infos()[2,2]
+			nameB = users_infos()[3,2]
+			noms=matrix(unlist(strsplit(names(table_sfs()), '_')), byrow=T, ncol=2)
+			dat = data.frame(x=as.numeric(substr(noms[,1], 3, 10)), y=as.numeric(substr(noms[,2], 3, 10)), z=log10(as.numeric(table_sfs()[2,]))) # f(A) // f(B) // nSNPs
+			dat$z[dat$z==-Inf] = NA
+			dat$z[which(dat[,1]==0 & dat[,2]==1 | dat[,1]==1 & dat[,2]==0)] = NA
+			
+			plot_exp = plot_ly(width = 0.75*as.numeric(input$dimension[1])/2, height = 0.42*as.numeric(input$dimension[2]), colors=rev(viridis_pal(option='D')(100))) %>%
+			  layout(autosize = FALSE,
+				legend=list(orientation = 'h', y=1.05, font=f_legend),
+				hoverlabel = list(font=list(size=20, color='#C7F464'), bordercolor='#556270', bgcolor='#556270'),
+				annotations = list( text = 'expected jSFS (log10(nSNPs))', font=list(size=22), xanchor = "center", yanchor="bottom", xref="paper", yref="paper", align="center", showarrow=FALSE, x=0.5, y=1),
+				autosize = T, margin = list(l=50, r=50, b=80, t=40, pad=2),
+				xaxis=xlab, yaxis=ylab) %>%
+			  add_trace(data = dat, x = ~x, y = ~y, z = ~z, type = "heatmap",
+				    hoverinfo = 'text',
+				    text = ~paste(paste(nameA, ': ', sep=''), dat$x,
+						  paste('<br>', nameB, ': ', sep=''), dat$y,
+						  paste('<br>#SNPs: ', 10**dat$z, sep=''))
+				)
+			return(plot_exp)
 		}
 	})
 	
@@ -2242,14 +2300,27 @@ server <- function(input, output, session = session) {
 				tickfont=f2
 			)
 			
-			nsamA = length(grep('fA0', names(table_sfs())))
-			tmp = as.numeric(table_sfs()[3,])
-			tmp[which(is.na(table_sfs()[4,]))]=NA
-			sfs_mat = matrix(tmp, byrow=F, ncol=nsamA)
-			sfs_mat[1,1]=NA
-			sfs_mat[2,1]=NA
-			sfs_mat[1,2]=NA
-			plot_diff = plot_ly(z=sfs_mat, type = "heatmap", colors=rev(viridis_pal(option='D')(100)), width = 0.75*as.numeric(input$dimension[1])/2, height = 0.42*as.numeric(input$dimension[2])) %>% layout(xaxis=xlab, yaxis=ylab, legend=list(orientation = 'h', y=1.05, font=f_legend), hoverlabel = list(font=list(size=20)), annotations = list( text = 'expected - observed (nSNPs)', font=list(size=22), xanchor = "center", yanchor="bottom", xref="paper", yref="paper", align="center", showarrow=FALSE, x=0.5, y=1), autosize = T, margin = list(l=50, r=50, b=80, t=40, pad=2))
+			nameA = users_infos()[2,2]
+			nameB = users_infos()[3,2]
+			noms=matrix(unlist(strsplit(names(table_sfs()), '_')), byrow=T, ncol=2)
+			dat = data.frame(x=as.numeric(substr(noms[,1], 3, 10)), y=as.numeric(substr(noms[,2], 3, 10)), z=as.numeric(table_sfs()[3,])) # f(A) // f(B) // nSNPs
+			dat$z[dat$z==-Inf] = NA
+			dat$z[which(dat[,1]==0 & dat[,2]==1 | dat[,1]==1 & dat[,2]==0)] = NA
+			
+			plot_diff = plot_ly(width = 0.75*as.numeric(input$dimension[1])/2, height = 0.42*as.numeric(input$dimension[2]), colors=rev(viridis_pal(option='D')(100))) %>%
+			  layout(autosize = FALSE,
+				legend=list(orientation = 'h', y=1.05, font=f_legend),
+				hoverlabel = list(font=list(size=20, color='#C7F464'), bordercolor='#556270', bgcolor='#556270'),
+				annotations = list( text = 'expected - observed (nSNPs)', font=list(size=22), xanchor = "center", yanchor="bottom", xref="paper", yref="paper", align="center", showarrow=FALSE, x=0.5, y=1),
+				autosize = T, margin = list(l=50, r=50, b=80, t=40, pad=2),
+				xaxis=xlab, yaxis=ylab) %>%
+			  add_trace(data = dat, x = ~x, y = ~y, z = ~z, type = "heatmap",
+				    hoverinfo = 'text',
+				    text = ~paste(paste(nameA, ': ', sep=''), dat$x,
+						  paste('<br>', nameB, ': ', sep=''), dat$y,
+						  paste('<br>#SNPs exp-obs = ', dat$z, sep=''))
+				)
+			return(plot_diff)
 		}
 	})
 	
@@ -2289,10 +2360,27 @@ server <- function(input, output, session = session) {
 				tickfont=f2
 			)
 			
-			nsamA = length(grep('fA0', names(table_sfs())))
-			tmp = as.numeric(table_sfs()[4,])
-			sfs_mat = matrix(tmp, byrow=F, ncol=nsamA)
-			plot_pval = plot_ly(z=sfs_mat, type = "heatmap", colors=rev(viridis_pal(option='D')(100)), width = 0.75*as.numeric(input$dimension[1])/2, height = 0.42*as.numeric(input$dimension[2])) %>% layout(xaxis=xlab, yaxis=ylab, legend=list(orientation = 'h', y=1.05, font=f_legend), hoverlabel = list(font=list(size=20)), annotations = list( text = 'p-Values', font=list(size=22), xanchor = "center", yanchor="bottom", xref="paper", yref="paper", align="center", showarrow=FALSE, x=0.5, y=1), autosize = T, margin = list(l=50, r=50, b=80, t=40, pad=2))
+			nameA = users_infos()[2,2]
+			nameB = users_infos()[3,2]
+			noms=matrix(unlist(strsplit(names(table_sfs()), '_')), byrow=T, ncol=2)
+			dat = data.frame(x=as.numeric(substr(noms[,1], 3, 10)), y=as.numeric(substr(noms[,2], 3, 10)), z=as.numeric(table_sfs()[4,])) # f(A) // f(B) // nSNPs
+			dat$z[dat$z==-Inf] = NA
+			dat$z[which(dat[,1]==0 & dat[,2]==1 | dat[,1]==1 & dat[,2]==0)] = NA
+			
+			plot_diff = plot_ly(width = 0.75*as.numeric(input$dimension[1])/2, height = 0.42*as.numeric(input$dimension[2]), colors=rev(viridis_pal(option='D')(100)), zmin=0, zmax=0.5) %>%
+			  layout(autosize = FALSE,
+				legend=list(orientation = 'h', y=1.05, font=f_legend),
+				hoverlabel = list(font=list(size=20, color='#C7F464'), bordercolor='#556270', bgcolor='#556270'),
+				annotations = list( text = 'p-values', font=list(size=22), xanchor = "center", yanchor="bottom", xref="paper", yref="paper", align="center", showarrow=FALSE, x=0.5, y=1),
+				autosize = T, margin = list(l=50, r=50, b=80, t=40, pad=2),
+				xaxis=xlab, yaxis=ylab) %>%
+			  add_trace(data = dat, x = ~x, y = ~y, z = ~z, type = "heatmap",
+				    hoverinfo = 'text',
+				    text = ~paste(paste(nameA, ': ', sep=''), dat$x,
+						  paste('<br>', nameB, ': ', sep=''), dat$y,
+						  paste('<br>p-value = ', dat$z, sep=''))
+				)
+			return(plot_diff)
 		}
 	})
 	
@@ -2388,7 +2476,7 @@ server <- function(input, output, session = session) {
 				)
 			}else{
 				if(users_infos()[1,2]==1){
-					# if nSpecies == 2
+					# if nSpecies == 1
 					tabsetPanel(
 #						tabPanel("Statistics", selectInput("posterior_choice", label = h4("Select the parameters estimate"), choices = list("Posterior" = 1, "First optimization" = 2, "Second optimization" = 3, "Third optimization" = 4), selected = 1), hr(), uiOutput("display_gof_table")),
 						tabPanel("Statistics", selectInput("posterior_choice", label = h4("Select the parameters estimate"), choices = list("Posterior" = 1, "Optimized posterior" = 2), selected = 1), hr(), uiOutput("display_gof_table")),
@@ -2429,7 +2517,7 @@ server <- function(input, output, session = session) {
 		}else{
 			if(input$PCA_gof_choice == 1){
 				fluidPage(
-					fluidRow( width = 12,  style="margin-top:-3em",
+					fluidRow( width = 12, style="margin-top:-3em",
 						column(3, selectInput("axe1", label = h4("x-axis"), choices = list("PC1" = 1, "PC2" = 2, "PC3" = 3), selected = 1)),
 						column(3, selectInput("axe2", label = h4("y-axis"), choices = list("PC1" = 1, "PC2" = 2, "PC3" = 3), selected = 2))
 					),
@@ -2607,89 +2695,89 @@ server <- function(input, output, session = session) {
 	})
 
 
-	output$plotly_PCA_gof_3D <- renderPlotly({
-		fileName = input$results
-		
-		if (is.null(fileName)){
-			return(NULL)
-		}else{
-			untar(fileName$datapath, exdir = getwd())
-			rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
-			
-			nspecies = read.csv(paste(rootName, "/general_infos.txt", sep=''), h=F)
-			coord_PCA_SS = read.table(paste(rootName, "/table_coord_PCA_SS.txt", sep=''), h=T, sep='\t')
-			contrib_PCA_SS = read.table(paste(rootName, "/table_contrib_PCA_SS.txt", sep=''), h=T, sep='\t')
-			eigen = read.table(paste(rootName, "/table_eigenvalues_PCA_SS.txt", sep=''), h=T, sep='\t')
-				
-			# delete the untar results
-			system(paste('rm -rf ', rootName, sep=''))
-		
-			observed = which(coord_PCA_SS$origin == 'observed dataset')
-			prior = which(coord_PCA_SS$origin == 'prior')
-			posterior = which(coord_PCA_SS$origin == 'posterior')
-		
-			if(nspecies[1,2] == 2){	
-				optimized_posterior = which(coord_PCA_SS$origin == 'optimized posterior1')
-			}else{
-				optimized_posterior = which(coord_PCA_SS$origin == 'optimized posterior3')
-			}
-
-			trace1 <- list(
-				mode = "markers", 
-				name = "prior", 
-				type = "scatter3d", 
-				x = coord_PCA_SS[,1][prior],
-				y = coord_PCA_SS[,2][prior],
-				z = coord_PCA_SS[,3][prior]
-			)
-
-			trace2 <- list(
-				mode = "markers", 
-				name = "posterior", 
-				type = "scatter3d", 
-				x = coord_PCA_SS[,1][posterior],
-				y = coord_PCA_SS[,2][posterior],
-				z = coord_PCA_SS[,3][posterior]
-			)
-			
-			trace3 <- list(
-				mode = "markers", 
-				name = "optimized posterior", 
-				type = "scatter3d", 
-				x = coord_PCA_SS[,1][optimized_posterior],
-				y = coord_PCA_SS[,2][optimized_posterior],
-				z = coord_PCA_SS[,3][optimized_posterior]
-			)
-
-			trace6 <- list(
-				mode = "markers", 
-				name = "observed dataset", 
-				type = "scatter3d",
-				x = coord_PCA_SS[,1][observed],
-				y = coord_PCA_SS[,2][observed],
-				z = coord_PCA_SS[,3][observed]
-			)
-
-			l <- list( font = list( family = "sans-serif", size = 19 ), orientation = 'v', marker = list( size = c(30,30,30,30,30,30) ))
-
-
-			layout <- list(
-				scene = list(
-					xaxis = list(title = paste("PC1 (", round(eigen[,2][1], 2), "%)", sep=''), showline = FALSE), 
-					yaxis = list(title = paste("PC2 (", round(eigen[,2][2], 2), "%)", sep=''), showline = FALSE), 
-					zaxis = list(title = paste("PC3 (", round(eigen[,2][3], 2), "%)", sep=''), showline = FALSE)
-				), 
-				title = "PCA of goodness-of-fit (3D)"
-			)
-			
-			p <- plot_ly(type = 'scatter', mode = 'markers', width = (0.75*as.numeric(input$dimension[1])), height = 0.65*as.numeric(input$dimension[2])) %>%
-				add_trace( mode=trace1$mode, name=trace1$name, type=trace1$type, x=trace1$x, y=trace1$y, z=trace1$z, marker = list(size = 6, color = rgb(1, 1, 1, 0), line = list(color='darkgray', width=0.1))) %>%
-				add_trace( mode=trace2$mode, name=trace2$name, type=trace2$type, x=trace2$x, y=trace2$y, z=trace2$z, marker = list(size = 8, color = viridis_pal(option='D')(5)[1])) %>%
-				add_trace( mode=trace3$mode, name=trace3$name, type=trace3$type, x=trace3$x, y=trace3$y, z=trace3$z, marker = list(size = 8, color = viridis_pal(option='D')(5)[4])) %>%
-				add_trace( mode=trace6$mode, name=trace6$name, type=trace6$type, x=trace6$x, y=trace6$y, z=trace6$z, marker = list(size = 10, color = viridis_pal(option='D')(5)[5])) %>%
-				layout( scene=layout$scene, title=layout$title, legend=l, xaxis = list(showticklabels=F, zeroline=F, showline=F, showgrid=F), yaxis = list(showticklabels=F, zeroline=F, showline=F, showgrid=F))
-			return(p)
-	}})
+#	output$plotly_PCA_gof_3D <- renderPlotly({
+#		fileName = input$results
+#		
+#		if (is.null(fileName)){
+#			return(NULL)
+#		}else{
+#			untar(fileName$datapath, exdir = getwd())
+#			rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
+#			
+#			nspecies = read.csv(paste(rootName, "/general_infos.txt", sep=''), h=F)
+#			coord_PCA_SS = read.table(paste(rootName, "/table_coord_PCA_SS.txt", sep=''), h=T, sep='\t')
+#			contrib_PCA_SS = read.table(paste(rootName, "/table_contrib_PCA_SS.txt", sep=''), h=T, sep='\t')
+#			eigen = read.table(paste(rootName, "/table_eigenvalues_PCA_SS.txt", sep=''), h=T, sep='\t')
+#				
+#			# delete the untar results
+#			system(paste('rm -rf ', rootName, sep=''))
+#		
+#			observed = which(coord_PCA_SS$origin == 'observed dataset')
+#			prior = which(coord_PCA_SS$origin == 'prior')
+#			posterior = which(coord_PCA_SS$origin == 'posterior')
+#		
+#			if(nspecies[1,2] == 2){	
+#				optimized_posterior = which(coord_PCA_SS$origin == 'optimized posterior1')
+#			}else{
+#				optimized_posterior = which(coord_PCA_SS$origin == 'optimized posterior3')
+#			}
+#
+#			trace1 <- list(
+#				mode = "markers", 
+#				name = "prior", 
+#				type = "scatter3d", 
+#				x = coord_PCA_SS[,1][prior],
+#				y = coord_PCA_SS[,2][prior],
+#				z = coord_PCA_SS[,3][prior]
+#			)
+#
+#			trace2 <- list(
+#				mode = "markers", 
+#				name = "posterior", 
+#				type = "scatter3d", 
+#				x = coord_PCA_SS[,1][posterior],
+#				y = coord_PCA_SS[,2][posterior],
+#				z = coord_PCA_SS[,3][posterior]
+#			)
+#			
+#			trace3 <- list(
+#				mode = "markers", 
+#				name = "optimized posterior", 
+#				type = "scatter3d", 
+#				x = coord_PCA_SS[,1][optimized_posterior],
+#				y = coord_PCA_SS[,2][optimized_posterior],
+#				z = coord_PCA_SS[,3][optimized_posterior]
+#			)
+#
+#			trace6 <- list(
+#				mode = "markers", 
+#				name = "observed dataset", 
+#				type = "scatter3d",
+#				x = coord_PCA_SS[,1][observed],
+#				y = coord_PCA_SS[,2][observed],
+#				z = coord_PCA_SS[,3][observed]
+#			)
+#
+#			l <- list( font = list( family = "sans-serif", size = 19 ), orientation = 'v', marker = list( size = c(30,30,30,30,30,30) ))
+#
+#
+#			layout <- list(
+#				scene = list(
+#					xaxis = list(title = paste("PC1 (", round(eigen[,2][1], 2), "%)", sep=''), showline = FALSE), 
+#					yaxis = list(title = paste("PC2 (", round(eigen[,2][2], 2), "%)", sep=''), showline = FALSE), 
+#					zaxis = list(title = paste("PC3 (", round(eigen[,2][3], 2), "%)", sep=''), showline = FALSE)
+#				), 
+#				title = "PCA of goodness-of-fit (3D)"
+#			)
+#			
+#			p <- plot_ly(type = 'scatter', mode = 'markers', width = (0.75*as.numeric(input$dimension[1])), height = 0.65*as.numeric(input$dimension[2])) %>%
+#				add_trace( mode=trace1$mode, name=trace1$name, type=trace1$type, x=trace1$x, y=trace1$y, z=trace1$z, marker = list(size = 6, color = rgb(1, 1, 1, 0), line = list(color='darkgray', width=0.1))) %>%
+#				add_trace( mode=trace2$mode, name=trace2$name, type=trace2$type, x=trace2$x, y=trace2$y, z=trace2$z, marker = list(size = 8, color = viridis_pal(option='D')(5)[1])) %>%
+#				add_trace( mode=trace3$mode, name=trace3$name, type=trace3$type, x=trace3$x, y=trace3$y, z=trace3$z, marker = list(size = 8, color = viridis_pal(option='D')(5)[4])) %>%
+#				add_trace( mode=trace6$mode, name=trace6$name, type=trace6$type, x=trace6$x, y=trace6$y, z=trace6$z, marker = list(size = 10, color = viridis_pal(option='D')(5)[5])) %>%
+#				layout( scene=layout$scene, title=layout$title, legend=l, xaxis = list(showticklabels=F, zeroline=F, showline=F, showgrid=F), yaxis = list(showticklabels=F, zeroline=F, showline=F, showgrid=F))
+#			return(p)
+#	}})
 	
 	
 	output$plotly_PCA_gof_2D <- renderPlotly({
@@ -2751,7 +2839,6 @@ server <- function(input, output, session = session) {
 
 			l <- list( font = list( family = "sans-serif", size = 19 ), orientation = 'v', marker = list( size = c(30,30,30,30,30,30) ))
 
-
 			layout <- list(
 				scene = list(
 					xaxis = list(title = paste("PC",axe1, " (", round(eigen[,2][axe1], 2), "%)", sep=''), showline = T), 
@@ -2765,10 +2852,10 @@ server <- function(input, output, session = session) {
 
 			#p <- plot_ly(type = 'scatter', mode = 'markers', width = (0.75*as.numeric(input$dimension[1])), height = 0.65*as.numeric(input$dimension[2])) %>%
 			p <- plot_ly(type = 'scatter', mode = 'markers', width = (0.5*as.numeric(input$dimension[1])), height = 0.5*as.numeric(input$dimension[2])) %>%
-				add_trace( mode=trace1$mode, name=trace1$name, type=trace1$type, x=trace1$x, y=trace1$y, marker = list(size = 8, color='darkgray')) %>%
-				add_trace( mode=trace2$mode, name=trace2$name, type=trace2$type, x=trace2$x, y=trace2$y, marker = list(size = 8, color = viridis_pal(option='D')(5)[1])) %>%
-				add_trace( mode=trace3$mode, name=trace3$name, type=trace3$type, x=trace3$x, y=trace3$y, marker = list(size = 8, color = viridis_pal(option='D')(5)[4])) %>%
-				add_trace( mode=trace6$mode, name=trace6$name, type=trace6$type, x=trace6$x, y=trace6$y, marker = list(size = 10, color = viridis_pal(option='D')(5)[5])) %>%
+				add_trace(type = 'scatter', mode=trace1$mode, name=trace1$name, type=trace1$type, x=trace1$x, y=trace1$y, marker = list(size = 8, color='darkgray')) %>%
+				add_trace(type = 'scatter', mode=trace2$mode, name=trace2$name, type=trace2$type, x=trace2$x, y=trace2$y, marker = list(size = 8, color = viridis_pal(option='D')(5)[1])) %>%
+				add_trace(type = 'scatter', mode=trace3$mode, name=trace3$name, type=trace3$type, x=trace3$x, y=trace3$y, marker = list(size = 8, color = viridis_pal(option='D')(5)[4])) %>%
+				add_trace(type = 'scatter', mode=trace6$mode, name=trace6$name, type=trace6$type, x=trace6$x, y=trace6$y, marker = list(size = 10, color = viridis_pal(option='D')(5)[5])) %>%
 				layout(xaxis = xaxis, yaxis = yaxis, font = list( family = "sans-serif", size = 19 ))
 
 					return(p)
@@ -2815,7 +2902,7 @@ server <- function(input, output, session = session) {
 				fluidPage(
 					hr(),
 					
-					fluidRow(
+					fluidRow( style="margin-top:-4em",
 						width = 12,
 						column(width=6, offset = 0, style='padding:30px;',
 							plotlyOutput(outputId = "sfs_observed_2pops")
@@ -2825,7 +2912,7 @@ server <- function(input, output, session = session) {
 						)
 					),
 					
-					fluidRow(
+					fluidRow( style="margin-top:-4em",
 						width = 12,
 						column(width=6, offset = 0, style='padding:30px;',
 							plotlyOutput(outputId = "sfs_diff_2pops")
