@@ -137,8 +137,8 @@ convertMenuItem <- function(mi,tabName) {
 # welcome
 welcome_page <- fluidPage(
 	fluidRow(
-		boxPlus(title = h2("Overview"), width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
-			h3(strong("DILS"), "= Demographic Inferences with Linked Selection"),
+		boxPlus(title = h2("Overview"), width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+			h3(strong("DILS"), "= ", strong("D", .noWS='outside'),"emographic ", strong("I", .noWS='outside'), "nferences with ", strong("L", .noWS='outside'), "inked ", strong("S", .noWS='outside'), "election"),
 			h3(strong("DILS"), "is a DNA sequence analysis workflow to study the demographic history of sampled populations or species by using Approximate Bayesian Computations."),
 			h3("From a single uploaded input file containing sequenced genes or DNA fragments,", strong("DILS"), "will:"),
 			h3(strong("1."), "simulate different models/scenarios."),
@@ -146,8 +146,26 @@ welcome_page <- fluidPage(
 			h3(strong("3."), "estimate the parameters of the best model using a", a(span(strong("neural network"), style = "color:teal"), href="https://cran.r-project.org/web/packages/abc/index.html", target="_blank"), "approach."),
 			h3(strong("4."), "measure the robustness of the analyses.", strong("DILS"), "is transparent on the ability of its inferences to reproduce the observed data or not."),
 			hr(),
-			h3("The first goal of", strong("DILS"), "is to distinguish between isolation versus migration models for sister gene pools."),
-			h3("Its ultimate goal is to produce for each studied gene the probability of being associated with a species barrier.")
+			h3("The primary goal of", strong("DILS"), "is to distinguish between isolation versus migration models of divergence between sister gene pools."),
+			h3("Its ultimate goal is to produce for each studied gene the probability of being associated with a species barrier."),
+			hr(),
+			h3("Users with sequences data for a single group of individuals can also investigate alternative models of demographic change by using", strong("DILS", .noWS='outside'), ".")
+		)
+	),
+	
+	fluidRow(
+		#box(title = h2("Compared demographic models"), width = 12, solidHeader = TRUE, background = NULL, status = "primary",
+		boxPlus(title = h2("How to use DILS?"), width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+			mainPanel(width=NULL,
+				h3("DILS is organized into two distinct features that can be seen on the side menu bar:", strong("ABC"), "and", strong("Results visualization"), "."),
+				htmlOutput('overview_DILS_picture'),
+				h3('The ABC feature comprises five tabs:'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;Four to configure the ABC analysis</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;The last to execute from one to five ABC analyses</h3>'),
+
+				h3('In order to run the ABC analysis, it is necessary to validate your choices of configurations by clicking on the', strong('Please check/validate your choices'), 'button at the bottom of the pages: '),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;Upload Data, Data Filtering, Populations/Species and Prior Distributions pages</h3>')
+			)
 		)
 	),
 	
@@ -326,7 +344,9 @@ upload_data <- fluidPage(
 	fluidRow(
 		boxPlus(title = h2("Number of ABC analysis to run"), width = 6, closable = FALSE, status = "danger", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
 		shinyjs::useShinyjs(),
-		selectInput("number_of_ABC", label = h4("1 to 5 ABC analyses can be performed from the same input file"), choices = list("1" = 1, "2" = 2, "3" = 3, "4" = 4, "5" = 5), selected = 1)
+		selectInput("number_of_ABC", label = h4("1 to 5 ABC analyses can be performed from the same input file"), choices = list("1" = 1, "2" = 2, "3" = 3, "4" = 4, "5" = 5), selected = 1),
+		h4('DILS runs freely on a computer server. To avoid saturating it, we have limited the number of analyses carried out at a given time and for a given file to 5.'),
+		h4('Beyond 5, you will have to upload it again whenever you want.')
 	),
 	
 	boxPlus(title = h2("Email address"), width = 6, closable = FALSE, status = "primary", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
@@ -369,13 +389,6 @@ upload_data <- fluidPage(
 		)
 	),
 
-	fluidRow(
-		box("", width = 12, solidHeader = TRUE, status = "info",
-			prettyCheckbox(inputId = "check_upload", shape = "round", value = FALSE,
-			label = strong("Please check/valid your choices"), icon = icon("check"),
-			animation = "tada", status = "success", bigger = TRUE)
-		)
-	),
 
 	fluidRow(
 		boxPlus(
@@ -457,6 +470,14 @@ upload_data <- fluidPage(
 			h3("Only species whose names are specified in the ", strong("Populations/species"), " menu are considered. This does not prevent the uploaded file from containing other species."),
 			br(),
 			h3("Two diploid individuals are sequenced by species/population. This number is obviously allowed to vary between species/populations, according to the sequencing strategy and its success.")
+		),
+
+		fluidRow(
+			box("", width = 12, solidHeader = TRUE, status = "info",
+				prettyCheckbox(inputId = "check_upload", shape = "round", value = FALSE,
+				label = strong("Please check/valid your choices"), icon = icon("check"),
+				animation = "tada", status = "success", bigger = TRUE)
+			)
 		)
 	)
 )
@@ -779,7 +800,7 @@ ui <- dashboardPage(
 
 	dashboardSidebar(
 		sidebarMenu(
-#			style = "position: fixed; overflow: visible; width: auto",
+#			style = "position: fixed; overflow: visible; width: inherit",
 			menuItem(("Welcome"), tabName = "welcome", icon = icon("door-open", class="door-open")),
 
 			menuItem(('ABC'), tabName = "ABC", icon = icon("industry"),
@@ -940,6 +961,12 @@ server <- function(input, output, session = session) {
 		c(
 		'<img src=https://raw.githubusercontent.com/popgenomics/ABConline/master/webinterface/pictures_folder/dag_2pops.pdf.png align="middle" height="auto" width="100%" margin="0 auto">'
 		)
+		}
+	)
+	
+	output$overview_DILS_picture <-
+		renderText({
+			c('<img src=https://github.com/popgenomics/ABConline/blob/master/webinterface/pictures_folder/overview.png?raw=true align="middle" height="auto" width="50%" margin="0 auto">')
 		}
 	)
 	
