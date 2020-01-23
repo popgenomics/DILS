@@ -206,6 +206,7 @@ welcome_page <- fluidPage(
 			# Sidebar panel for inputs
 			column(width=4,
 				# Input: Slider for the number of bins
+				setSliderColor(rep("#556270",10), 1:10),
 				sliderInput(inputId = "Ne", label = h3("Effective population size:"), min = 0, max = 1000000, value = 10000, step=1000),
 				sliderInput(inputId = "alpha", label = h3("Shape parameter #1:"), min = 1, max = 20, value = 10, step=0.1),
 				sliderInput(inputId = "beta", label = h3("Shape parameter #2:"), min = 1, max = 20, value = 3, step=0.1)	
@@ -606,82 +607,15 @@ populations <- fluidPage(
 prior <- fluidPage(
 	fluidRow(
 		column(width = 6,
-			#box(title = h2("Mutation and recombination"), width = NULL, solidHeader = TRUE, status = "primary", height = 250,
-			boxPlus(title = h2("Mutation and recombination"), height = NULL, width = NULL, closable = FALSE, status = "primary", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
-				fluidRow(
-					column(width=5, numericInput("mu", label = h5('Mutation rate'), value = 0.000000003)),
-					column(width=5, numericInput("rho_over_theta", label = h5('Ratio r/µ'), value = 0.1))
-				)
-			),
-			
-			boxPlus(
-				title = "", width = NULL, icon = NULL, solidHeader = TRUE, gradientColor = "teal",
-				boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
-				enable_label = TRUE, label_text = "Informations about mutation and recombination", label_status = "primary",
-				
-				h3("The mutation rate ", strong("(µ)"), "is", strong("the probability per generation and per nucleotide"), "that an allele will not be properly replicated."),
-				h3("If an external group ", strong("is not specified"), "then all genes/contigs/locus share the same µ."),
-				h3("If an external group ", strong("is specified"), "then the local µ, for a locus ", em("i"), " is corrected by ", strong("µ * div_i / div_avg"), " where ", strong("div_i"), " is the local divergence between the ingroup and the outgroup at that locus, and ", strong("div_avg"), " is the divergence averaged over loci"),
-				br(),
-				h3("The r/µ ratio is the ratio of recombination (/bp /generation) over mutation (/bp /generation)."),
-				h3("If the ratio is (unnecessarily) setted to values above 10, simulations will take too long.")
-			),
-			
-			boxPlus(title = h2("Population size"), height = 300, width = NULL, closable = FALSE, status = "danger", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
-				fluidRow(
-					column(width=5, numericInput("N_min", label = h5('min'), value = 100)),
-					column(width=5, numericInput("N_max", label = h5('max'), value = 1000000))
-				)
-			),
-			
-			boxPlus(
-				title = "", width = NULL, icon = NULL, solidHeader = TRUE, gradientColor = "danger",
-				boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
-				enable_label = TRUE, label_text = "Informations about population size", label_status = "danger",
-				
-				h3("The effective population size ", em(strong("Ne")), "is the number of diploid individuals within current and ancestral species/populations."),
-				hr(),
-				h3("In the", strong("ABC"), "simulations,", em(strong("Ne")), "will be drawn from the setted prior distribution independently for all current and ancestral species/populations")
-			)
+			uiOutput("prior_mutation"),
+		
+			uiOutput("prior_Ne")
 		),
 		
 		column(width = 6,
-			boxPlus(title = h2("Time of split"), height = NULL, width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
-				fluidRow(
-					column(width=5, numericInput("Tsplit_min", label = h5('min'), value = 100)),
-					column(width=5, numericInput("Tsplit_max", label = h5('max'), value = 1000000))
-				)
-			),
-
-			boxPlus(
-				title = "", width = NULL, icon = NULL, solidHeader = TRUE, gradientColor = "warning",
-				boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
-				enable_label = TRUE, label_text = "Informations about the time of split", label_status = "warning",
-				
-				h3("The speciation time", strong(em("Tsplit")), "is expressed", strong("in number of generations.")),
-				h3("For annual organisms: one generation = one year."),
-				h3("For perennial organisms: one generation = average age for an individual to transmit a descendant (which is different from the age of sexual maturity)."),
-				br(),
-				h3("The ", em("prior"), " distribution is uniform between", strong(em("Tsplit_min")), "and", strong(em("Tsplit_max."))),
-				h3("For each simulation in the ", strong("SC"), " and ", strong("AM"), " models, the time of secondary contact between lines", strong(em("(Tsc),")), " or old migration stop times", strong(em("(Tam)")), "are drawn uniformly between", strong(em("Tsplit_min")), "and", strong(em("Tsplit_sampled.")))
-			),
+			uiOutput("prior_times"),
 		
-			boxPlus(title = h2("Migration rates"), height = 300, width = NULL, closable = FALSE, status = "success", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
-				fluidRow(
-					column(width=5, numericInput("M_min", label = h5('min'), value = 0.4)),
-					column(width=5, numericInput("M_max", label = h5('max'), value = 20))
-				),
-				fluidRow(
-					column(width=5,	selectInput("modeBarrier", label = h4("Model for barriers"), choices = list("bimodal" = 'bimodal', "beta" = 'beta'), selected = 'bimodal'))
-				)
-			),
-		
-			boxPlus(
-				title = "", width = NULL, icon = NULL, solidHeader = TRUE, gradientColor = NULL,
-				boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
-				enable_label = TRUE, label_text = "Informations about migration rates", label_status = "success",
-				h3("Migration rates are expressed in", strong(em("4.Ne.m,")), "where", strong(em("m")), "is the fraction of each subpopulation made up of new migrants each generation.")
-			)
+			uiOutput("prior_migration")
 		)
 	),
 		
@@ -1534,6 +1468,125 @@ server <- function(input, output, session = session) {
 			)
 		}
 	})
+
+
+	output$prior_mutation <- renderUI({
+		fluidPage(
+			boxPlus(title = h2("Mutation and recombination"), height = NULL, width = NULL, closable = FALSE, status = "primary", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
+				fluidRow(
+					column(width=5, numericInput("mu", label = h5('Mutation rate'), value = 0.000000003)),
+					column(width=5, numericInput("rho_over_theta", label = h5('Ratio r/µ'), value = 0.1))
+				)
+			),
+			
+			boxPlus(
+				title = "", width = NULL, icon = NULL, solidHeader = TRUE, gradientColor = "teal",
+				boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
+				enable_label = TRUE, label_text = "Informations", label_status = "primary",
+				
+				h3("The mutation rate ", strong("(µ)"), "is", strong("the probability per generation and per nucleotide"), "that an allele will not be properly replicated."),
+				h3("If an external group ", strong("is not specified"), "then all genes/contigs/locus share the same µ."),
+				h3("If an external group ", strong("is specified"), "then the local µ, for a locus ", em("i"), " is corrected by ", strong("µ * div_i / div_avg"), " where ", strong("div_i"), " is the local divergence between the ingroup and the outgroup at that locus, and ", strong("div_avg"), " is the divergence averaged over loci"),
+				br(),
+				h3("The r/µ ratio is the ratio of recombination (/bp /generation) over mutation (/bp /generation)."),
+				h3("If the ratio is (unnecessarily) setted to values above 10, simulations will take too long.")
+			)
+		)
+	})
+
+
+	output$prior_Ne <- renderUI({
+		fluidPage(
+			boxPlus(title = h2("Population size"), height = 300, width = NULL, closable = FALSE, status = "danger", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
+				fluidRow(
+					column(width=5, numericInput("N_min", label = h5('min'), value = 100)),
+					column(width=5, numericInput("N_max", label = h5('max'), value = 1000000))
+				)
+			),
+			
+			boxPlus(
+				title = "", width = NULL, icon = NULL, solidHeader = TRUE, gradientColor = "danger",
+				boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
+				enable_label = TRUE, label_text = "Informations", label_status = "danger",
+				
+				h3("The effective population size ", em(strong("Ne")), "is the number of diploid individuals within current and ancestral species/populations."),
+				hr(),
+				h3("In the", strong("ABC"), "simulations,", em(strong("Ne")), "will be drawn from the setted prior distribution independently for all current and ancestral species/populations")
+			)
+
+		)
+	})
+
+
+	output$prior_times <- renderUI({
+		if(input$nspecies==2){
+			fluidPage(
+				boxPlus(title = h2("Time of split"), height = NULL, width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
+					fluidRow(
+						column(width=5, numericInput("Tsplit_min", label = h5('min'), value = 100)),
+						column(width=5, numericInput("Tsplit_max", label = h5('max'), value = 1000000))
+					)
+				),
+
+				boxPlus(
+					title = "", width = NULL, icon = NULL, solidHeader = TRUE, gradientColor = "warning",
+					boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
+					enable_label = TRUE, label_text = "Informations", label_status = "warning",
+					
+					h3("The speciation time", strong(em("Tsplit")), "is expressed", strong("in number of generations.")),
+					h3("For annual organisms: one generation = one year."),
+					h3("For perennial organisms: one generation = average age for an individual to transmit a descendant (which is different from the age of sexual maturity)."),
+					br(),
+					h3("The ", em("prior"), " distribution is uniform between", strong(em("Tsplit_min")), "and", strong(em("Tsplit_max."))),
+					h3("For each simulation in the ", strong("SC"), " and ", strong("AM"), " models, the time of secondary contact between lines", strong(em("(Tsc),")), " or old migration stop times", strong(em("(Tam)")), "are drawn uniformly between", strong(em("Tsplit_min")), "and", strong(em("Tsplit_sampled.")))
+				)
+			)
+		}else{
+			fluidPage(
+				boxPlus(title = h2("Time of demographic change"), height = NULL, width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
+					fluidRow(
+						column(width=5, numericInput("Tsplit_min", label = h5('min'), value = 100)),
+						column(width=5, numericInput("Tsplit_max", label = h5('max'), value = 1000000))
+					)
+				),
+
+				boxPlus(
+					title = "", width = NULL, icon = NULL, solidHeader = TRUE, gradientColor = "warning",
+					boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
+					enable_label = TRUE, label_text = "Informations", label_status = "warning",
+					
+					h3("The time of demographic change", strong(em("Tdem")), "is expressed", strong("in number of generations.")),
+					h3("For annual organisms: one generation = one year."),
+					h3("For perennial organisms: one generation = average age for an individual to transmit a descendant (which is different from the age of sexual maturity)."),
+					h3("It represents the number of generations since population expansion or contraction.")
+				)
+			)
+		}
+	})
+
+	output$prior_migration <- renderUI({
+		if(input$nspecies==2){
+			fluidPage(
+				boxPlus(title = h2("Migration rates"), height = 300, width = NULL, closable = FALSE, status = "success", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
+					fluidRow(
+						column(width=5, numericInput("M_min", label = h5('min'), value = 0.4)),
+						column(width=5, numericInput("M_max", label = h5('max'), value = 20))
+					),
+					fluidRow(
+						column(width=5,	selectInput("modeBarrier", label = h4("Model for barriers"), choices = list("bimodal" = 'bimodal', "beta" = 'beta'), selected = 'bimodal'))
+					)
+				),
+			
+				boxPlus(
+					title = "", width = NULL, icon = NULL, solidHeader = TRUE, gradientColor = NULL,
+					boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
+					enable_label = TRUE, label_text = "Informations", label_status = "success",
+					h3("Migration rates are expressed in", strong(em("4.Ne.m,")), "where", strong(em("m")), "is the fraction of each subpopulation made up of new migrants each generation.")
+				)
+			)
+		}
+	})
+
 
 	output$output_posterior_2pops <- renderUI({
 		fileName = input$results
