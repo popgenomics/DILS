@@ -141,15 +141,15 @@ welcome_page <- fluidPage(
 			h3(strong("DILS"), "= ", strong("D", .noWS='outside'),"emographic ", strong("I", .noWS='outside'), "nferences with ", strong("L", .noWS='outside'), "inked ", strong("S", .noWS='outside'), "election"),
 			h3(strong("DILS"), "is a DNA sequence analysis workflow to study the demographic history of sampled populations or species by using Approximate Bayesian Computations."),
 			h3("From a single uploaded input file containing sequenced genes or DNA fragments,", strong("DILS"), "will:"),
-			h3(strong("1."), "simulate different models/scenarios."),
-			h3(strong("2."), "select the best model using an ABC approach based on", a(span(strong("random forests."), style = "color:teal"), href="https://cran.r-project.org/web/packages/abcrf/index.html", target="_blank")),
-			h3(strong("3."), "estimate the parameters of the best model using a", a(span(strong("neural network"), style = "color:teal"), href="https://cran.r-project.org/web/packages/abc/index.html", target="_blank"), "approach."),
-			h3(strong("4."), "measure the robustness of the analyses.", strong("DILS"), "is transparent on the ability of its inferences to reproduce the observed data or not."),
+			HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>1.</b> simulate different models/scenarios</h3>'),
+			HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>2.</b> select the best model using an ABC approach based on <a href="https://cran.r-project.org/web/packages/abcrf/index.html" target="_blank"><font color="#c7f464"><b>random forests</b></font></a></h3>'),
+			HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>3.</b> estimate the parameters of the best model using a <a href="https://cran.r-project.org/web/packages/abc/index.html" target="_blank"><font color="#c7f464"><b>neural network</b></font></a> approach</h3>'),
+			HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>4.</b>measure the robustness of the analyses <b>DILS</b> is transparent on the ability of its inferences to reproduce the observed data or not</h3>'),
 			hr(),
 			h3("The primary goal of", strong("DILS"), "is to distinguish between isolation versus migration models of divergence between sister gene pools."),
 			h3("Its ultimate goal is to produce for each studied gene the probability of being associated with a species barrier."),
 			hr(),
-			h3("Users with sequences data for a single group of individuals can also investigate alternative models of demographic change by using", strong("DILS", .noWS='outside'), ".")
+			h3("Users with sequences data for a single group of individuals can also investigate alternative models of demographic change by using", strong(" DILS", .noWS='outside'), ".")
 		)
 	),
 	
@@ -157,14 +157,19 @@ welcome_page <- fluidPage(
 		#box(title = h2("Compared demographic models"), width = 12, solidHeader = TRUE, background = NULL, status = "primary",
 		boxPlus(title = h2("How to use DILS?"), width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
 			mainPanel(width=NULL,
-				h3("DILS is organized into two distinct features that can be seen on the side menu bar:", strong("ABC"), "and", strong("Results visualization"), "."),
+				HTML('<h3>DILS is organized into two distinct features that can be seen on the side menu bar: <font color="#c7f464"><b>ABC</b></font> and <font color="#c7f464"><b>Results visualization</b></font>.</h3>'),
 				htmlOutput('overview_DILS_picture'),
-				h3('The ABC feature comprises five tabs:'),
-				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;Four to configure the ABC analysis</h3>'),
-				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;The last to execute from one to five ABC analyses</h3>'),
-
-				h3('In order to run the ABC analysis, it is necessary to validate your choices of configurations by clicking on the', strong('Please check/validate your choices'), 'button at the bottom of the pages: '),
-				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;Upload Data, Data Filtering, Populations/Species and Prior Distributions pages</h3>')
+				HTML('<h3>The <b>ABC</b> feature comprises five tabs:</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Four to configure the ABC analysis (<i class="fas fa-cloud-upload-alt"></i>Upload Data, <i class="fas fa-bath"></i>Data Filtering, <i class="fas fa-users-cog"></i>Populations/Species and <i class="fas fa-dice"></i>Prior Distributions)</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The last to execute from one to five ABC analyses (<i class="fas fa-microchip"></i>Run ABC)</h3>'),
+				
+				HTML('<h3>DILS requires a single input file whose format details are given in <i class="fas fa-industry"></i> / <i class="fas fa-cloud-upload-alt"></i></h3>'),
+				HTML('<h3>In order to run the ABC analysis, it is necessary to validate your choices of configurations by clicking on the <font color="#c7f464"><b>Please check/validate your choices</b></font> button at the bottom of the four configuration pages</h3>'),
+				HTML('<br><h3>The <b>Results visualization</b> feature comprises three tabs:</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To upload and preview the archive produced by DILS after the ABC analysis (<i class="fas fa-cloud-upload-alt"></i>Upload results)</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To explore the <b>observed summary statistics</b> from the genomic data and the results of the <b>demographic inferences</b> obtained by the ABC (<i class="fas fa-lock"></i>User&#39s dataset)</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To compare the results with previous analysis (<i class="fas fa-lock-open"></i>Collaborative science)</h3>')
+				
 			)
 		)
 	),
@@ -2267,7 +2272,7 @@ server <- function(input, output, session = session) {
 				    hoverinfo = 'text',
 				    text = ~paste(paste(nameA, ': ', sep=''), dat$x,
 						  paste('<br>', nameB, ': ', sep=''), dat$y,
-						  paste('<br>#SNPs: ', 10**dat$z, sep=''))
+						  paste('<br>number of observed SNPs: ', 10**dat$z, sep=''))
 				)
 			return(plot_obs)
 
@@ -2328,7 +2333,7 @@ server <- function(input, output, session = session) {
 				    hoverinfo = 'text',
 				    text = ~paste(paste(nameA, ': ', sep=''), dat$x,
 						  paste('<br>', nameB, ': ', sep=''), dat$y,
-						  paste('<br>#SNPs: ', 10**dat$z, sep=''))
+						  paste('<br>number of expected SNPs: ', 10**dat$z, sep=''))
 				)
 			return(plot_exp)
 		}
@@ -2388,7 +2393,7 @@ server <- function(input, output, session = session) {
 				    hoverinfo = 'text',
 				    text = ~paste(paste(nameA, ': ', sep=''), dat$x,
 						  paste('<br>', nameB, ': ', sep=''), dat$y,
-						  paste('<br>#SNPs exp-obs = ', dat$z, sep=''))
+						  paste('<br>exp-obs = ', dat$z, sep=''))
 				)
 			return(plot_diff)
 		}
