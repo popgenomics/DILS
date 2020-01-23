@@ -83,17 +83,22 @@ if( writeDistribution==TRUE){
 
 	# sub sample the stats in order to reduce the size
 	finalSize = 10000
+	if( nrow(prior_ss) > finalSize ){
+		sub_prior = sample(1:nrow(prior_ss), finalSize, replace=F)
+		prior_ss = prior_ss[sub_prior, ]
+		prior_sfs = prior_sfs[sub_prior, ]
+	}
+
 	if( nrow(gof1_ss) > finalSize ){
-		gof1_ss = gof1_ss[sample(1:nrow(gof1_ss), finalSize, replace=F), ]
+		sub_gof1 = sample(1:nrow(gof1_ss), finalSize, replace=F)
+		gof1_ss = gof1_ss[sub_gof1, ]
+		gof1_sfs = gof1_sfs[sub_gof1, ]
 	}
+	
 	if( nrow(gof2_ss) > finalSize ){
-		gof2_ss = gof2_ss[sample(1:nrow(gof2_ss), finalSize, replace=F), ]
-	}
-	if( nrow(gof1_sfs) > finalSize ){
-		gof1_sfs = gof1_sfs[sample(1:nrow(gof1_sfs), finalSize, replace=F), ]
-	}
-	if( nrow(gof2_sfs) > finalSize ){
-		gof2_sfs = gof2_sfs[sample(1:nrow(gof2_sfs), finalSize, replace=F), ]
+		sub_gof2 = sample(1:nrow(gof2_ss), finalSize, replace=F)
+		gof2_ss = gof2_ss[sub_gof2, ]
+		gof2_sfs = gof2_sfs[sub_gof2, ]
 	}
 	
 	# observation
