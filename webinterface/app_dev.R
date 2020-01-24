@@ -206,7 +206,8 @@ welcome_page <- fluidPage(
 			# Sidebar panel for inputs
 			column(width=4,
 				# Input: Slider for the number of bins
-				setSliderColor(rep("#556270",10), 1:10),
+				chooseSliderSkin("HTML5", color = "#c7f464"),
+			#	setSliderColor(rep("#556270",10), 1:10),
 				sliderInput(inputId = "Ne", label = h3("Effective population size:"), min = 0, max = 1000000, value = 10000, step=1000),
 				sliderInput(inputId = "alpha", label = h3("Shape parameter #1:"), min = 1, max = 20, value = 10, step=0.1),
 				sliderInput(inputId = "beta", label = h3("Shape parameter #2:"), min = 1, max = 20, value = 3, step=0.1)	
@@ -377,7 +378,23 @@ upload_data <- fluidPage(
 	),	
 	
 	fluidRow(align="left",
-		boxPlus(title = h2("Expected input file's format"), width = 6, closable = FALSE, status = "success", solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+		boxPlus(title = h2("Information extracted from the uploaded file"), width = 6, closable = FALSE, status = "success", solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
+			uiOutput("upload")
+		),
+		
+		boxPlus("", width = 6, solidHeader = TRUE, status = "info",
+			prettyCheckbox(inputId = "check_upload", shape = "round", value = FALSE,
+			label = strong("Please check/valid your choices"), icon = icon("check"),
+			animation = "tada", status = "success", bigger = TRUE)
+		)
+	),
+
+
+	fluidRow(
+		boxPlus(
+			title = h2("Input file format"), width = 12, icon = NULL, solidHeader = TRUE, background = NULL,
+			boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
+			enable_label = TRUE, label_text = "CLICK TO DISPLAY AN EXAMPLE OF INPUT FILE", label_status = "success",
 			h3(strong("Fasta file")),
 			h3("A single fasta file containing all sequences obtained from all populations/species, and for all genes is the only inputfile to upload."),
 			h3("Even sequences obtained from non-studied species can be included in the file. The user will specify the names of the species to consider after the upload ."),
@@ -387,20 +404,8 @@ upload_data <- fluidPage(
 			h3(strong(">gene|species or population|individual|allele1 or allele2")),
 			h3(strong("GTGATGCGTGTAGTCATG")),
 			h3("With missing data only encoded by 'N'"),
-			br()
-		),
-		
-		boxPlus(title = h2("Informations about the uploaded file"), width = 6, closable = FALSE, status = "success", solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
-			uiOutput("upload")
-		)
-	),
-
-
-	fluidRow(
-		boxPlus(
-			title = h2("Example"), width = 12, icon = NULL, solidHeader = TRUE, background = NULL,
-			boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
-			enable_label = TRUE, label_text = "CLICK TO DISPLAY AN EXAMPLE OF INPUT FILE", label_status = "success",
+			br(),
+			h3(strong("Example:")),
 			p(">Hmel210004_196|chi|chi.CJ560|allele1"),
 			p("NNNNNNNGGCCAGTATTATCTACGCACGTGTTAGACACCTCNACTGGTCAGCCAGGAAGTGGAATTTTCGTCGAATTATACAAA"),
 			p(">Hmel210004_196|chi|chi.CJ560|allele2"),
@@ -463,27 +468,11 @@ upload_data <- fluidPage(
 			p("NGANATGAAAACNTTTGTATCAAGTGTGTTACGGCGATTTCGTCTAGAAGCTGTAACNAAGCCATCTGATCTGGTCTTCCGCACTGATATTNTATTGCGAACTATGGGACAACCAATTTACGTNAAATTTCACANNAGAAAATAA"),
 			p(">Hmel219015_26|num|nu_sil.MJ09-4184|allele2"),
 			p("NGANATTAAAACNTTTGTATCAATTCTGTTGAGGCGATTTCGTCTAGAAGCTGTAACNAAGCCATCTGATCTGGTCTTTCGCACTGATATTNTATTACGAACTATTGGACAACCAGTGTACGTNAAATTTCACANNAGAAAATAA"),
-			p("etc ...")
-		),
-	
-		boxPlus(
-			title = h2("Description of the example"), width = 12, icon = NULL, solidHeader = TRUE, gradientColor = "success",
-			boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
-			enable_label = TRUE, label_text = "CLICK TO DISPLAY THE DESCRIPTION OF EXPECTED INPUT FILE", label_status = "success",
-			h3("Two genes are displayed from this file, they are named: ", strong("Hmel210004_196"), " and", strong("Hmel219015_26.")),
-			br(),
-			h3("Four populations are present in this file, named: ", strong("chi, flo, ros and num.")),
+			p("etc ..."),
+			h3("Two genes are displayed in this example, they are named: ", strong("Hmel210004_196"), " and", strong("Hmel219015_26.")),
+			h3("Four populations are present in this example, named: ", strong("chi, flo, ros and num.")),
 			h3("Only species whose names are specified in the ", strong("Populations/species"), " menu are considered. This does not prevent the uploaded file from containing other species."),
-			br(),
-			h3("Two diploid individuals are sequenced by species/population. This number is obviously allowed to vary between species/populations, according to the sequencing strategy and its success.")
-		),
-
-		fluidRow(
-			box("", width = 12, solidHeader = TRUE, status = "info",
-				prettyCheckbox(inputId = "check_upload", shape = "round", value = FALSE,
-				label = strong("Please check/valid your choices"), icon = icon("check"),
-				animation = "tada", status = "success", bigger = TRUE)
-			)
+			h3("Two diploid individuals are sequenced for each species/population of this example, but, this number is obviously allowed to vary between species/populations, according to the sequencing strategy and its success.")
 		)
 	)
 )
