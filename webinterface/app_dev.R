@@ -472,7 +472,7 @@ upload_data <- fluidPage(
 			h3("Two genes are displayed in this example, they are named: ", strong("Hmel210004_196"), " and", strong("Hmel219015_26.")),
 			h3("Four populations are present in this example, named: ", strong("chi, flo, ros and num.")),
 			h3("Only species whose names are specified in the ", strong("Populations/species"), " menu are considered. This does not prevent the uploaded file from containing other species."),
-			h3("Two diploid individuals are sequenced for each species/population of this example, but, this number is obviously allowed to vary between species/populations, according to the sequencing strategy and its success.")
+			h3("Two diploid individuals are sequenced for each species/population of this example, but this number is obviously allowed to vary between species/populations, according to the sequencing strategy and its success.")
 		)
 	)
 )
@@ -2753,9 +2753,6 @@ server <- function(input, output, session = session) {
 
 			p1 <- plot_ly(type = 'scatter', mode = 'markers', width = (0.75*as.numeric(input$dimension[1])), height = 0.5*as.numeric(input$dimension[2])) %>%
 				add_trace( mode=trace1$mode, name=trace1$name, type=trace1$type, x=trace1$x, y=trace1$y, z=trace1$z, marker = list(size = 10, color = viridis_pal(option='D')(5)[1]), alpha=0.8) %>%
-#				add_trace( mode=trace2$mode, name=trace2$name, type=trace2$type, x=trace2$x, y=trace2$y, z=trace2$z, marker = list(size = 11, color = viridis_pal(option='D')(5)[2])) %>%
-#				add_trace( mode=trace3$mode, name=trace3$name, type=trace3$type, x=trace3$x, y=trace3$y, z=trace3$z, marker = list(size = 11, color = viridis_pal(option='D')(5)[3])) %>%
-#				add_trace( mode=trace4$mode, name=trace4$name, type=trace4$type, x=trace4$x, y=trace4$y, z=trace4$z, marker = list(size = 11, color = viridis_pal(option='D')(5)[4])) %>%
 				add_trace( mode=trace2$mode, name=trace2$name, type=trace2$type, x=trace2$x, y=trace2$y, z=trace2$z, marker = list(size = 11, color = viridis_pal(option='D')(5)[4])) %>%
 				layout( scene=layout$scene, title=layout$title, legend=l, xaxis = list(showticklabels=F, zeroline=F, showline=F, showgrid=F), yaxis = list(showticklabels=F, zeroline=F, showline=F, showgrid=F), legend=list(size=12) )
 			
@@ -2811,91 +2808,6 @@ server <- function(input, output, session = session) {
 		}
 	})
 
-
-#	output$plotly_PCA_gof_3D <- renderPlotly({
-#		fileName = input$results
-#		
-#		if (is.null(fileName)){
-#			return(NULL)
-#		}else{
-#			untar(fileName$datapath, exdir = getwd())
-#			rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
-#			
-#			nspecies = read.csv(paste(rootName, "/general_infos.txt", sep=''), h=F)
-#			coord_PCA_SS = read.table(paste(rootName, "/table_coord_PCA_SS.txt", sep=''), h=T, sep='\t')
-#			contrib_PCA_SS = read.table(paste(rootName, "/table_contrib_PCA_SS.txt", sep=''), h=T, sep='\t')
-#			eigen = read.table(paste(rootName, "/table_eigenvalues_PCA_SS.txt", sep=''), h=T, sep='\t')
-#				
-#			# delete the untar results
-#			system(paste('rm -rf ', rootName, sep=''))
-#		
-#			observed = which(coord_PCA_SS$origin == 'observed dataset')
-#			prior = which(coord_PCA_SS$origin == 'prior')
-#			posterior = which(coord_PCA_SS$origin == 'posterior')
-#		
-#			if(nspecies[1,2] == 2){	
-#				optimized_posterior = which(coord_PCA_SS$origin == 'optimized posterior1')
-#			}else{
-#				optimized_posterior = which(coord_PCA_SS$origin == 'optimized posterior3')
-#			}
-#
-#			trace1 <- list(
-#				mode = "markers", 
-#				name = "prior", 
-#				type = "scatter3d", 
-#				x = coord_PCA_SS[,1][prior],
-#				y = coord_PCA_SS[,2][prior],
-#				z = coord_PCA_SS[,3][prior]
-#			)
-#
-#			trace2 <- list(
-#				mode = "markers", 
-#				name = "posterior", 
-#				type = "scatter3d", 
-#				x = coord_PCA_SS[,1][posterior],
-#				y = coord_PCA_SS[,2][posterior],
-#				z = coord_PCA_SS[,3][posterior]
-#			)
-#			
-#			trace3 <- list(
-#				mode = "markers", 
-#				name = "optimized posterior", 
-#				type = "scatter3d", 
-#				x = coord_PCA_SS[,1][optimized_posterior],
-#				y = coord_PCA_SS[,2][optimized_posterior],
-#				z = coord_PCA_SS[,3][optimized_posterior]
-#			)
-#
-#			trace6 <- list(
-#				mode = "markers", 
-#				name = "observed dataset", 
-#				type = "scatter3d",
-#				x = coord_PCA_SS[,1][observed],
-#				y = coord_PCA_SS[,2][observed],
-#				z = coord_PCA_SS[,3][observed]
-#			)
-#
-#			l <- list( font = list( family = "sans-serif", size = 19 ), orientation = 'v', marker = list( size = c(30,30,30,30,30,30) ))
-#
-#
-#			layout <- list(
-#				scene = list(
-#					xaxis = list(title = paste("PC1 (", round(eigen[,2][1], 2), "%)", sep=''), showline = FALSE), 
-#					yaxis = list(title = paste("PC2 (", round(eigen[,2][2], 2), "%)", sep=''), showline = FALSE), 
-#					zaxis = list(title = paste("PC3 (", round(eigen[,2][3], 2), "%)", sep=''), showline = FALSE)
-#				), 
-#				title = "PCA of goodness-of-fit (3D)"
-#			)
-#			
-#			p <- plot_ly(type = 'scatter', mode = 'markers', width = (0.75*as.numeric(input$dimension[1])), height = 0.65*as.numeric(input$dimension[2])) %>%
-#				add_trace( mode=trace1$mode, name=trace1$name, type=trace1$type, x=trace1$x, y=trace1$y, z=trace1$z, marker = list(size = 6, color = rgb(1, 1, 1, 0), line = list(color='darkgray', width=0.1))) %>%
-#				add_trace( mode=trace2$mode, name=trace2$name, type=trace2$type, x=trace2$x, y=trace2$y, z=trace2$z, marker = list(size = 8, color = viridis_pal(option='D')(5)[1])) %>%
-#				add_trace( mode=trace3$mode, name=trace3$name, type=trace3$type, x=trace3$x, y=trace3$y, z=trace3$z, marker = list(size = 8, color = viridis_pal(option='D')(5)[4])) %>%
-#				add_trace( mode=trace6$mode, name=trace6$name, type=trace6$type, x=trace6$x, y=trace6$y, z=trace6$z, marker = list(size = 10, color = viridis_pal(option='D')(5)[5])) %>%
-#				layout( scene=layout$scene, title=layout$title, legend=l, xaxis = list(showticklabels=F, zeroline=F, showline=F, showgrid=F), yaxis = list(showticklabels=F, zeroline=F, showline=F, showgrid=F))
-#			return(p)
-#	}})
-	
 	
 	output$plotly_PCA_gof_2D <- renderPlotly({
 		fileName = input$results
