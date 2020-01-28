@@ -137,17 +137,40 @@ convertMenuItem <- function(mi,tabName) {
 # welcome
 welcome_page <- fluidPage(
 	fluidRow(
-		boxPlus(title = h2("Overview"), width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
-			h3(strong("DILS"), "= Demographic Inferences with Linked Selection"),
+		boxPlus(title = h2("Overview"), width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+			h3(strong("DILS"), "= ", strong("D", .noWS='outside'),"emographic ", strong("I", .noWS='outside'), "nferences with ", strong("L", .noWS='outside'), "inked ", strong("S", .noWS='outside'), "election"),
 			h3(strong("DILS"), "is a DNA sequence analysis workflow to study the demographic history of sampled populations or species by using Approximate Bayesian Computations."),
 			h3("From a single uploaded input file containing sequenced genes or DNA fragments,", strong("DILS"), "will:"),
-			h3(strong("1."), "simulate different models/scenarios."),
-			h3(strong("2."), "select the best model using an ABC approach based on", a(span(strong("random forests."), style = "color:teal"), href="https://cran.r-project.org/web/packages/abcrf/index.html", target="_blank")),
-			h3(strong("3."), "estimate the parameters of the best model using a", a(span(strong("neural network"), style = "color:teal"), href="https://cran.r-project.org/web/packages/abc/index.html", target="_blank"), "approach."),
-			h3(strong("4."), "measure the robustness of the analyses.", strong("DILS"), "is transparent on the ability of its inferences to reproduce the observed data or not."),
+			HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>1.</b> simulate different models/scenarios</h3>'),
+			HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>2.</b> select the best model using an ABC approach based on <a href="https://cran.r-project.org/web/packages/abcrf/index.html" target="_blank"><font color="#c7f464"><b>random forests</b></font></a></h3>'),
+			HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>3.</b> estimate the parameters of the best model using a <a href="https://cran.r-project.org/web/packages/abc/index.html" target="_blank"><font color="#c7f464"><b>neural network</b></font></a> approach</h3>'),
+			HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>4.</b>measure the robustness of the analyses <b>DILS</b> is transparent on the ability of its inferences to reproduce the observed data or not</h3>'),
 			hr(),
-			h3("The first goal of", strong("DILS"), "is to distinguish between isolation versus migration models for sister gene pools."),
-			h3("Its ultimate goal is to produce for each studied gene the probability of being associated with a species barrier.")
+			h3("The primary goal of", strong("DILS"), "is to distinguish between isolation versus migration models of divergence between sister gene pools."),
+			h3("Its ultimate goal is to produce for each studied gene the probability of being associated with a species barrier."),
+			hr(),
+			h3("Users with sequences data for a single group of individuals can also investigate alternative models of demographic change by using", strong(" DILS", .noWS='outside'), ".")
+		)
+	),
+	
+	fluidRow(
+		#box(title = h2("Compared demographic models"), width = 12, solidHeader = TRUE, background = NULL, status = "primary",
+		boxPlus(title = h2("How to use DILS?"), width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+			mainPanel(width=NULL,
+				HTML('<h3>DILS is organized into two distinct features that can be seen on the side menu bar: <font color="#c7f464"><b>ABC</b></font> and <font color="#c7f464"><b>Results visualization</b></font>.</h3>'),
+				htmlOutput('overview_DILS_picture'),
+				HTML('<h3>The <b>ABC</b> feature comprises five tabs:</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Four to configure the ABC analysis (<i class="fas fa-cloud-upload-alt"></i>Upload Data, <i class="fas fa-bath"></i>Data Filtering, <i class="fas fa-users-cog"></i>Populations/Species and <i class="fas fa-dice"></i>Prior Distributions)</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The last to execute from one to five ABC analyses (<i class="fas fa-microchip"></i>Run ABC)</h3>'),
+				
+				HTML('<h3>DILS requires a single input file whose format details are given in <i class="fas fa-industry"></i> / <i class="fas fa-cloud-upload-alt"></i></h3>'),
+				HTML('<h3>In order to run the ABC analysis, it is necessary to validate your choices of configurations by clicking on the <font color="#c7f464"><b>Please check/validate your choices</b></font> button at the bottom of the four configuration pages</h3>'),
+				HTML('<br><h3>The <b>Results visualization</b> feature comprises three tabs:</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To upload and preview the archive produced by DILS after the ABC analysis (<i class="fas fa-cloud-upload-alt"></i>Upload results)</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To explore the <b>observed summary statistics</b> from the genomic data and the results of the <b>demographic inferences</b> obtained by the ABC (<i class="fas fa-lock"></i>User&#39s dataset)</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To compare the results with previous analysis (<i class="fas fa-lock-open"></i>Collaborative science)</h3>')
+				
+			)
 		)
 	),
 	
@@ -183,6 +206,8 @@ welcome_page <- fluidPage(
 			# Sidebar panel for inputs
 			column(width=4,
 				# Input: Slider for the number of bins
+				chooseSliderSkin("HTML5", color = "#c7f464"),
+			#	setSliderColor(rep("#556270",10), 1:10),
 				sliderInput(inputId = "Ne", label = h3("Effective population size:"), min = 0, max = 1000000, value = 10000, step=1000),
 				sliderInput(inputId = "alpha", label = h3("Shape parameter #1:"), min = 1, max = 20, value = 10, step=0.1),
 				sliderInput(inputId = "beta", label = h3("Shape parameter #2:"), min = 1, max = 20, value = 3, step=0.1)	
@@ -326,7 +351,9 @@ upload_data <- fluidPage(
 	fluidRow(
 		boxPlus(title = h2("Number of ABC analysis to run"), width = 6, closable = FALSE, status = "danger", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
 		shinyjs::useShinyjs(),
-		selectInput("number_of_ABC", label = h4("1 to 5 ABC analyses can be performed from the same input file"), choices = list("1" = 1, "2" = 2, "3" = 3, "4" = 4, "5" = 5), selected = 1)
+		selectInput("number_of_ABC", label = h4("1 to 5 ABC analyses can be performed from the same input file"), choices = list("1" = 1, "2" = 2, "3" = 3, "4" = 4, "5" = 5), selected = 1),
+		h4('DILS runs freely on a computer server. To avoid saturating it, we have limited the number of analyses carried out at a given time and for a given file to 5.'),
+		h4('Beyond 5, you will have to upload it again whenever you want.')
 	),
 	
 	boxPlus(title = h2("Email address"), width = 6, closable = FALSE, status = "primary", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
@@ -351,7 +378,23 @@ upload_data <- fluidPage(
 	),	
 	
 	fluidRow(align="left",
-		boxPlus(title = h2("Expected input file's format"), width = 6, closable = FALSE, status = "success", solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+		boxPlus(title = h2("Information extracted from the uploaded file"), width = 6, closable = FALSE, status = "success", solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
+			uiOutput("upload")
+		),
+		
+		boxPlus("", width = 6, solidHeader = TRUE, status = "info",
+			prettyCheckbox(inputId = "check_upload", shape = "round", value = FALSE,
+			label = strong("Please check/valid your choices"), icon = icon("check"),
+			animation = "tada", status = "success", bigger = TRUE)
+		)
+	),
+
+
+	fluidRow(
+		boxPlus(
+			title = h2("Input file format"), width = 12, icon = NULL, solidHeader = TRUE, background = NULL,
+			boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
+			enable_label = TRUE, label_text = "CLICK TO DISPLAY AN EXAMPLE OF INPUT FILE", label_status = "success",
 			h3(strong("Fasta file")),
 			h3("A single fasta file containing all sequences obtained from all populations/species, and for all genes is the only inputfile to upload."),
 			h3("Even sequences obtained from non-studied species can be included in the file. The user will specify the names of the species to consider after the upload ."),
@@ -361,27 +404,8 @@ upload_data <- fluidPage(
 			h3(strong(">gene|species or population|individual|allele1 or allele2")),
 			h3(strong("GTGATGCGTGTAGTCATG")),
 			h3("With missing data only encoded by 'N'"),
-			br()
-		),
-		
-		boxPlus(title = h2("Informations about the uploaded file"), width = 6, closable = FALSE, status = "success", solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
-			uiOutput("upload")
-		)
-	),
-
-	fluidRow(
-		box("", width = 12, solidHeader = TRUE, status = "info",
-			prettyCheckbox(inputId = "check_upload", shape = "round", value = FALSE,
-			label = strong("Please check/valid your choices"), icon = icon("check"),
-			animation = "tada", status = "success", bigger = TRUE)
-		)
-	),
-
-	fluidRow(
-		boxPlus(
-			title = h2("Example"), width = 12, icon = NULL, solidHeader = TRUE, background = NULL,
-			boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
-			enable_label = TRUE, label_text = "CLICK TO DISPLAY AN EXAMPLE OF INPUT FILE", label_status = "success",
+			br(),
+			h3(strong("Example:")),
 			p(">Hmel210004_196|chi|chi.CJ560|allele1"),
 			p("NNNNNNNGGCCAGTATTATCTACGCACGTGTTAGACACCTCNACTGGTCAGCCAGGAAGTGGAATTTTCGTCGAATTATACAAA"),
 			p(">Hmel210004_196|chi|chi.CJ560|allele2"),
@@ -444,19 +468,11 @@ upload_data <- fluidPage(
 			p("NGANATGAAAACNTTTGTATCAAGTGTGTTACGGCGATTTCGTCTAGAAGCTGTAACNAAGCCATCTGATCTGGTCTTCCGCACTGATATTNTATTGCGAACTATGGGACAACCAATTTACGTNAAATTTCACANNAGAAAATAA"),
 			p(">Hmel219015_26|num|nu_sil.MJ09-4184|allele2"),
 			p("NGANATTAAAACNTTTGTATCAATTCTGTTGAGGCGATTTCGTCTAGAAGCTGTAACNAAGCCATCTGATCTGGTCTTTCGCACTGATATTNTATTACGAACTATTGGACAACCAGTGTACGTNAAATTTCACANNAGAAAATAA"),
-			p("etc ...")
-		),
-	
-		boxPlus(
-			title = h2("Description of the example"), width = 12, icon = NULL, solidHeader = TRUE, gradientColor = "success",
-			boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
-			enable_label = TRUE, label_text = "CLICK TO DISPLAY THE DESCRIPTION OF EXPECTED INPUT FILE", label_status = "success",
-			h3("Two genes are displayed from this file, they are named: ", strong("Hmel210004_196"), " and", strong("Hmel219015_26.")),
-			br(),
-			h3("Four populations are present in this file, named: ", strong("chi, flo, ros and num.")),
+			p("etc ..."),
+			h3("Two genes are displayed in this example, they are named: ", strong("Hmel210004_196"), " and", strong("Hmel219015_26.")),
+			h3("Four populations are present in this example, named: ", strong("chi, flo, ros and num.")),
 			h3("Only species whose names are specified in the ", strong("Populations/species"), " menu are considered. This does not prevent the uploaded file from containing other species."),
-			br(),
-			h3("Two diploid individuals are sequenced by species/population. This number is obviously allowed to vary between species/populations, according to the sequencing strategy and its success.")
+			h3("Two diploid individuals are sequenced for each species/population of this example, but this number is obviously allowed to vary between species/populations, according to the sequencing strategy and its success.")
 		)
 	)
 )
@@ -580,82 +596,15 @@ populations <- fluidPage(
 prior <- fluidPage(
 	fluidRow(
 		column(width = 6,
-			#box(title = h2("Mutation and recombination"), width = NULL, solidHeader = TRUE, status = "primary", height = 250,
-			boxPlus(title = h2("Mutation and recombination"), height = NULL, width = NULL, closable = FALSE, status = "primary", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
-				fluidRow(
-					column(width=5, numericInput("mu", label = h5('Mutation rate'), value = 0.000000003)),
-					column(width=5, numericInput("rho_over_theta", label = h5('Ratio r/µ'), value = 0.1))
-				)
-			),
-			
-			boxPlus(
-				title = "", width = NULL, icon = NULL, solidHeader = TRUE, gradientColor = "teal",
-				boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
-				enable_label = TRUE, label_text = "Informations about mutation and recombination", label_status = "primary",
-				
-				h3("The mutation rate ", strong("(µ)"), "is", strong("the probability per generation and per nucleotide"), "that an allele will not be properly replicated."),
-				h3("If an external group ", strong("is not specified"), "then all genes/contigs/locus share the same µ."),
-				h3("If an external group ", strong("is specified"), "then the local µ, for a locus ", em("i"), " is corrected by ", strong("µ * div_i / div_avg"), " where ", strong("div_i"), " is the local divergence between the ingroup and the outgroup at that locus, and ", strong("div_avg"), " is the divergence averaged over loci"),
-				br(),
-				h3("The r/µ ratio is the ratio of recombination (/bp /generation) over mutation (/bp /generation)."),
-				h3("If the ratio is (unnecessarily) setted to values above 10, simulations will take too long.")
-			),
-			
-			boxPlus(title = h2("Population size"), height = 300, width = NULL, closable = FALSE, status = "danger", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
-				fluidRow(
-					column(width=5, numericInput("N_min", label = h5('min'), value = 100)),
-					column(width=5, numericInput("N_max", label = h5('max'), value = 1000000))
-				)
-			),
-			
-			boxPlus(
-				title = "", width = NULL, icon = NULL, solidHeader = TRUE, gradientColor = "danger",
-				boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
-				enable_label = TRUE, label_text = "Informations about population size", label_status = "danger",
-				
-				h3("The effective population size ", em(strong("Ne")), "is the number of diploid individuals within current and ancestral species/populations."),
-				hr(),
-				h3("In the", strong("ABC"), "simulations,", em(strong("Ne")), "will be drawn from the setted prior distribution independently for all current and ancestral species/populations")
-			)
+			uiOutput("prior_mutation"),
+		
+			uiOutput("prior_Ne")
 		),
 		
 		column(width = 6,
-			boxPlus(title = h2("Time of split"), height = NULL, width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
-				fluidRow(
-					column(width=5, numericInput("Tsplit_min", label = h5('min'), value = 100)),
-					column(width=5, numericInput("Tsplit_max", label = h5('max'), value = 1000000))
-				)
-			),
-
-			boxPlus(
-				title = "", width = NULL, icon = NULL, solidHeader = TRUE, gradientColor = "warning",
-				boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
-				enable_label = TRUE, label_text = "Informations about the time of split", label_status = "warning",
-				
-				h3("The speciation time", strong(em("Tsplit")), "is expressed", strong("in number of generations.")),
-				h3("For annual organisms: one generation = one year."),
-				h3("For perennial organisms: one generation = average age for an individual to transmit a descendant (which is different from the age of sexual maturity)."),
-				br(),
-				h3("The ", em("prior"), " distribution is uniform between", strong(em("Tsplit_min")), "and", strong(em("Tsplit_max."))),
-				h3("For each simulation in the ", strong("SC"), " and ", strong("AM"), " models, the time of secondary contact between lines", strong(em("(Tsc),")), " or old migration stop times", strong(em("(Tam)")), "are drawn uniformly between", strong(em("Tsplit_min")), "and", strong(em("Tsplit_sampled.")))
-			),
+			uiOutput("prior_times"),
 		
-			boxPlus(title = h2("Migration rates"), height = 300, width = NULL, closable = FALSE, status = "success", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
-				fluidRow(
-					column(width=5, numericInput("M_min", label = h5('min'), value = 0.4)),
-					column(width=5, numericInput("M_max", label = h5('max'), value = 20))
-				),
-				fluidRow(
-					column(width=5,	selectInput("modeBarrier", label = h4("Model for barriers"), choices = list("bimodal" = 'bimodal', "beta" = 'beta'), selected = 'bimodal'))
-				)
-			),
-		
-			boxPlus(
-				title = "", width = NULL, icon = NULL, solidHeader = TRUE, gradientColor = NULL,
-				boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
-				enable_label = TRUE, label_text = "Informations about migration rates", label_status = "success",
-				h3("Migration rates are expressed in", strong(em("4.Ne.m,")), "where", strong(em("m")), "is the fraction of each subpopulation made up of new migrants each generation.")
-			)
+			uiOutput("prior_migration")
 		)
 	),
 		
@@ -779,7 +728,7 @@ ui <- dashboardPage(
 
 	dashboardSidebar(
 		sidebarMenu(
-#			style = "position: fixed; overflow: visible; width: auto",
+#			style = "position: fixed; overflow: visible; width: inherit",
 			menuItem(("Welcome"), tabName = "welcome", icon = icon("door-open", class="door-open")),
 
 			menuItem(('ABC'), tabName = "ABC", icon = icon("industry"),
@@ -940,6 +889,12 @@ server <- function(input, output, session = session) {
 		c(
 		'<img src=https://raw.githubusercontent.com/popgenomics/ABConline/master/webinterface/pictures_folder/dag_2pops.pdf.png align="middle" height="auto" width="100%" margin="0 auto">'
 		)
+		}
+	)
+	
+	output$overview_DILS_picture <-
+		renderText({
+			c('<img src=https://github.com/popgenomics/ABConline/blob/master/webinterface/pictures_folder/overview.png?raw=true align="middle" height="auto" width="50%" margin="0 auto">')
 		}
 	)
 	
@@ -1502,6 +1457,125 @@ server <- function(input, output, session = session) {
 			)
 		}
 	})
+
+
+	output$prior_mutation <- renderUI({
+		fluidPage(
+			boxPlus(title = h2("Mutation and recombination"), height = NULL, width = NULL, closable = FALSE, status = "primary", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
+				fluidRow(
+					column(width=5, numericInput("mu", label = h5('Mutation rate'), value = 0.000000003)),
+					column(width=5, numericInput("rho_over_theta", label = h5('Ratio r/µ'), value = 0.1))
+				)
+			),
+			
+			boxPlus(
+				title = "", width = NULL, icon = NULL, solidHeader = TRUE, gradientColor = "teal",
+				boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
+				enable_label = TRUE, label_text = "Informations", label_status = "primary",
+				
+				h3("The mutation rate ", strong("(µ)"), "is", strong("the probability per generation and per nucleotide"), "that an allele will not be properly replicated."),
+				h3("If an external group ", strong("is not specified"), "then all genes/contigs/locus share the same µ."),
+				h3("If an external group ", strong("is specified"), "then the local µ, for a locus ", em("i"), " is corrected by ", strong("µ * div_i / div_avg"), " where ", strong("div_i"), " is the local divergence between the ingroup and the outgroup at that locus, and ", strong("div_avg"), " is the divergence averaged over loci"),
+				br(),
+				h3("The r/µ ratio is the ratio of recombination (/bp /generation) over mutation (/bp /generation)."),
+				h3("If the ratio is (unnecessarily) setted to values above 10, simulations will take too long.")
+			)
+		)
+	})
+
+
+	output$prior_Ne <- renderUI({
+		fluidPage(
+			boxPlus(title = h2("Population size"), height = 300, width = NULL, closable = FALSE, status = "danger", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
+				fluidRow(
+					column(width=5, numericInput("N_min", label = h5('min'), value = 100)),
+					column(width=5, numericInput("N_max", label = h5('max'), value = 1000000))
+				)
+			),
+			
+			boxPlus(
+				title = "", width = NULL, icon = NULL, solidHeader = TRUE, gradientColor = "danger",
+				boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
+				enable_label = TRUE, label_text = "Informations", label_status = "danger",
+				
+				h3("The effective population size ", em(strong("Ne")), "is the number of diploid individuals within current and ancestral species/populations."),
+				hr(),
+				h3("In the", strong("ABC"), "simulations,", em(strong("Ne")), "will be drawn from the setted prior distribution independently for all current and ancestral species/populations")
+			)
+
+		)
+	})
+
+
+	output$prior_times <- renderUI({
+		if(input$nspecies==2){
+			fluidPage(
+				boxPlus(title = h2("Time of split"), height = NULL, width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
+					fluidRow(
+						column(width=5, numericInput("Tsplit_min", label = h5('min'), value = 100)),
+						column(width=5, numericInput("Tsplit_max", label = h5('max'), value = 1000000))
+					)
+				),
+
+				boxPlus(
+					title = "", width = NULL, icon = NULL, solidHeader = TRUE, gradientColor = "warning",
+					boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
+					enable_label = TRUE, label_text = "Informations", label_status = "warning",
+					
+					h3("The speciation time", strong(em("Tsplit")), "is expressed", strong("in number of generations.")),
+					h3("For annual organisms: one generation = one year."),
+					h3("For perennial organisms: one generation = average age for an individual to transmit a descendant (which is different from the age of sexual maturity)."),
+					br(),
+					h3("The ", em("prior"), " distribution is uniform between", strong(em("Tsplit_min")), "and", strong(em("Tsplit_max."))),
+					h3("For each simulation in the ", strong("SC"), " and ", strong("AM"), " models, the time of secondary contact between lines", strong(em("(Tsc),")), " or old migration stop times", strong(em("(Tam)")), "are drawn uniformly between", strong(em("Tsplit_min")), "and", strong(em("Tsplit_sampled.")))
+				)
+			)
+		}else{
+			fluidPage(
+				boxPlus(title = h2("Time of demographic change"), height = NULL, width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
+					fluidRow(
+						column(width=5, numericInput("Tsplit_min", label = h5('min'), value = 100)),
+						column(width=5, numericInput("Tsplit_max", label = h5('max'), value = 1000000))
+					)
+				),
+
+				boxPlus(
+					title = "", width = NULL, icon = NULL, solidHeader = TRUE, gradientColor = "warning",
+					boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
+					enable_label = TRUE, label_text = "Informations", label_status = "warning",
+					
+					h3("The time of demographic change", strong(em("Tdem")), "is expressed", strong("in number of generations.")),
+					h3("For annual organisms: one generation = one year."),
+					h3("For perennial organisms: one generation = average age for an individual to transmit a descendant (which is different from the age of sexual maturity)."),
+					h3("It represents the number of generations since population expansion or contraction.")
+				)
+			)
+		}
+	})
+
+	output$prior_migration <- renderUI({
+		if(input$nspecies==2){
+			fluidPage(
+				boxPlus(title = h2("Migration rates"), height = 300, width = NULL, closable = FALSE, status = "success", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
+					fluidRow(
+						column(width=5, numericInput("M_min", label = h5('min'), value = 0.4)),
+						column(width=5, numericInput("M_max", label = h5('max'), value = 20))
+					),
+					fluidRow(
+						column(width=5,	selectInput("modeBarrier", label = h4("Model for barriers"), choices = list("bimodal" = 'bimodal', "beta" = 'beta'), selected = 'bimodal'))
+					)
+				),
+			
+				boxPlus(
+					title = "", width = NULL, icon = NULL, solidHeader = TRUE, gradientColor = NULL,
+					boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
+					enable_label = TRUE, label_text = "Informations", label_status = "success",
+					h3("Migration rates are expressed in", strong(em("4.Ne.m,")), "where", strong(em("m")), "is the fraction of each subpopulation made up of new migrants each generation.")
+				)
+			)
+		}
+	})
+
 
 	output$output_posterior_2pops <- renderUI({
 		fileName = input$results
@@ -2240,7 +2314,7 @@ server <- function(input, output, session = session) {
 				    hoverinfo = 'text',
 				    text = ~paste(paste(nameA, ': ', sep=''), dat$x,
 						  paste('<br>', nameB, ': ', sep=''), dat$y,
-						  paste('<br>#SNPs: ', 10**dat$z, sep=''))
+						  paste('<br>number of observed SNPs: ', 10**dat$z, sep=''))
 				)
 			return(plot_obs)
 
@@ -2301,7 +2375,7 @@ server <- function(input, output, session = session) {
 				    hoverinfo = 'text',
 				    text = ~paste(paste(nameA, ': ', sep=''), dat$x,
 						  paste('<br>', nameB, ': ', sep=''), dat$y,
-						  paste('<br>#SNPs: ', 10**dat$z, sep=''))
+						  paste('<br>number of expected SNPs: ', 10**dat$z, sep=''))
 				)
 			return(plot_exp)
 		}
@@ -2361,7 +2435,7 @@ server <- function(input, output, session = session) {
 				    hoverinfo = 'text',
 				    text = ~paste(paste(nameA, ': ', sep=''), dat$x,
 						  paste('<br>', nameB, ': ', sep=''), dat$y,
-						  paste('<br>#SNPs exp-obs = ', dat$z, sep=''))
+						  paste('<br>exp-obs = ', dat$z, sep=''))
 				)
 			return(plot_diff)
 		}
@@ -2679,9 +2753,6 @@ server <- function(input, output, session = session) {
 
 			p1 <- plot_ly(type = 'scatter', mode = 'markers', width = (0.75*as.numeric(input$dimension[1])), height = 0.5*as.numeric(input$dimension[2])) %>%
 				add_trace( mode=trace1$mode, name=trace1$name, type=trace1$type, x=trace1$x, y=trace1$y, z=trace1$z, marker = list(size = 10, color = viridis_pal(option='D')(5)[1]), alpha=0.8) %>%
-#				add_trace( mode=trace2$mode, name=trace2$name, type=trace2$type, x=trace2$x, y=trace2$y, z=trace2$z, marker = list(size = 11, color = viridis_pal(option='D')(5)[2])) %>%
-#				add_trace( mode=trace3$mode, name=trace3$name, type=trace3$type, x=trace3$x, y=trace3$y, z=trace3$z, marker = list(size = 11, color = viridis_pal(option='D')(5)[3])) %>%
-#				add_trace( mode=trace4$mode, name=trace4$name, type=trace4$type, x=trace4$x, y=trace4$y, z=trace4$z, marker = list(size = 11, color = viridis_pal(option='D')(5)[4])) %>%
 				add_trace( mode=trace2$mode, name=trace2$name, type=trace2$type, x=trace2$x, y=trace2$y, z=trace2$z, marker = list(size = 11, color = viridis_pal(option='D')(5)[4])) %>%
 				layout( scene=layout$scene, title=layout$title, legend=l, xaxis = list(showticklabels=F, zeroline=F, showline=F, showgrid=F), yaxis = list(showticklabels=F, zeroline=F, showline=F, showgrid=F), legend=list(size=12) )
 			
@@ -2737,91 +2808,6 @@ server <- function(input, output, session = session) {
 		}
 	})
 
-
-#	output$plotly_PCA_gof_3D <- renderPlotly({
-#		fileName = input$results
-#		
-#		if (is.null(fileName)){
-#			return(NULL)
-#		}else{
-#			untar(fileName$datapath, exdir = getwd())
-#			rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
-#			
-#			nspecies = read.csv(paste(rootName, "/general_infos.txt", sep=''), h=F)
-#			coord_PCA_SS = read.table(paste(rootName, "/table_coord_PCA_SS.txt", sep=''), h=T, sep='\t')
-#			contrib_PCA_SS = read.table(paste(rootName, "/table_contrib_PCA_SS.txt", sep=''), h=T, sep='\t')
-#			eigen = read.table(paste(rootName, "/table_eigenvalues_PCA_SS.txt", sep=''), h=T, sep='\t')
-#				
-#			# delete the untar results
-#			system(paste('rm -rf ', rootName, sep=''))
-#		
-#			observed = which(coord_PCA_SS$origin == 'observed dataset')
-#			prior = which(coord_PCA_SS$origin == 'prior')
-#			posterior = which(coord_PCA_SS$origin == 'posterior')
-#		
-#			if(nspecies[1,2] == 2){	
-#				optimized_posterior = which(coord_PCA_SS$origin == 'optimized posterior1')
-#			}else{
-#				optimized_posterior = which(coord_PCA_SS$origin == 'optimized posterior3')
-#			}
-#
-#			trace1 <- list(
-#				mode = "markers", 
-#				name = "prior", 
-#				type = "scatter3d", 
-#				x = coord_PCA_SS[,1][prior],
-#				y = coord_PCA_SS[,2][prior],
-#				z = coord_PCA_SS[,3][prior]
-#			)
-#
-#			trace2 <- list(
-#				mode = "markers", 
-#				name = "posterior", 
-#				type = "scatter3d", 
-#				x = coord_PCA_SS[,1][posterior],
-#				y = coord_PCA_SS[,2][posterior],
-#				z = coord_PCA_SS[,3][posterior]
-#			)
-#			
-#			trace3 <- list(
-#				mode = "markers", 
-#				name = "optimized posterior", 
-#				type = "scatter3d", 
-#				x = coord_PCA_SS[,1][optimized_posterior],
-#				y = coord_PCA_SS[,2][optimized_posterior],
-#				z = coord_PCA_SS[,3][optimized_posterior]
-#			)
-#
-#			trace6 <- list(
-#				mode = "markers", 
-#				name = "observed dataset", 
-#				type = "scatter3d",
-#				x = coord_PCA_SS[,1][observed],
-#				y = coord_PCA_SS[,2][observed],
-#				z = coord_PCA_SS[,3][observed]
-#			)
-#
-#			l <- list( font = list( family = "sans-serif", size = 19 ), orientation = 'v', marker = list( size = c(30,30,30,30,30,30) ))
-#
-#
-#			layout <- list(
-#				scene = list(
-#					xaxis = list(title = paste("PC1 (", round(eigen[,2][1], 2), "%)", sep=''), showline = FALSE), 
-#					yaxis = list(title = paste("PC2 (", round(eigen[,2][2], 2), "%)", sep=''), showline = FALSE), 
-#					zaxis = list(title = paste("PC3 (", round(eigen[,2][3], 2), "%)", sep=''), showline = FALSE)
-#				), 
-#				title = "PCA of goodness-of-fit (3D)"
-#			)
-#			
-#			p <- plot_ly(type = 'scatter', mode = 'markers', width = (0.75*as.numeric(input$dimension[1])), height = 0.65*as.numeric(input$dimension[2])) %>%
-#				add_trace( mode=trace1$mode, name=trace1$name, type=trace1$type, x=trace1$x, y=trace1$y, z=trace1$z, marker = list(size = 6, color = rgb(1, 1, 1, 0), line = list(color='darkgray', width=0.1))) %>%
-#				add_trace( mode=trace2$mode, name=trace2$name, type=trace2$type, x=trace2$x, y=trace2$y, z=trace2$z, marker = list(size = 8, color = viridis_pal(option='D')(5)[1])) %>%
-#				add_trace( mode=trace3$mode, name=trace3$name, type=trace3$type, x=trace3$x, y=trace3$y, z=trace3$z, marker = list(size = 8, color = viridis_pal(option='D')(5)[4])) %>%
-#				add_trace( mode=trace6$mode, name=trace6$name, type=trace6$type, x=trace6$x, y=trace6$y, z=trace6$z, marker = list(size = 10, color = viridis_pal(option='D')(5)[5])) %>%
-#				layout( scene=layout$scene, title=layout$title, legend=l, xaxis = list(showticklabels=F, zeroline=F, showline=F, showgrid=F), yaxis = list(showticklabels=F, zeroline=F, showline=F, showgrid=F))
-#			return(p)
-#	}})
-	
 	
 	output$plotly_PCA_gof_2D <- renderPlotly({
 		fileName = input$results
