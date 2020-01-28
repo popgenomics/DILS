@@ -324,6 +324,16 @@ get_posterior<-function(nameA, nSubdir, sub_dir_sim, model, sub_dir_model, nPost
 	toRemove = unique(toRemove)
 
 
+	### write the prior
+	nPoints = 10000
+	nPrior = nrow(params_sim)
+	if(nPrior>nPoints){
+		write.table(params_sim[sample(1:nrow(params_sim), nPoints, replace=F),], paste(timeStamp, '/', sub_dir_sim, '/priorfile.txt', sep=''), col.names=T, row.names=F, quote=F, sep='\t')
+	}else{
+		write.table(params_sim, paste(timeStamp, '/', sub_dir_sim, '/priorfile.txt', sep=''), col.names=T, row.names=F, quote=F, sep='\t')
+	}
+	
+
 	##############
 	# inferences
 	target_rf = data.frame(obs_ss, obs_sfs) 

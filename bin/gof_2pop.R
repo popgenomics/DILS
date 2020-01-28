@@ -62,8 +62,6 @@ pvalue = function(distribution, obs){
 if( writeDistribution==TRUE){
 
 	### Summary Stats
-#	prior_ss = gof1_ss = gof2_ss = gof3_ss = gof4_ss = NULL
-#	prior_sfs = gof1_sfs = gof2_sfs = gof3_sfs = gof4_sfs = NULL
 	prior_ss = gof1_ss = gof2_ss = NULL
 	prior_sfs = gof1_sfs = gof2_sfs = NULL
 	
@@ -72,17 +70,13 @@ if( writeDistribution==TRUE){
 		prior_ss = rbind(prior_ss, read.table(paste(timeStamp, '/best_model/best_model_', i, '/ABCstat.txt', sep=''), h=T))
 		gof1_ss = rbind(gof1_ss, read.table(paste(timeStamp, '/gof/gof_', i, '/ABCstat.txt', sep=''), h=T))
 		gof2_ss = rbind(gof2_ss, read.table(paste(timeStamp, '/gof_2/gof_', i, '/ABCstat.txt', sep=''), h=T))
-#		gof3_ss = rbind(gof3_ss, read.table(paste(timeStamp, '/gof_3/gof_', i, '/ABCstat.txt', sep=''), h=T))
-#		gof4_ss = rbind(gof4_ss, read.table(paste(timeStamp, '/gof_4/gof_', i, '/ABCstat.txt', sep=''), h=T))
 		prior_sfs = rbind(prior_sfs, read.table(paste(timeStamp, '/best_model/best_model_', i, '/ABCjsfs.txt', sep=''), h=T))
 		gof1_sfs = rbind(gof1_sfs, read.table(paste(timeStamp, '/gof/gof_', i, '/ABCjsfs.txt', sep=''), h=T))
 		gof2_sfs = rbind(gof2_sfs, read.table(paste(timeStamp, '/gof_2/gof_', i, '/ABCjsfs.txt', sep=''), h=T))
-#		gof3_sfs = rbind(gof3_sfs, read.table(paste(timeStamp, '/gof_3/gof_', i, '/ABCjsfs.txt', sep=''), h=T))
-#		gof4_sfs = rbind(gof4_sfs, read.table(paste(timeStamp, '/gof_4/gof_', i, '/ABCjsfs.txt', sep=''), h=T))
 	}
 
 	# sub sample the stats in order to reduce the size
-	finalSize = 10000
+	finalSize = 2000
 	if( nrow(prior_ss) > finalSize ){
 		sub_prior = sample(1:nrow(prior_ss), finalSize, replace=F)
 		prior_ss = prior_ss[sub_prior, ]
@@ -106,9 +100,7 @@ if( writeDistribution==TRUE){
 	obs_sfs = read.table(paste( timeStamp, '/ABCjsfs.txt', sep=''), h=T)
 
 	# output for the web interface
-#	origin = c('observed dataset', rep('prior', nrow(prior_ss)), rep('posterior', nrow(gof1_ss)), rep('optimized posterior1', nrow(gof2_ss)), rep('optimized posterior2', nrow(gof3_ss)), rep('optimized posterior3', nrow(gof4_ss)))
-#	PCA = rbind(cbind(obs_ss, obs_sfs), cbind(prior_ss, prior_sfs), cbind(gof1_ss, gof1_sfs), cbind(gof2_ss, gof2_sfs), cbind(gof3_ss, gof3_sfs), cbind(gof4_ss, gof4_sfs))
-	origin = c('observed dataset', rep('prior', nrow(prior_ss)), rep('posterior', nrow(gof1_ss)), rep('optimized posterior1', nrow(gof2_ss)))
+	origin = c('observed dataset', rep('prior', nrow(prior_ss)), rep('posterior', nrow(gof1_ss)), rep('optimized posterior', nrow(gof2_ss)))
 	PCA = rbind(cbind(obs_ss, obs_sfs), cbind(prior_ss, prior_sfs), cbind(gof1_ss, gof1_sfs), cbind(gof2_ss, gof2_sfs))
 	PCA = cbind(PCA, origin)
 	write.table(PCA, paste(timeStamp, '/distribution_PCA.txt', sep=''), col.names=T, row.names=F, quote=F, sep='\t')

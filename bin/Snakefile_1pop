@@ -80,22 +80,16 @@ rule targets:
 		expand("{timeStamp}/modelComp/report_{nameA}.txt", timeStamp=timeStamp, nameA=nameA),
 		expand("{timeStamp}/modelComp/best_model.txt", timeStamp=timeStamp),
 		expand("{timeStamp}/modelComp/hierarchical_models.txt", timeStamp=timeStamp),
+		expand("{timeStamp}/best_model/priorfile.txt", timeStamp=timeStamp),
 		expand("{timeStamp}/best_model/report_{nameA}.txt", timeStamp=timeStamp, nameA=nameA),
 		expand("{timeStamp}/best_model/posterior_bestModel.txt", timeStamp=timeStamp),
 		expand("{timeStamp}/gof/goodness_of_fit_test.txt", timeStamp=timeStamp),
 		expand("{timeStamp}/gof/gof_sfs.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/best_model_3/posterior_bestModel.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/best_model_3/report_{nameA}.txt", timeStamp=timeStamp, nameA=nameA),
-		expand("{timeStamp}/gof_2/goodness_of_fit_test.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/gof_2/gof_sfs.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/best_model_5/report_{nameA}.txt", timeStamp=timeStamp, nameA=nameA),
-		expand("{timeStamp}/best_model_5/posterior_bestModel.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/gof_3/goodness_of_fit_test.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/gof_3/gof_sfs.txt", timeStamp=timeStamp),
 		expand("{timeStamp}/best_model_7/report_{nameA}.txt", timeStamp=timeStamp, nameA=nameA),
 		expand("{timeStamp}/best_model_7/posterior_bestModel.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/gof_4/goodness_of_fit_test.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/gof_4/gof_sfs.txt", timeStamp=timeStamp),
+		expand("{timeStamp}/gof_2/goodness_of_fit_test.txt", timeStamp=timeStamp),
+		expand("{timeStamp}/gof_2/gof_sfs.txt", timeStamp=timeStamp),
+		expand("{timeStamp}/distribution_PCA.txt", timeStamp=timeStamp),
 		expand("{timeStamp}/table_coord_PCA_SS.txt", timeStamp=timeStamp),
 		expand("{timeStamp}/table_contrib_PCA_SS.txt", timeStamp=timeStamp),
 		expand("{timeStamp}/table_eigenvalues_PCA_SS.txt", timeStamp=timeStamp)
@@ -104,7 +98,7 @@ rule targets:
 		tar -zcvf {timeStamp}.tar.gz {input}
 		touch slurm_tmp.out
 		rm slurm*out
-		rm -rf {timeStamp}		
+#		rm -rf {timeStamp}		
 		"""
 
 rule fasta2ABC_1pop:
@@ -222,6 +216,7 @@ rule estimation_best_model:
 		obs=expand("{timeStamp}/ABCstat_global.txt", timeStamp=timeStamp),
 		simulations=expand("{timeStamp}/best_model/best_model_{i}/ABCstat.txt", timeStamp=timeStamp, i=ITERATIONS_ESTIMATES)
 	output:
+		expand("{timeStamp}/best_model/priorfile.txt", timeStamp=timeStamp),
 		expand("{timeStamp}/best_model/report_{nameA}.txt", timeStamp=timeStamp, nameA=nameA),
 		expand("{timeStamp}/best_model/posterior_bestModel.txt", timeStamp=timeStamp)
 #		expand("{timeStamp}/best_model/posterior_bestModel.pdf", timeStamp=timeStamp)
@@ -440,12 +435,70 @@ rule gof:
 		"""
 
 # GOF #2
+#rule simulation_gof_2:
+#	params:
+#		nmultilocus={nmultilocus}
+#	input:
+#		best="{timeStamp}/modelComp/best_model.txt",
+#		posterior="{timeStamp}/best_model_3/posterior_bestModel.txt"
+#	output:
+#		"{timeStamp}/gof_2/gof_{i}/ABCstat.txt"
+#	shell:
+#		"""
+#		best_model=$(cat {input.best})
+#		{binpath}/{submit_simulations_gof} {outgroup} {params.nmultilocus} {wildcards.i} ${{best_model}} {nameA} gof_2 gof ${{PWD}}/{input.posterior} {timeStamp} joint {binpath}
+#		"""
+#
+#rule gof_2:
+#	input:
+#		expand("{timeStamp}/ABCstat_global.txt", timeStamp=timeStamp),
+#		expand("{timeStamp}/ABCjsfs.txt", timeStamp=timeStamp),
+#		expand("{timeStamp}/gof_2/gof_{i}/ABCstat.txt", timeStamp=timeStamp, i=ITERATIONS_GOF)
+#	output:
+#		"{timeStamp}/gof_2/goodness_of_fit_test.txt",
+#		"{timeStamp}/gof_2/gof_sfs.txt"
+#	shell:
+#		"""
+#		{binpath}/gof_1pop_v2.R timeStamp={timeStamp} nIterations_gof={nIterations_gof} sub_dir=gof_2 writeDistribution=F
+#		"""
+#
+#
+## GOF #3
+#rule simulation_gof_3:
+#	params:
+#		nmultilocus={nmultilocus}
+#	input:
+#		best="{timeStamp}/modelComp/best_model.txt",
+#		posterior="{timeStamp}/best_model_5/posterior_bestModel.txt"
+#	output:
+#		"{timeStamp}/gof_3/gof_{i}/ABCstat.txt"
+#	shell:
+#		"""
+#		best_model=$(cat {input.best})
+#		{binpath}/{submit_simulations_gof} {outgroup} {params.nmultilocus} {wildcards.i} ${{best_model}} {nameA} gof_3 gof ${{PWD}}/{input.posterior} {timeStamp} joint {binpath}
+#		"""
+#
+#
+#rule gof_3:
+#	input:
+#		expand("{timeStamp}/ABCstat_global.txt", timeStamp=timeStamp),
+#		expand("{timeStamp}/ABCjsfs.txt", timeStamp=timeStamp),
+#		expand("{timeStamp}/gof_3/gof_{i}/ABCstat.txt", timeStamp=timeStamp, i=ITERATIONS_GOF)
+#	output:
+#		"{timeStamp}/gof_3/goodness_of_fit_test.txt",
+#		"{timeStamp}/gof_3/gof_sfs.txt"
+#	shell:
+#		"""
+#		{binpath}/gof_1pop_v2.R timeStamp={timeStamp} nIterations_gof={nIterations_gof} sub_dir=gof_3 writeDistribution=F
+#		"""
+
+# GOF #4
 rule simulation_gof_2:
 	params:
 		nmultilocus={nmultilocus}
 	input:
 		best="{timeStamp}/modelComp/best_model.txt",
-		posterior="{timeStamp}/best_model_3/posterior_bestModel.txt"
+		posterior="{timeStamp}/best_model_7/posterior_bestModel.txt"
 	output:
 		"{timeStamp}/gof_2/gof_{i}/ABCstat.txt"
 	shell:
@@ -454,77 +507,19 @@ rule simulation_gof_2:
 		{binpath}/{submit_simulations_gof} {outgroup} {params.nmultilocus} {wildcards.i} ${{best_model}} {nameA} gof_2 gof ${{PWD}}/{input.posterior} {timeStamp} joint {binpath}
 		"""
 
+
 rule gof_2:
 	input:
 		expand("{timeStamp}/ABCstat_global.txt", timeStamp=timeStamp),
 		expand("{timeStamp}/ABCjsfs.txt", timeStamp=timeStamp),
 		expand("{timeStamp}/gof_2/gof_{i}/ABCstat.txt", timeStamp=timeStamp, i=ITERATIONS_GOF)
 	output:
+		"{timeStamp}/distribution_PCA.txt",
 		"{timeStamp}/gof_2/goodness_of_fit_test.txt",
 		"{timeStamp}/gof_2/gof_sfs.txt"
 	shell:
 		"""
-		{binpath}/gof_1pop_v2.R timeStamp={timeStamp} nIterations_gof={nIterations_gof} sub_dir=gof_2 writeDistribution=F
-		"""
-
-
-# GOF #3
-rule simulation_gof_3:
-	params:
-		nmultilocus={nmultilocus}
-	input:
-		best="{timeStamp}/modelComp/best_model.txt",
-		posterior="{timeStamp}/best_model_5/posterior_bestModel.txt"
-	output:
-		"{timeStamp}/gof_3/gof_{i}/ABCstat.txt"
-	shell:
-		"""
-		best_model=$(cat {input.best})
-		{binpath}/{submit_simulations_gof} {outgroup} {params.nmultilocus} {wildcards.i} ${{best_model}} {nameA} gof_3 gof ${{PWD}}/{input.posterior} {timeStamp} joint {binpath}
-		"""
-
-
-rule gof_3:
-	input:
-		expand("{timeStamp}/ABCstat_global.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/ABCjsfs.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/gof_3/gof_{i}/ABCstat.txt", timeStamp=timeStamp, i=ITERATIONS_GOF)
-	output:
-		"{timeStamp}/gof_3/goodness_of_fit_test.txt",
-		"{timeStamp}/gof_3/gof_sfs.txt"
-	shell:
-		"""
-		{binpath}/gof_1pop_v2.R timeStamp={timeStamp} nIterations_gof={nIterations_gof} sub_dir=gof_3 writeDistribution=F
-		"""
-
-# GOF #4
-rule simulation_gof_4:
-	params:
-		nmultilocus={nmultilocus}
-	input:
-		best="{timeStamp}/modelComp/best_model.txt",
-		posterior="{timeStamp}/best_model_7/posterior_bestModel.txt"
-	output:
-		"{timeStamp}/gof_4/gof_{i}/ABCstat.txt"
-	shell:
-		"""
-		best_model=$(cat {input.best})
-		{binpath}/{submit_simulations_gof} {outgroup} {params.nmultilocus} {wildcards.i} ${{best_model}} {nameA} gof_4 gof ${{PWD}}/{input.posterior} {timeStamp} joint {binpath}
-		"""
-
-
-rule gof_4:
-	input:
-		expand("{timeStamp}/ABCstat_global.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/ABCjsfs.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/gof_4/gof_{i}/ABCstat.txt", timeStamp=timeStamp, i=ITERATIONS_GOF)
-	output:
-		"{timeStamp}/distribution_PCA.txt",
-		"{timeStamp}/gof_4/goodness_of_fit_test.txt",
-		"{timeStamp}/gof_4/gof_sfs.txt"
-	shell:
-		"""
-		{binpath}/gof_1pop_v2.R timeStamp={timeStamp} nIterations_gof={nIterations_gof} sub_dir=gof_4 writeDistribution=T
+		{binpath}/gof_1pop_v2.R timeStamp={timeStamp} nIterations_gof={nIterations_gof} sub_dir=gof_2 writeDistribution=T
 		"""
 
 # PCA on simulated statistics

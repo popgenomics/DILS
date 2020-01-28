@@ -40,6 +40,8 @@ if len(sys.argv) != 14:
 	print("\n\tex: submit_simulations_gof_2pop.py 1 1000 2 SI_1N flo mal sim_SI_1N SI_1N posterior_IM_1M_2N.txt Ng4PymB1dy [beta]\n\tto simulate 1000 multilocus simulations at the second iteration, in the folder sim_SI_1N") 
 	sys.exit(0)
 
+python = 'python2'
+
 outgroup = int(sys.argv[1])
 nmultilocus = int(sys.argv[2]) # 10000
 iteration = int(sys.argv[3]) # 2
@@ -88,7 +90,7 @@ tmp += "cp {0}/bpfile {0}/{1}/{2}_{3}/; ".format(path, sub_dir_sim, sub_dir_mode
 tmp += "cd {0}/{1}/{2}_{3}; ".format(path, sub_dir_sim, sub_dir_model, iteration)
 
 #tmp += "{8}/priorgen_gof_2pop.py {0} {1} {2} {6} {7} | {8}/msnsam tbs {3} {4} | {8}/mscalc_2pop_SFS.py {5}".format(model, nmultilocus, posterior_file, nmultilocus*nlocus, mscommand, outgroup, modeBarrier, modePrior, binpath)
-tmp += "python {0}/priorgen_gof_2pop.py {1} {2} {3} {4} {5} | {0}/msnsam tbs {6} {7} | pypy {0}/mscalc_2pop_SFS.py {8}".format(binpath, model, nmultilocus, posterior_file, modeBarrier, modePrior, nmultilocus*nlocus, mscommand, outgroup)
+tmp += python + " {0}/priorgen_gof_2pop.py {1} {2} {3} {4} {5} | {0}/msnsam tbs {6} {7} | pypy {0}/mscalc_2pop_SFS.py {8}".format(binpath, model, nmultilocus, posterior_file, modeBarrier, modePrior, nmultilocus*nlocus, mscommand, outgroup)
 #tmp2 = 'sbatch --nodes=1 --ntasks-per-node=1 --time=02:00:00 -J {0}_{1} --wrap="{2}"\n'.format(model, iteration, tmp)
 
 print(tmp)

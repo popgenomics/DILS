@@ -50,6 +50,18 @@
 	"time" : "03:00:00",
 	"memPerCpu" : 2500
     },
+    "estimation_best_model_4" :
+    {
+	"cpusPerTask" : 8,
+	"time" : "03:00:00",
+	"memPerCpu" : 2500
+    },
+    "estimation_best_model_5" :
+    {
+	"cpusPerTask" : 8,
+	"time" : "03:00:00",
+	"memPerCpu" : 2500
+    },
     "locus_modelComp" :
     {
 	"cpusPerTask" : 8,

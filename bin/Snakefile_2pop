@@ -24,6 +24,9 @@
 #################################################################################################################################
 #################################################################################################################################
 
+# python
+python = 'python2'
+
 # links to the codes
 binpath = "/shared/mfs/data/home/croux/softwares/DILS/bin"
 
@@ -40,9 +43,8 @@ ITERATIONS_MODEL_COMP = range(nIterations_model_comp)
 MODELS_COMP = ['SC_1M_1N', 'SC_1M_2N', 'SC_2M_1N', 'SC_2M_2N', 'AM_1M_1N', 'AM_1M_2N', 'AM_2M_1N', 'AM_2M_2N', 'IM_1M_1N', 'IM_1M_2N', 'IM_2M_1N', 'IM_2M_2N', 'SI_1N', 'SI_2N']
 
 # first and second estimation of parameters
-MODELS_ESTIM = ['IM_2M_2N'] #MODELS_ESTIM = ['SC_2M_2N', 'AM_2M_2N', 'IM_2M_2N', 'SI_2N', 'SI_1N']
 nIterations_gof = 50 # number of subdirectories for the simulations used in the nnet param estimates (200)
-nIterations_estim_1_3 = 300 # number of subdirectories for the simulations used in the nnet param estimates (2000)
+nIterations_estim_1_3 = 500 # number of subdirectories for the simulations used in the nnet param estimates (2000)
 ITERATIONS_ESTIMATES_1_3 = range(nIterations_estim_1_3)
 ITERATIONS_GOF = range(nIterations_gof)
 nPosterior1 = 10000
@@ -87,49 +89,49 @@ rho_over_theta = config['rho_over_theta']
 
 rule targets:
 	input:
-		expand("{timeStamp}/bpfile", timeStamp=timeStamp),
-		expand("{timeStamp}/Nref.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/config.yaml", timeStamp=timeStamp),
-		expand("{timeStamp}/general_infos.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/{nameA}_{nameB}_infos.txt", timeStamp=timeStamp, nameA=nameA, nameB=nameB),
-		expand("{timeStamp}/ABCstat_global.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/ABCstat_loci.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/ABCjsfs.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/sfs_plot.pdf", timeStamp=timeStamp),
-		expand("{timeStamp}/sfs_table.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/results_recombination.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/modelComp/report_{nameA}_{nameB}.txt", timeStamp=timeStamp, nameA=nameA, nameB=nameB),
-		expand("{timeStamp}/modelComp/best_model.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/modelComp/hierarchical_models.txt", timeStamp=timeStamp),
-#		expand("{timeStamp}/modelComp/locus_specific_modelComp.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/locus_modelComp/locus_specific_modelComp.txt", timeStamp=timeStamp),
-#		expand("{timeStamp}/estim/report_{nameA}_{nameB}.txt", timeStamp=timeStamp, nameA=nameA, nameB=nameB),
-		expand("{timeStamp}/best_model/priorfile.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/best_model/report_{nameA}_{nameB}.txt", timeStamp=timeStamp, nameA=nameA, nameB=nameB),
-		expand("{timeStamp}/best_model/posterior_bestModel.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/best_model/posterior_bestModel.pdf", timeStamp=timeStamp),
-		expand("{timeStamp}/gof/goodness_of_fit_test.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/gof/gof_sfs.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/best_model_3/report_{nameA}_{nameB}.txt", timeStamp=timeStamp, nameA=nameA, nameB=nameB),
-		expand("{timeStamp}/best_model_3/posterior_bestModel.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/gof_2/goodness_of_fit_test.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/gof_2/gof_sfs.txt", timeStamp=timeStamp),
-#		expand("{timeStamp}/best_model_5/posterior_bestModel.txt", timeStamp=timeStamp),
-#		expand("{timeStamp}/gof_3/goodness_of_fit_test.txt", timeStamp=timeStamp),
-#		expand("{timeStamp}/gof_3/gof_sfs.txt", timeStamp=timeStamp),
-#		expand("{timeStamp}/best_model_7/posterior_bestModel.txt", timeStamp=timeStamp),
-#		expand("{timeStamp}/gof_4/goodness_of_fit_test.txt", timeStamp=timeStamp),
-#		expand("{timeStamp}/gof_4/gof_sfs.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/table_coord_PCA_SS.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/table_contrib_PCA_SS.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/table_eigenvalues_PCA_SS.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/locus_modelComp/isolation/ABCstat.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/locus_modelComp/migration/ABCstat.txt", timeStamp=timeStamp)
+		bpfile = expand("{timeStamp}/bpfile", timeStamp=timeStamp),
+		Nref = expand("{timeStamp}/Nref.txt", timeStamp=timeStamp),
+		yaml = expand("{timeStamp}/config.yaml", timeStamp=timeStamp),
+		
+		generalInfos = expand("{timeStamp}/general_infos.txt", timeStamp=timeStamp),
+		lociInfos = expand("{timeStamp}/{nameA}_{nameB}_infos.txt", timeStamp=timeStamp, nameA=nameA, nameB=nameB),
+		ABCglobal = expand("{timeStamp}/ABCstat_global.txt", timeStamp=timeStamp),
+		ABCloci = expand("{timeStamp}/ABCstat_loci.txt", timeStamp=timeStamp),
+		ABCjsfs = expand("{timeStamp}/ABCjsfs.txt", timeStamp=timeStamp),
+		sfsPlot = expand("{timeStamp}/sfs_plot.pdf", timeStamp=timeStamp),
+		sfsTable = expand("{timeStamp}/sfs_table.txt", timeStamp=timeStamp),
+		
+		recombination = expand("{timeStamp}/results_recombination.txt", timeStamp=timeStamp),
+		
+		reportModelComp = expand("{timeStamp}/modelComp/report_{nameA}_{nameB}.txt", timeStamp=timeStamp, nameA=nameA, nameB=nameB),
+		bestModel = expand("{timeStamp}/modelComp/best_model.txt", timeStamp=timeStamp),
+		hierarchicalModel = expand("{timeStamp}/modelComp/hierarchical_models.txt", timeStamp=timeStamp),
+		locusSpecificModelComp = expand("{timeStamp}/locus_modelComp/locus_specific_modelComp.txt", timeStamp=timeStamp),
+		statsIsolation = expand("{timeStamp}/locus_modelComp/isolation/ABCstat.txt", timeStamp=timeStamp),
+		statsMigration = expand("{timeStamp}/locus_modelComp/migration/ABCstat.txt", timeStamp=timeStamp),
+		
+		priorfile = expand("{timeStamp}/best_model/priorfile.txt", timeStamp=timeStamp),
+		reportBest = expand("{timeStamp}/best_model/report_{nameA}_{nameB}.txt", timeStamp=timeStamp, nameA=nameA, nameB=nameB),
+		posteriorBest = expand("{timeStamp}/best_model/posterior_bestModel.txt", timeStamp=timeStamp),
+		posteriorBestPlot = expand("{timeStamp}/best_model/posterior_bestModel.pdf", timeStamp=timeStamp),
+		gof = expand("{timeStamp}/gof/goodness_of_fit_test.txt", timeStamp=timeStamp),
+		gofSFS = expand("{timeStamp}/gof/gof_sfs.txt", timeStamp=timeStamp),
+		
+		reportBest3 = expand("{timeStamp}/best_model_5/report_{nameA}_{nameB}.txt", timeStamp=timeStamp, nameA=nameA, nameB=nameB),
+		posteriorBest3 = expand("{timeStamp}/best_model_5/posterior_bestModel.txt", timeStamp=timeStamp),
+		gof2 = expand("{timeStamp}/gof_2/goodness_of_fit_test.txt", timeStamp=timeStamp),
+		gofSFS2 = expand("{timeStamp}/gof_2/gof_sfs.txt", timeStamp=timeStamp),
+		
+		allGOF = expand("{timeStamp}/distribution_PCA.txt", timeStamp=timeStamp),
+		
+		PCAcoordSS = expand("{timeStamp}/table_coord_PCA_SS.txt", timeStamp=timeStamp),
+		PCAcontribSS = expand("{timeStamp}/table_contrib_PCA_SS.txt", timeStamp=timeStamp),
+		PCAeigenSS = expand("{timeStamp}/table_eigenvalues_PCA_SS.txt", timeStamp=timeStamp)
 
 
 	shell:
 		"""
-		tar -zcvf {timeStamp}.tar.gz {input}
+		tar -zcvf {timeStamp}.tar.gz {input.generalInfos} {input.lociInfos} {input.yaml} {input.Nref} {input.ABCloci} {input.ABCglobal} {input.recombination} {input.hierarchicalModel} {input.locusSpecificModelComp} {input.priorfile} {input.posteriorBest} {input.posteriorBest3} {input.gof} {input.gof2} {input.gofSFS} {input.gofSFS2} {input.allGOF} {input.PCAcoordSS} {input.PCAcontribSS} {input.PCAeigenSS}
 		touch slurm_tmp.out
 		rm slurm*out
 		rm -rf {timeStamp}		
@@ -194,15 +196,20 @@ rule RNAseqFGT:
 		fasta=expand("{infile}", infile=infile),
 		nLoci=expand("{timeStamp}/nLoci.txt", timeStamp=timeStamp),
 	output:
-		expand("{timeStamp}/results_recombination.txt", timeStamp=timeStamp)
+		tmp = expand("{timeStamp}/tmp_recombination.txt", timeStamp=timeStamp),
+		results = expand("{timeStamp}/results_recombination.txt", timeStamp=timeStamp)
 	threads: 1
 	shell:	
 		"""
 		x=$(cat {input.infos}  | grep -v locusName | awk '{{print $2}}' | sort -n | tail -n1)
 		if (($x<99990)); then
-			{binpath}/RNAseqFGT {input.fasta} {output}
+			{binpath}/RNAseqFGT {input.fasta} {output.tmp}
+			head -n1 {output.tmp} > {output.results}
+			cat {output.tmp} | grep {nameA} >> {output.results}
+			cat {output.tmp} | grep {nameB} >> {output.results}
+			
 		else
-			echo "{input.fasta} not in correct FASTA format (line length > 100000)" > {output}
+			echo "{input.fasta} not in correct FASTA format (line length > 100000)" > {output.results}
 		fi
 		"""
 
@@ -220,7 +227,7 @@ rule simulationsModelComp:
 	threads: 1
 	shell:
 		"""
-		python {binpath}/{submit_simulations} {outgroup} {params.nmultilocus} {wildcards.i} {wildcards.model} {nameA} {nameB} modelComp {wildcards.model} {config_yaml} {timeStamp} {modeBarrier} {binpath}
+		{python} {binpath}/{submit_simulations} {outgroup} {params.nmultilocus} {wildcards.i} {wildcards.model} {nameA} {nameB} modelComp {wildcards.model} {config_yaml} {timeStamp} {modeBarrier} {binpath}
 		"""
 
 
@@ -263,7 +270,7 @@ rule simulation_best_model:
 	shell:
 		"""
 		best_model=$(cat {input.best})
-		python {binpath}/{submit_simulations} {outgroup} {params.nmultilocus} {wildcards.i} ${{best_model}} {nameA} {nameB} best_model best_model {config_yaml} {timeStamp} {modeBarrier} {binpath}
+		{python} {binpath}/{submit_simulations} {outgroup} {params.nmultilocus} {wildcards.i} ${{best_model}} {nameA} {nameB} best_model best_model {config_yaml} {timeStamp} {modeBarrier} {binpath}
 		sleep 30
 		"""
 
@@ -297,7 +304,7 @@ rule simulation_best_model_2:
 	shell:
 		"""
 		best_model=$(cat {input.best})
-		python {binpath}/{submit_simulations_gof} {outgroup} {params.nmultilocus} {wildcards.i} ${{best_model}} {nameA} {nameB} best_model_2 best_model ${{PWD}}/{input.posterior} {timeStamp} {modeBarrier} joint {binpath}
+		{python} {binpath}/{submit_simulations_gof} {outgroup} {params.nmultilocus} {wildcards.i} ${{best_model}} {nameA} {nameB} best_model_2 best_model ${{PWD}}/{input.posterior} {timeStamp} {modeBarrier} joint {binpath}
 		sleep 30
 		"""
 
@@ -307,9 +314,7 @@ rule estimation_best_model_2:
 		obs=expand("{timeStamp}/ABCstat_global.txt", timeStamp=timeStamp),
 		simulations=expand("{timeStamp}/best_model_2/best_model_{i}/ABCstat.txt", timeStamp=timeStamp, i=ITERATIONS_ESTIMATES_2)
 	output:
-#		expand("{timeStamp}/best_model_2/report_{nameA}_{nameB}.txt", timeStamp=timeStamp, nameA=nameA, nameB=nameB),
 		expand("{timeStamp}/best_model_2/posterior_bestModel.txt", timeStamp=timeStamp)
-#		expand("{timeStamp}/best_model_2/posterior_bestModel.pdf", timeStamp=timeStamp)
 	threads: nCPU_R
 	shell:
 		"""
@@ -329,7 +334,7 @@ rule simulation_best_model_3:
 	shell:
 		"""
 		best_model=$(cat {input.best})
-		python {binpath}/{submit_simulations_gof} {outgroup} {params.nmultilocus} {wildcards.i} ${{best_model}} {nameA} {nameB} best_model_3 best_model ${{PWD}}/{input.posterior} {timeStamp} {modeBarrier} randomBeta {binpath}
+		{python} {binpath}/{submit_simulations_gof} {outgroup} {params.nmultilocus} {wildcards.i} ${{best_model}} {nameA} {nameB} best_model_3 best_model ${{PWD}}/{input.posterior} {timeStamp} {modeBarrier} randomBeta {binpath}
 		sleep 30
 		"""
 
@@ -341,12 +346,73 @@ rule estimation_best_model_3:
 	output:
 		expand("{timeStamp}/best_model_3/report_{nameA}_{nameB}.txt", timeStamp=timeStamp, nameA=nameA, nameB=nameB),
 		expand("{timeStamp}/best_model_3/posterior_bestModel.txt", timeStamp=timeStamp)
-#		expand("{timeStamp}/best_model_2/posterior_bestModel.pdf", timeStamp=timeStamp)
 	threads: nCPU_R
 	shell:
 		"""
 		best_model=$(cat {input.best})
 		Rscript {binpath}/estimates_2pop_best.R Nref={Nref} nameA={nameA} nameB={nameB} nMin={nMin} sub_dir_sim=best_model_3 nSubdir={nIterations_estim_1_3} ntree={ntree} ncores={nCPU_R} outgroup={outgroup} bestModel=${{best_model}} timeStamp={timeStamp} nPosterior={nPosterior3} binpath={binpath} path2observation={timeStamp}
+		"""
+
+# second optimization
+rule simulation_best_model_4:
+	params:
+		nmultilocus={nmultilocus}
+	input:
+		best="{timeStamp}/modelComp/best_model.txt",
+		posterior="{timeStamp}/best_model_3/posterior_bestModel.txt"
+	output:
+		"{timeStamp}/best_model_4/best_model_{i}/ABCstat.txt"
+	threads: 1
+	shell:
+		"""
+		best_model=$(cat {input.best})
+		{python} {binpath}/{submit_simulations_gof} {outgroup} {params.nmultilocus} {wildcards.i} ${{best_model}} {nameA} {nameB} best_model_4 best_model ${{PWD}}/{input.posterior} {timeStamp} {modeBarrier} joint {binpath}
+		sleep 30
+		"""
+
+rule estimation_best_model_4:
+	input:
+		best=expand("{timeStamp}/modelComp/best_model.txt", timeStamp=timeStamp),
+		obs=expand("{timeStamp}/ABCstat_global.txt", timeStamp=timeStamp),
+		simulations=expand("{timeStamp}/best_model_4/best_model_{i}/ABCstat.txt", timeStamp=timeStamp, i=ITERATIONS_ESTIMATES_2)
+	output:
+		expand("{timeStamp}/best_model_4/posterior_bestModel.txt", timeStamp=timeStamp)
+	threads: nCPU_R
+	shell:
+		"""
+		best_model=$(cat {input.best})
+		Rscript {binpath}/estimates_2pop_best.R Nref={Nref} nameA={nameA} nameB={nameB} nMin={nMin} sub_dir_sim=best_model_4 nSubdir={nIterations_estim_2} ntree={ntree} ncores={nCPU_R} outgroup={outgroup} bestModel=${{best_model}} timeStamp={timeStamp} nPosterior={nPosterior2} binpath={binpath} path2observation={timeStamp}
+		"""
+
+rule simulation_best_model_5:
+	params:
+		nmultilocus={nmultilocus}
+	input:
+		best="{timeStamp}/modelComp/best_model.txt",
+		posterior="{timeStamp}/best_model_4/posterior_bestModel.txt"
+	output:
+		"{timeStamp}/best_model_5/best_model_{i}/ABCstat.txt"
+	threads: 1
+	shell:
+		"""
+		best_model=$(cat {input.best})
+		{python} {binpath}/{submit_simulations_gof} {outgroup} {params.nmultilocus} {wildcards.i} ${{best_model}} {nameA} {nameB} best_model_5 best_model ${{PWD}}/{input.posterior} {timeStamp} {modeBarrier} randomBeta {binpath}
+		sleep 30
+		"""
+
+rule estimation_best_model_5:
+	input:
+		best=expand("{timeStamp}/modelComp/best_model.txt", timeStamp=timeStamp),
+		obs=expand("{timeStamp}/ABCstat_global.txt", timeStamp=timeStamp),
+		simulations=expand("{timeStamp}/best_model_5/best_model_{i}/ABCstat.txt", timeStamp=timeStamp, i=ITERATIONS_ESTIMATES_1_3)
+	output:
+		expand("{timeStamp}/best_model_5/report_{nameA}_{nameB}.txt", timeStamp=timeStamp, nameA=nameA, nameB=nameB),
+		expand("{timeStamp}/best_model_5/posterior_bestModel.txt", timeStamp=timeStamp)
+	threads: nCPU_R
+	shell:
+		"""
+		best_model=$(cat {input.best})
+		Rscript {binpath}/estimates_2pop_best.R Nref={Nref} nameA={nameA} nameB={nameB} nMin={nMin} sub_dir_sim=best_model_5 nSubdir={nIterations_estim_1_3} ntree={ntree} ncores={nCPU_R} outgroup={outgroup} bestModel=${{best_model}} timeStamp={timeStamp} nPosterior={nPosterior3} binpath={binpath} path2observation={timeStamp}
 		"""
 
 # Gof
@@ -363,7 +429,7 @@ rule simulation_gof:
 	shell:
 		"""
 		best_model=$(cat {input.best})
-		python {binpath}/{submit_simulations_gof} {outgroup} {params.nmultilocus} {wildcards.i} ${{best_model}} {nameA} {nameB} gof gof ${{PWD}}/{input.posterior} {timeStamp} {modeBarrier} joint {binpath}
+		{python} {binpath}/{submit_simulations_gof} {outgroup} {params.nmultilocus} {wildcards.i} ${{best_model}} {nameA} {nameB} gof gof ${{PWD}}/{input.posterior} {timeStamp} {modeBarrier} joint {binpath}
 		sleep 30
 		"""
 
@@ -387,14 +453,14 @@ rule simulation_gof_2:
 		nmultilocus={nmultilocus}
 	input:
 		best="{timeStamp}/modelComp/best_model.txt",
-		posterior="{timeStamp}/best_model_3/posterior_bestModel.txt"
+		posterior="{timeStamp}/best_model_5/posterior_bestModel.txt"
 	output:
 		"{timeStamp}/gof_2/gof_{i}/ABCstat.txt"
 	threads: 1
 	shell:
 		"""
 		best_model=$(cat {input.best})
-		python {binpath}/{submit_simulations_gof} {outgroup} {params.nmultilocus} {wildcards.i} ${{best_model}} {nameA} {nameB} gof_2 gof ${{PWD}}/{input.posterior} {timeStamp} {modeBarrier} joint {binpath}
+		{python} {binpath}/{submit_simulations_gof} {outgroup} {params.nmultilocus} {wildcards.i} ${{best_model}} {nameA} {nameB} gof_2 gof ${{PWD}}/{input.posterior} {timeStamp} {modeBarrier} joint {binpath}
 		sleep 30
 		"""
 
@@ -412,69 +478,6 @@ rule gof_2:
 		Rscript {binpath}/gof_2pop.R timeStamp={timeStamp} sub_dir=gof_2 nIterations_gof={nIterations_gof} writeDistribution=TRUE
 		"""
 
-## gof 3
-#rule simulation_gof_3:
-#	# made after the third estimation of parameters
-#	params:
-#		nmultilocus={nmultilocus}
-#	input:
-#		best="{timeStamp}/modelComp/best_model.txt",
-#		posterior="{timeStamp}/best_model_5/posterior_bestModel.txt"
-#	output:
-#		"{timeStamp}/gof_3/gof_{i}/ABCstat.txt"
-#	threads: 1
-#	shell:
-#		"""
-#		best_model=$(cat {input.best})
-#		{binpath}/{submit_simulations_gof} {outgroup} {params.nmultilocus} {wildcards.i} ${{best_model}} {nameA} {nameB} gof_3 gof ${{PWD}}/{input.posterior} {timeStamp} {modeBarrier} joint {binpath}
-#		sleep 30
-#		"""
-#
-#rule gof_3:
-#	input:
-#		expand("{timeStamp}/ABCstat_global.txt", timeStamp=timeStamp),
-#		expand("{timeStamp}/ABCjsfs.txt", timeStamp=timeStamp),
-#		expand("{timeStamp}/gof_3/gof_{i}/ABCstat.txt", timeStamp=timeStamp, i=ITERATIONS_GOF)
-#	output:
-#		"{timeStamp}/gof_3/goodness_of_fit_test.txt",
-#		"{timeStamp}/gof_3/gof_sfs.txt"
-#	shell:
-#		"""
-#		{binpath}/gof_2pop.R timeStamp={timeStamp} sub_dir=gof_3 nIterations_gof={nIterations_gof} writeDistribution=FALSE
-#		"""
-#
-## gof 4
-#rule simulation_gof_4:
-#	# made after the third estimation of parameters
-#	params:
-#		nmultilocus={nmultilocus}
-#	input:
-#		best="{timeStamp}/modelComp/best_model.txt",
-#		posterior="{timeStamp}/best_model_7/posterior_bestModel.txt"
-#	output:
-#		"{timeStamp}/gof_4/gof_{i}/ABCstat.txt"
-#	threads: 1
-#	shell:
-#		"""
-#		best_model=$(cat {input.best})
-#		{binpath}/{submit_simulations_gof} {outgroup} {params.nmultilocus} {wildcards.i} ${{best_model}} {nameA} {nameB} gof_4 gof ${{PWD}}/{input.posterior} {timeStamp} {modeBarrier} joint {binpath}
-#		sleep 30
-#		"""
-#
-#rule gof_4:
-#	input:
-#		expand("{timeStamp}/ABCstat_global.txt", timeStamp=timeStamp),
-#		expand("{timeStamp}/ABCjsfs.txt", timeStamp=timeStamp),
-#		expand("{timeStamp}/gof_4/gof_{i}/ABCstat.txt", timeStamp=timeStamp, i=ITERATIONS_GOF)
-#	output:
-#		"{timeStamp}/distribution_PCA.txt",
-#		"{timeStamp}/gof_4/goodness_of_fit_test.txt",
-#		"{timeStamp}/gof_4/gof_sfs.txt"
-#	threads: 1
-#	shell:
-#		"""
-#		{binpath}/gof_2pop.R timeStamp={timeStamp} sub_dir=gof_4 nIterations_gof={nIterations_gof} writeDistribution=TRUE
-#		"""
 
 # PCA
 rule PCA_SS:
@@ -507,7 +510,7 @@ rule simulation_locus_modelComp:
 	shell:
 		"""
 		best_model=$(cat {input.best})
-		python {binpath}/submit_simulations_2pop_test_monolocus.py {outgroup} {params.nmultilocus} {params.niterations} ${{best_model}} {nameA} {nameB} locus_modelComp ${{PWD}}/{input.posterior} {timeStamp} {modeBarrier} {binpath} {population_growth}
+		{python} {binpath}/submit_simulations_2pop_test_monolocus.py {outgroup} {params.nmultilocus} {params.niterations} ${{best_model}} {nameA} {nameB} locus_modelComp ${{PWD}}/{input.posterior} {timeStamp} {modeBarrier} {binpath} {population_growth}
 		sleep 30
 		"""
 
