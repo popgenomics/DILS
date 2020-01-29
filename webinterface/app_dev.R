@@ -2885,9 +2885,9 @@ server <- function(input, output, session = session) {
 		if(is.null(input$results)) {return(loadingState())}
 		else{
 			columns = names(locus_spe())
-		if (!is.null(input$selected_obs_statistics_to_display)){
-			columns = input$selected_obs_statistics_to_display
-		}
+			if (!is.null(input$selected_obs_statistics_to_display)){
+				columns = input$selected_obs_statistics_to_display
+			}
 			return(locus_spe()[,columns,drop=FALSE])
 		}
 	)
@@ -3151,16 +3151,16 @@ server <- function(input, output, session = session) {
 		allocation[which(locus_spe()$post_proba<threshold)] = 'ambiguous'
 		y = data.frame(netdivAB=locus_spe()$netdivAB_avg, pi=(locus_spe()$piA_avg+locus_spe()$piB_avg)/2, FST=locus_spe()$FST_avg, allocation=allocation, post_prob=locus_spe()$post_prob, dataset=locus_spe()$dataset, piA=locus_spe()$piA_avg, piB=locus_spe()$piB_avg)
 		
-		plot_locus_modComp_2species_divergence <- y %>% plot_ly(x =~FST, y =~netdivAB, type = 'scatter', color =~allocation, legendgroup = ~allocation, colors = viridis_pal(option = "D")(3), marker= list(size=18, opacity=0.75), text = ~paste("Locus: ", dataset, '<br>Status: ', allocation, '<br>Posterior probability: ', round(post_prob, 5), '<br>Fst: ', round(FST, 5), '<br>net divergence: ', round(netdivAB, 5), paste('<br>pi', as.character(allData()[['users_infos']][2,2]), ':', sep=' '), round(piA, 5), paste('<br>pi', as.character(allData()[['users_infos']][3,2]), ':', sep=' '), round(piB, 5)),
+		plot_locus_modComp_2species_divergence <- y %>% plot_ly(x =~FST, y =~netdivAB, mode = 'markers', type = 'scatter', color =~allocation, legendgroup = ~allocation, colors = viridis_pal(option = "D")(3), marker= list(size=18, opacity=0.75), text = ~paste("Locus: ", dataset, '<br>Status: ', allocation, '<br>Posterior probability: ', round(post_prob, 5), '<br>Fst: ', round(FST, 5), '<br>net divergence: ', round(netdivAB, 5), paste('<br>pi', as.character(allData()[['users_infos']][2,2]), ':', sep=' '), round(piA, 5), paste('<br>pi', as.character(allData()[['users_infos']][3,2]), ':', sep=' '), round(piB, 5)),
 		hoverinfo='text', width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2])) %>% layout(xaxis = xlab, yaxis = ylab_divergence, legend=list(orientation = 'h', y=1.05, font = list(size = 25), hoverlabel = list(font=list(size=20))))
 
-		plot_locus_modComp_2species_pi_AB <- y %>% plot_ly(x =~FST, y =~pi, type = 'scatter', color =~allocation, legendgroup = ~allocation, colors = viridis_pal(option = "D")(3), showlegend=FALSE, marker= list(size=18, opacity=0.75), text = ~paste("Locus: ", dataset, '<br>Status: ', allocation, '<br>Posterior probability: ', round(post_prob, 5), '<br>Fst: ', round(FST, 5), '<br>net divergence: ', round(netdivAB, 5), paste('<br>pi', as.character(allData()[['users_infos']][2,2]), ':', sep=' '), round(piA, 5), paste('<br>pi', as.character(allData()[['users_infos']][3,2]), ':', sep=' '), round(piB, 5)),
+		plot_locus_modComp_2species_pi_AB <- y %>% plot_ly(x =~FST, y =~pi, mode = 'markers', type = 'scatter', color =~allocation, legendgroup = ~allocation, colors = viridis_pal(option = "D")(3), showlegend=FALSE, marker= list(size=18, opacity=0.75), text = ~paste("Locus: ", dataset, '<br>Status: ', allocation, '<br>Posterior probability: ', round(post_prob, 5), '<br>Fst: ', round(FST, 5), '<br>net divergence: ', round(netdivAB, 5), paste('<br>pi', as.character(allData()[['users_infos']][2,2]), ':', sep=' '), round(piA, 5), paste('<br>pi', as.character(allData()[['users_infos']][3,2]), ':', sep=' '), round(piB, 5)),
 		hoverinfo='text') %>% layout(xaxis = xlab, yaxis = ylab_diversity)
 
-		plot_locus_modComp_2species_piA_piB <- y %>% plot_ly(x =~piA, y =~piB, type = 'scatter', color =~allocation, legendgroup = ~allocation, colors = viridis_pal(option = "D")(3), showlegend=FALSE, marker= list(size=12, opacity=0.65), text = ~paste("Locus: ", dataset, '<br>Status: ', allocation, '<br>Posterior probability: ', round(post_prob, 5), '<br>Fst: ', round(FST, 5), '<br>net divergence: ', round(netdivAB, 5), paste('<br>pi', as.character(allData()[['users_infos']][2,2]), ':', sep=' '), round(piA, 5), paste('<br>pi', as.character(allData()[['users_infos']][3,2]), ':', sep=' '), round(piB, 5)),
+		plot_locus_modComp_2species_piA_piB <- y %>% plot_ly(x =~piA, y =~piB, mode = 'markers', type = 'scatter', color =~allocation, legendgroup = ~allocation, colors = viridis_pal(option = "D")(3), showlegend=FALSE, marker= list(size=12, opacity=0.65), text = ~paste("Locus: ", dataset, '<br>Status: ', allocation, '<br>Posterior probability: ', round(post_prob, 5), '<br>Fst: ', round(FST, 5), '<br>net divergence: ', round(netdivAB, 5), paste('<br>pi', as.character(allData()[['users_infos']][2,2]), ':', sep=' '), round(piA, 5), paste('<br>pi', as.character(allData()[['users_infos']][3,2]), ':', sep=' '), round(piB, 5)),
 		hoverinfo='text') %>% layout(xaxis = lab_piA, yaxis = lab_piB)
 		
-		barplot_locus_modComp_2species <- y %>% plot_ly(x = ~allocation, color = ~allocation, legendgroup = ~allocation, colors = viridis_pal(option = "D")(3), showlegend=FALSE) %>% layout(hoverlabel = list(font=list(size=20)), yaxis= list(titlefont=f, tickfont=f2), xaxis = list(titlefont=f, tickfont=f2))
+		barplot_locus_modComp_2species <- y %>% plot_ly(x = ~allocation, color = ~allocation, mode = 'markers', type = 'scatter', legendgroup = ~allocation, colors = viridis_pal(option = "D")(3), showlegend=FALSE) %>% layout(hoverlabel = list(font=list(size=20)), yaxis= list(titlefont=f, tickfont=f2), xaxis = list(titlefont=f, tickfont=f2))
 		# width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2])
 
 		figure = subplot( plot_locus_modComp_2species_divergence, barplot_locus_modComp_2species, plot_locus_modComp_2species_pi_AB, plot_locus_modComp_2species_piA_piB, nrows = 2, widths=c(3/4, 1/4), shareX = FALSE, titleX = TRUE, titleY = TRUE)
@@ -3195,37 +3195,71 @@ server <- function(input, output, session = session) {
 			if (is.null(fileName)){
 			}else{	
 				
+				rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
 				species_A_user = as.character(allData()[['users_infos']][2,2])
 				species_B_user = as.character(allData()[['users_infos']][3,2])
 				author_user = as.character(allData()[['users_infos']][5,2])
 				modelComp = allData()[['hierarchical']]
 				ABCstat = allData()[['ABCstatGlobal']] 
 			
-				best_model = as.character(modelComp[1,1])
+				best_model = as.character(modelComp[2,1])
+				probaMigration = as.numeric(as.character(modelComp[3,1]))
+				if(best_model == 'isolation'){
+					probaMigration = 1 - probaMigration
+					pMigHetero = 0
+					status = 'species'
+				}else{
+					pMigHetero = as.numeric(as.character(modelComp[3,3]))
+					seuil1 = 0.6419199
+					if(pMigHetero >= seuil1){
+						status = 'semi-isolated species'
+					}else{
+						status = 'populations'
+					}
+				}
+				
 				piA_user = ABCstat$piA_avg
 				piB_user = ABCstat$piB_avg
 				divergence_user = ABCstat$netdivAB_avg
 
-				print(c(author_user, species_A_user, species_B_user, best_model, piA_user, piB_user, divergence_user))
+				res = read.table('metaanalysis.txt', sep='\t', h=T)
+				print(res)
+				if(sum(rootName%in%res$yaml) == 0){ # if the rootName is absent from the metaanalysis
+					
+					colnames = c('yaml', 'mail_address', 'speciesA', 'speciesB', 'bestModel', 'probaMigration', 'probaMigHetero', 'status', 'piA', 'piB', 'netDivergence')
+					a = c(rootName, author_user, species_A_user, species_B_user, best_model, probaMigration, pMigHetero, status, piA_user, piB_user, divergence_user)
+					print(a)
+					obs = data.frame(yaml=a[1], mail_address=a[2], speciesA=a[3], speciesB=a[4], bestModel=a[5], probaMigration=a[6], probaMigHetero=a[7], status=a[8], piA=a[9], piB=a[10], netDivergence=a[11])
+					res = rbind(res, obs)
+					write.table(res, 'metaanalysis.txt', col.names=colnames, row.names=F, sep='\t', quote=F)
+				}
+
+				
 			}
 		}
 	)
 	
 	output$plot_greyzone <- renderPlotly({
 		# GREYZONE PART
+		# metaanalayse
+		meta = read.table('metaanalysis.txt', sep='\t', h=T)
+		
+		# popphyl
 		x = read.table("popPhyl.txt", h=T)
 		pmig_HH = x$Pongoing_migration_Mhetero_Nhetero 
 		proba_migration = pmig_HH
 		seuil1 = 0.6419199
 		seuil2 = 0.1304469
 		
-		model = rep('ambiguous', nrow(x))
-		model[which(x$Pongoing_migration_Mhetero_Nhetero>=seuil1)] = "migration"
-		model[which(x$Pongoing_migration_Mhetero_Nhetero<seuil2)] = "isolation"
-		
-		divergence = log10(x$netdivAB_avg)
-		
+		model = rep('ambiguous', length(proba_migration))
+		model[which(proba_migration>=seuil1)] = "migration"
+		model[which(proba_migration<seuil2)] = "isolation"
+	
+		divergence = x$netdivAB_avg
+		divergence = log10(divergence)
+	
 		piA = round(x$piA_avg, 5)
+		
 		piB = round(x$piB_avg, 5)
 		
 		pattern=c("Mhetero_Nhetero", "Hetero")
@@ -3235,12 +3269,25 @@ server <- function(input, output, session = session) {
 		status[which(pmig_HH>= seuil1 & heteroM >= seuil1)] = "semi-isolated species"
 		status[which(pmig_HH>= seuil1 & heteroM < seuil1)] = "populations"
 		status[which(pmig_HH<= seuil2)] = "species"
-		
-		species_A = x$spA
-		species_B = x$spB
+
+			
+		species_A = as.character(x$spA)
+		species_B = as.character(x$spB)
 		
 		author = rep('camille.roux@univ-lille.fr', length(species_A))
-
+		
+		if(nrow(meta) != 0){
+			model = c(model, as.character(meta$bestModel))
+			divergence = c(divergence, log10(as.numeric(as.character(meta$netDivergence))))
+			proba_migration = c(proba_migration, as.numeric(as.character(meta$probaMigration)))
+			piA = c(piA, as.numeric(as.character(meta$piA)))
+			piB = c(piB, as.numeric(as.character(meta$piB)))
+			status = c(status, as.character(meta$status))
+			species_A = c(species_A, as.character(meta$speciesA))
+			species_B = c(species_B, as.character(meta$speciesB))
+			author = c(author, as.character(meta$mail_address))
+		}
+		
 		# USER'S PART
 		fileName = input$results
 		if (is.null(fileName)){
@@ -3285,7 +3332,6 @@ server <- function(input, output, session = session) {
 				col = c(grey(0.25), 'turquoise', 'purple', 'red')
 			}
 		}
-
 		res = data.frame(divergence, model, status, proba_migration, species_A, species_B, piA, piB, author)
 		
 		f=list(
@@ -3321,7 +3367,7 @@ server <- function(input, output, session = session) {
 			tickfont=f2
 		)
 		
-		p=plot_ly(data=res, x=~divergence, y=~proba_migration, type='scatter', color=~status, colors=col, marker=list(size=20), text = ~paste("species A: ", species_A, '<br>species B: ', species_B, "<br>net neutral divergence: ", round(10**divergence, 5), "<br>Probability of migration: ", round(proba_migration, 3), '<br>piA: ', piA, '<br>piB: ', piB, '<br><br>author: ', author), hoverinfo='text', width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2])) %>% layout(xaxis=xlab, yaxis=ylab, legend=list(orientation = 'h', y=1.05, font=f_legend), hoverlabel = list(font=list(size=20)))
+		p=plot_ly(data=res, x=~divergence, y=~proba_migration, type='scatter', mode = 'markers', color=~status, colors=col, marker=list(size=20), text = ~paste("species A: ", species_A, '<br>species B: ', species_B, "<br>net neutral divergence: ", round(10**divergence, 5), "<br>Probability of migration: ", round(proba_migration, 3), '<br>piA: ', piA, '<br>piB: ', piB, '<br><br>author: ', author), hoverinfo='text', width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2])) %>% layout(xaxis=xlab, yaxis=ylab, legend=list(orientation = 'h', y=1.05, font=f_legend), hoverlabel = list(font=list(size=20)))
 		#htmlwidgets::saveWidget(p, "figure_greyzone.html") # HTML
 		#webshot::webshot("figure_greyzone.html", "figure_greyzone.pdf") # PDF -> Margin problem (cut!)
 	return(p)
