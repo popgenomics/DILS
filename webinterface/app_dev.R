@@ -1,12 +1,30 @@
 #!/usr/bin/Rscript
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
+
+#################################################################################################################################
+#################################################################################################################################
+#####                                                                                                                       #####
+#####    This file is part of Demographic Inferences with Linked Selection : DILS.                                          #####
+#####                                                                                                                       #####   
+#####    DILS is free software: you can redistribute it and/or modify                                                       #####
+#####    it under the terms of the GNU General Public License as published by                                               #####
+#####    the Free Software Foundation, either version 3 of the License, or                                                  #####
+#####    (at your option) any later version.                                                                                #####
+#####                                                                                                                       #####    
+#####    DILS is distributed in the hope that it will be useful,                                                            #####
+#####    but WITHOUT ANY WARRANTY; without even the implied warranty of                                                     #####
+#####    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                                                      #####
+#####    GNU General Public License for more details.                                                                       #####
+#####                                                                                                                       #####    
+#####    You should have received a copy of the GNU General Public License                                                  #####
+#####    along with DILS.  If not, see <https://www.gnu.org/licenses/>.                                                     #####
+#####                                                                                                                       #####    
+#####    Please send bugreports with examples or suggestions to                                                             #####
+#####    camille.roux@univ-lille.fr                                                                                         #####
+#####                                                                                                                       #####    
+#####    Or write a post on https://groups.google.com/forum/#!forum/dils---demographic-inferences-with-linked-selection     #####
+#####                                                                                                                       #####
+#################################################################################################################################
+#################################################################################################################################
 
 library(shiny)
 library(shinythemes)
@@ -203,6 +221,12 @@ welcome_page <- fluidPage(
 	
 	boxPlus(title = h2("Compared genomic models"), width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
 		fluidRow(
+			column(width=12,
+				h3("All demographic models exist under AT LEAST two alternative genomic models concerning the effective size:"),
+				HTML('<h3><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1) genomic homogeneity</b>, where the effective size <b><i>Ne</i></b> is genomically homogeneous (purple bar), <i>i.e.</i>, all locus are simulated by sharing the same <b>Ne</b> value. In this model <b>DILS</b> will try to estimate the value of <i>Ne</i> best explaining the observed data. <i>Ne</i> being independently estimated in all populations (current, past).'),
+				HTML('<h3><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2) genomic heterogeneity</b> where <i>Ne</i> is genomically heterogeneous (yellow distribution), <i>i.e.</i>, all locus are simulated with a value of <i>Ne</i> drawn in a Beta distribution. In this model <b>DILS</b> will try to estimate the value of <i>Ne</i> as well as the two shape parameters <b>shape1</b> and <b>shape2</b> that best explain the observations. Here, <b>DILS</b> assumes that all populations (current and past) share the same Beta distribution but are independently rescaled by different <i>Ne</i> values.')
+			),
+			
 			# Sidebar panel for inputs
 			column(width=4,
 				# Input: Slider for the number of bins
@@ -222,13 +246,10 @@ welcome_page <- fluidPage(
 	
 		fluidRow(
 			column(width=12,
-				h3("All demographic models exist under AT LEAST two alternative genomic models:"),
-				h3(strong("1."), "a model where the effective size", strong("(Ne)"), "is genomically homogeneous (orange bar), i.e., all locus are simulated by sharing the same", strong("Ne"), "value. In this model,", strong("DILS"), "will try to estimate the value of", strong("Ne"), "best explaining the observed data.", strong("Ne"), "being independent between all populations (current, past)."),
-				h3(strong("2."), "a model where", strong("Ne"), "is genomically heterogeneous (green distribution), i.e., all locus are simulated with a value of", strong("Ne"), "drawn in a Beta distribution. In this model,", strong("DILS"), "will try to estimate the value of", strong("Ne"), "as well as the two shape parameters", strong("(shape1 and shape2)"), "that best explain the observations. Here,", strong("DILS"), "assumes that all populations (current and past)", strong("share the same Beta distribution"), "but are independently rescaled by different", strong("Ne"), "values."),
 				hr(),
 				h3("In addition, all demographic models with migration have two alternative models of introgression:"),
-				h3(strong("1."), "a model where all of the loci share the same introgression rate for a given direction, but these rates are independent between directions. Here,", strong("DILS"), "will simply try to estimate the introgression rate for each direction."),
-				h3(strong("2."), "a model where introgression rates are Beta distributed throughout genomes.", strong("DILS"), "assumes independent Beta distributions for each direction where gene flow occurs."),
+				HTML('<h3><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1) genomic homogeneity, </b>where all loci share the same introgression rate for a given direction. Here, <b>DILS</b> will simply try to <b>independently</b> estimate the introgression rate of each direction.</h3>'),
+				HTML('<h3><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2) genomic heterogeneity, </b>where introgression rates vary throughout the genome. This variation can follow a <b>beta</b> or <b>bimodal</b> distribution (see below).</h3>'),
 				htmlOutput("homo_hetero")
 	
 			)
@@ -304,7 +325,7 @@ welcome_page <- fluidPage(
 		h3(strong("3."), "the last step is to determine whether effective size", strong("(Ne)"), "and migration rates", strong("(N.m)"), "are homogeneously or heterogenously distributed in genomes.")
 	),
 
-	boxPlus(title = h2("Architecture"), width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+	boxPlus(title = HTML('<h2>Architecture of DILS</h2>'), width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
 		column(width=12,
 			h3("FastABC is composed of two elements:"),
 			h3(strong("1."), "A web interface developed in", a(span(strong("Shiny,"), style = "color:teal"), href="https://shiny.rstudio.com/", target="_blank"), "which will execute..."),
@@ -352,8 +373,7 @@ upload_data <- fluidPage(
 		boxPlus(title = h2("Number of ABC analysis to run"), width = 6, closable = FALSE, status = "danger", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
 		shinyjs::useShinyjs(),
 		selectInput("number_of_ABC", label = h4("1 to 5 ABC analyses can be performed from the same input file"), choices = list("1" = 1, "2" = 2, "3" = 3, "4" = 4, "5" = 5), selected = 1),
-		h4('DILS runs freely on a computer server. To avoid saturating it, we have limited the number of analyses carried out at a given time and for a given file to 5.'),
-		h4('Beyond 5, you will have to upload it again whenever you want.')
+		HTML('<h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>DILS</b> runs freely on a computer server.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To avoid saturating it, we have limited the number of analyses carried out at a given time and for a given input file to <b>5</b>.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Beyond 5, you will have to upload it again whenever you want.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The selected number of analysis cannot be modified once the choices had been checked/validated</h4>')
 	),
 	
 	boxPlus(title = h2("Email address"), width = 6, closable = FALSE, status = "primary", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
@@ -487,7 +507,7 @@ filtering <- fluidPage(
 			boxPlus(
 				title = h3("max_N_tolerated"), width = NULL, icon = NULL, solidHeader = TRUE, background = NULL,
 				boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
-				enable_label = TRUE, label_text = "EXPLANATIONS", label_status = "primary",
+				enable_label = TRUE, label_text = "INFORMATION", label_status = "primary",
 				h3("-Variable between 0 and 1."),
 				h3("-Defines the maximum proportion of N in the sequence of a gene in an individual beyond which this sequence is not considered."),
 				hr(),
@@ -503,7 +523,7 @@ filtering <- fluidPage(
 			boxPlus(
 				title = h3("Lmin"), width = NULL, icon = NULL, solidHeader = TRUE, background = NULL,
 				boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
-				enable_label = TRUE, label_text = "EXPLANATIONS", label_status = "success",
+				enable_label = TRUE, label_text = "INFORMATION", label_status = "success",
 				
 				h3("-Positive integer (>0)"),
 				h3("-Minimum number of treatable sites below which a gene is removed from the analysis."),
@@ -530,7 +550,7 @@ filtering <- fluidPage(
 			boxPlus(
 				title = h3("nMin"), width = NULL, icon = NULL, solidHeader = TRUE, background = NULL,
 				boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
-				enable_label = TRUE, label_text = "EXPLANATIONS", label_status = "warning",
+				enable_label = TRUE, label_text = "INFORMATION", label_status = "warning",
 				h3(strong("DILS"), " starts for each gene by eliminating individual sequences containing too many N and gaps", span(strong("(max_N_tolerated; blue box)", style = "color:blue")), "."),
 				br(),
 				h3("If for a gene and", strong("within a population/species"), "there are fewer ", strong("nMin"), "sequences left, then the gene is not considered in the ", strong("ABC"), "analysis."),
@@ -572,14 +592,6 @@ populations <- fluidPage(
 			choices = list("no" = "no", "yes" = "yes"), selected = "no"),
 			uiOutput("input_names_outgroup_ui")
 		),
-		
-#		boxPlus(title = h2("Size change over time"), height = NULL, width = 4, closable = FALSE, status = "danger", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
-#			prettyRadioButtons("population_growth", label = h3("Constant or variable population sizes"), shape = "round", status = "danger", fill = TRUE, inline = FALSE, animation = "pulse", bigger = TRUE,
-#			choices = list("constant" = "constant", "variable" = "variable"), selected = "constant"),
-#			em(strong(h4('If setted to constant: the sizes of the daughter populations differ from the ancestral population from the split, and remain constant.'))),
-#			em(strong(h4('If setted to variable: the sizes of the daughter populations are equal to that of the ancestral population at the time of the split, then increase (or decrease) exponentially according to N_current = N_ancestral x exp(-alpha x Tsplit), where N_current is the current number of effective individuals, N_ancestral the ancestral population size, alpha the population growth rate (positive/null/negative for growth/constant/decline), and Tsplit the number of generations since the time of split')))
-#
-#		)
 		uiOutput("size_change")
 	),
 
@@ -682,12 +694,10 @@ collaborative <- fluidPage(
 		});
 	')),
 	
-	#oxPlus(title = h2("Speciation along a continuum of divergence"), width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
-	#plotlyOutput("plot_greyzone")
-	# align="middle" height="auto" width="100%" margin="0 auto
 	h3(''),
 	hr(),
-	htmltools::div(style = "display:inline-block", plotlyOutput("plot_greyzone", width = "auto"))
+	
+	uiOutput("page_greyzone")
 )
 
 
@@ -1272,32 +1282,81 @@ server <- function(input, output, session = session) {
 	#tag$style(type = 'text/css', '.tab-panel{ background-color: red; color: white}')
 	## RESULT VISUALIZATION
 	### user informations
-	users_infos <- reactive({
-		# returns an object named "users_infos" containing:
-		# L1 : nSpecies (number of species)
-		# L2 : nameA (name of species A)
-		# L3 : nameB
-		# L4 : nLoci (number of loci)
-		# L5 : mail (user's email)
-		# L6 : date
-		# 
-		# if nSpecies == 1 then L3 is supressed.
+	# all data contained in the archive
+	allData <- reactive({
 		
 		fileName = input$results
 		if(is.null(fileName)){
 			return (NULL)
 		}else{
+			allData = list()
+			
 			untar(fileName$datapath, exdir = getwd())
 			rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
 		
-			users_infos_name = paste(rootName, "/general_infos.txt", sep='')
+			users_infos = read.table(paste(rootName, "/general_infos.txt", sep=''), h=F, sep=',')
+			hierarchical = read.table(paste(rootName, "/modelComp/hierarchical_models.txt", sep=''), h=F, sep='\t')
+			ABCstatGlobal = read.table(paste(rootName, "/ABCstat_global.txt", sep=''), h=T)
+			priorfile = read.table(paste(rootName, '/best_model/priorfile.txt', sep=''), h=T)
+			posterior = read.table(paste(rootName, '/best_model/posterior_bestModel.txt', sep=''), h=T)
+			distribution_PCA = read.table(paste(rootName, '/distribution_PCA.txt', sep=''), sep='\t', h=T)
+			contribution_PCA = read.table(paste(rootName, "/table_contrib_PCA_SS.txt", sep=''), h=T, sep='\t')
+			coord_PCA_SS = read.table(paste(rootName, "/table_coord_PCA_SS.txt", sep=''), h=T, sep='\t')
+			eigen = read.table(paste(rootName, "/table_eigenvalues_PCA_SS.txt", sep=''), h=T, sep='\t')
+			gof_table = read.table(paste(rootName, "/gof/goodness_of_fit_test.txt", sep=''), h=T)
+			gof2_table = read.table(paste(rootName, "/gof_2/goodness_of_fit_test.txt", sep=''), h=T)
+			gof_sfs = read.table(paste(rootName, "/gof/gof_sfs.txt", sep=''), h=T)
+			gof2_sfs = read.table(paste(rootName, "/gof_2/gof_sfs.txt", sep=''), h=T)
 			
-			users_infos = read.table(users_infos_name, h=F, sep=',')
+			# if 2 species
+			if(users_infos[1,2]==2){
+				yaml = read_yaml(paste(rootName, '/config.yaml', sep=''))
+				allData[['yaml']] = yaml
+				
+				Nref = as.numeric(read.table(paste(rootName, '/Nref.txt', sep='')))
+				allData[['Nref']] = Nref 
+				
+				optimized_posterior = read.table(paste(rootName, '/best_model_5/posterior_bestModel.txt', sep=''), h=T)
+				allData[['optimized_posterior']] = optimized_posterior 
+				
+				locus_spe = read.table(paste(rootName, "/locus_modelComp/locus_specific_modelComp.txt", sep=''), h=T)
+				allData[['locus_spe']] = locus_spe
+				
+				locus_infos = read.table(paste(rootName, "/", users_infos[2,2], "_", users_infos[3,2], "_infos.txt", sep=''), h=T)
+				allData[['locus_infos']] = locus_infos
+			}else{
+				if(users_infos[1,2]==1){
+					optimized_posterior = read.table(paste(rootName, '/best_model_7/posterior_bestModel.txt', sep=''), h=T)
+					allData[['optimized_posterior']] = optimized_posterior
+					
+					locus_spe = read.table(paste(rootName, "/ABCstat_loci.txt", sep=''), h=T)
+					allData[['locus_spe']] = locus_spe
+					
+					locus_infos = read.table(paste(rootName, "/", users_infos[2,2], "_infos.txt", sep=''), h=T)
+					allData[['locus_infos']] = locus_infos
+				}
+			}
+		
 			system(paste('rm -rf ', rootName, sep=''))
-			return(users_infos)
+			
+			allData[['users_infos']] = users_infos
+			allData[['hierarchical']] = hierarchical
+			allData[['ABCstatGlobal']] = ABCstatGlobal 
+			allData[['priorfile']] = priorfile 
+			allData[['posterior']] = posterior 
+			allData[['list_parameters']] = colnames(posterior) 
+			allData[['distribution_PCA']] = distribution_PCA 
+			allData[['contribution_PCA']] = contribution_PCA 
+			allData[['coord_PCA_SS']] = coord_PCA_SS
+			allData[['eigen']] = eigen 
+			allData[['gof_table']] = gof_table 
+			allData[['gof2_table']] = gof2_table 
+			allData[['gof_sfs']] = gof_sfs 
+			allData[['gof2_sfs']] = gof2_sfs 
+			
+			return(allData)
 		}
 	})
-	
 
 	## observed sum stats, demographic inferences
 	output$visualization_data <- renderUI({
@@ -1314,7 +1373,7 @@ server <- function(input, output, session = session) {
 
 	output$user_dataset_tabset <- renderUI({
 		if(is.null(input$results) == FALSE){
-			if(users_infos()[1,2]==2){
+			if(allData()[['users_infos']][1,2]==2){
 				# if number of species == 2
 				tabsetPanel(id = "observed_dataset",
 				type = "tabs",
@@ -1367,9 +1426,17 @@ server <- function(input, output, session = session) {
 					)
 				)
 			}else{
-				if(users_infos()[1,2]==1){
+				if(allData()[['users_infos']][1,2]==1){
 					# if number of species == 1
-					plotlyOutput("plot_obs_stats_1pop")
+					fluidRow(
+						column( width = 12, style='padding:20px;',
+							prettyCheckbox(inputId = "show_points_stats_sites_1pop", shape = "round", value = FALSE, label = strong("Show individual loci"), icon = icon("check"), animation = "tada", status = "success", bigger = TRUE)
+							),
+						
+						column( width = 12, style="margin-top:-0.5em",
+							plotlyOutput("plot_obs_stats_1pop")
+							)
+						)
 				}else{
 					return()
 				}
@@ -1381,7 +1448,7 @@ server <- function(input, output, session = session) {
 	
 	output$user_inferences <- renderUI({
 		if(is.null(input$results) == FALSE){
-			if(users_infos()[1,2]==2){
+			if(allData()[['users_infos']][1,2]==2){
 				# if number of species == 2
 				tabsetPanel(id = "inferences",
 				type = "tabs",
@@ -1389,17 +1456,15 @@ server <- function(input, output, session = session) {
 				tabPanel("Locus specific model comparison", numericInput("threshold_locus_specific_model_comp", label = h3("Posterior probability threshold value below which an inference is considered ambiguous"), width = (0.25*as.numeric(input$dimension[1])), value = 0.9, min = 0, max = 1, step = 0.005), hr(), plotlyOutput("locus_specific_model_comparison", height = 'auto', width = 'auto')),
 				tabPanel("Estimated parameters", uiOutput("parameters_estimates")),
 				tabPanel("Goodness-of-fit test", uiOutput("gof"))
-			#	tabPanel("Goodness-of-fit test", selectInput("PCA_gof_choice", label = h4("PCA on summary statistics"), choices = list("Plot" = 1, "Table" = 2), selected = 1), hr(), uiOutput("display_PCA_gof"))
 				)
 			}else{
-				if(users_infos()[1,2]==1){
+				if(allData()[['users_infos']][1,2]==1){
 					# if number of species == 1
 					tabsetPanel(id = "inferences",
 					type = "tabs",
 					tabPanel("Multilocus model comparison", uiOutput("display_modComp")),
 					tabPanel("Estimated parameters", uiOutput("parameters_estimates")),
 					tabPanel("Goodness-of-fit test", uiOutput("gof"))
-			#		tabPanel("Goodness-of-fit test", selectInput("PCA_gof_choice", label = h4("PCA on summary statistics"), choices = list("Plot" = 1, "Table" = 2), selected = 1), hr(), uiOutput("display_PCA_gof"))
 					)
 				}
 			}
@@ -1408,52 +1473,35 @@ server <- function(input, output, session = session) {
 		}
 	})
 
-	## READ THE RESULTS OF THE MODEL COMPARISON
-	modComp_table <- reactive({
-	fileName = input$results
-	if (is.null(fileName)){
-		return(NULL)
-	}else{
-		untar(fileName$datapath, exdir = getwd())
-		rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
-	
-		table_name = paste(rootName, "/modelComp/hierarchical_models.txt", sep='')
-		#read.table("/home/croux/Documents/ABConline/data_visualization/oKybz73JWT/gof/goodness_of_fit_test.txt", header = TRUE)
-		x = read.table(table_name, h=F, sep='\t')
-		system(paste('rm -rf ', rootName, sep=''))
-		return(x)
-		}
-	})
-	
 	# Display the model comparisons	
 	output$display_modComp <- renderUI({
-		if(is.null(modComp_table())){
+		if(is.null(allData()[['hierarchical']])){
 			return(NULL)
-		}else if(users_infos()[1,2] == 2){
+		}else if(allData()[['users_infos']][1,2] == 2){
 			# if number of species == 2
-			 if(modComp_table()[2,1] == 'isolation'){
+			 if(allData()[['hierarchical']][2,1] == 'isolation'){
 				fluidPage(
 					hr(),
-					infoBox("Migration versus isolation", paste('best model = ', as.matrix(modComp_table()[2,])[1], sep=''), paste('post. proba = ', round(as.numeric(as.matrix(modComp_table()[3,])), 5)[1], sep=''), icon = icon("check"), color='navy'),
-					infoBox("AM versus SI", paste('best model = ', as.matrix(modComp_table()[2,])[2], sep=''), paste('post. proba = ', round(as.numeric(as.matrix(modComp_table()[3,])), 5)[2], sep=''), icon = icon("check"), color='navy'),
-					infoBox("N-homo versus N-hetero", paste('best model = ', as.matrix(modComp_table()[2,])[3], sep=''), paste('post. proba = ', round(as.numeric(as.matrix(modComp_table()[3,])), 5)[3], sep=''), icon = icon("check"), color='navy')
+					infoBox("Migration versus isolation", paste('best model = ', as.matrix(allData()[['hierarchical']][2,])[1], sep=''), paste('post. proba = ', round(as.numeric(as.matrix(allData()[['hierarchical']][3,])), 5)[1], sep=''), icon = icon("check"), color='navy'),
+					infoBox("AM versus SI", paste('best model = ', as.matrix(allData()[['hierarchical']][2,])[2], sep=''), paste('post. proba = ', round(as.numeric(as.matrix(allData()[['hierarchical']][3,])), 5)[2], sep=''), icon = icon("check"), color='navy'),
+					infoBox("N-homo versus N-hetero", paste('best model = ', as.matrix(allData()[['hierarchical']][2,])[3], sep=''), paste('post. proba = ', round(as.numeric(as.matrix(allData()[['hierarchical']][3,])), 5)[3], sep=''), icon = icon("check"), color='navy')
 				)
-			}else if(modComp_table()[2,1] == 'migration'){
+			}else if(allData()[['hierarchical']][2,1] == 'migration'){
 				fluidPage(
 					hr(),
-					infoBox("Migration versus isolation", paste('best model = ', as.matrix(modComp_table()[2,])[1], sep=''), paste('post. proba = ', round(as.numeric(as.matrix(modComp_table()[3,])), 5)[1], sep=''), icon = icon("check"), color='navy'),
-					infoBox("IM versus SC", paste('best model = ', as.matrix(modComp_table()[2,])[2], sep=''), paste('post. proba = ', round(as.numeric(as.matrix(modComp_table()[3,])), 5)[2], sep=''), icon = icon("check"), color='navy'),
-					infoBox("N-homo versus N-hetero", paste('best model = ', as.matrix(modComp_table()[2,])[3], sep=''), paste('post. proba = ', round(as.numeric(as.matrix(modComp_table()[3,])), 5)[3], sep=''), icon = icon("check"), color='navy'),
-					infoBox("M-homo versus M-hetero", paste('best model = ', as.matrix(modComp_table()[2,])[4], sep=''), paste('post. proba = ', round(as.numeric(as.matrix(modComp_table()[3,])), 5)[4], sep=''), icon = icon("check"), color='navy')
+					infoBox("Migration versus isolation", paste('best model = ', as.matrix(allData()[['hierarchical']][2,])[1], sep=''), paste('post. proba = ', round(as.numeric(as.matrix(allData()[['hierarchical']][3,])), 5)[1], sep=''), icon = icon("check"), color='navy'),
+					infoBox("IM versus SC", paste('best model = ', as.matrix(allData()[['hierarchical']][2,])[2], sep=''), paste('post. proba = ', round(as.numeric(as.matrix(allData()[['hierarchical']][3,])), 5)[2], sep=''), icon = icon("check"), color='navy'),
+					infoBox("N-homo versus N-hetero", paste('best model = ', as.matrix(allData()[['hierarchical']][2,])[3], sep=''), paste('post. proba = ', round(as.numeric(as.matrix(allData()[['hierarchical']][3,])), 5)[3], sep=''), icon = icon("check"), color='navy'),
+					infoBox("M-homo versus M-hetero", paste('best model = ', as.matrix(allData()[['hierarchical']][2,])[4], sep=''), paste('post. proba = ', round(as.numeric(as.matrix(allData()[['hierarchical']][3,])), 5)[4], sep=''), icon = icon("check"), color='navy')
 				)
 			}
 		}
-		else if(users_infos()[1,2] == 1){
+		else if(allData()[['users_infos']][1,2] == 1){
 			# if number of species == 1
 			fluidPage(
 				hr(),
-				infoBox("Expansion versus Constant versus Contraction", paste('best model = ', as.matrix(modComp_table()[2,])[1], sep=''), paste('post. proba = ', round(as.numeric(as.matrix(modComp_table()[3,])), 5)[1], sep=''), icon = icon("check"), color='navy'),
-				infoBox("N-homo versus N-hetero", paste('best model = ', as.matrix(modComp_table()[2,])[2], sep=''), paste('post. proba = ', round(as.numeric(as.matrix(modComp_table()[3,])), 5)[2], sep=''), icon = icon("check"), color='navy')
+				infoBox("Expansion versus Constant versus Contraction", paste('best model = ', as.matrix(allData()[['hierarchical']][2,])[1], sep=''), paste('post. proba = ', round(as.numeric(as.matrix(allData()[['hierarchical']][3,])), 5)[1], sep=''), icon = icon("check"), color='navy'),
+				infoBox("N-homo versus N-hetero", paste('best model = ', as.matrix(allData()[['hierarchical']][2,])[2], sep=''), paste('post. proba = ', round(as.numeric(as.matrix(allData()[['hierarchical']][3,])), 5)[2], sep=''), icon = icon("check"), color='navy')
 			)
 		}
 	})
@@ -1471,7 +1519,7 @@ server <- function(input, output, session = session) {
 			boxPlus(
 				title = "", width = NULL, icon = NULL, solidHeader = TRUE, gradientColor = "teal",
 				boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
-				enable_label = TRUE, label_text = "Informations", label_status = "primary",
+				enable_label = TRUE, label_text = "INFORMATION", label_status = "primary",
 				
 				h3("The mutation rate ", strong("(µ)"), "is", strong("the probability per generation and per nucleotide"), "that an allele will not be properly replicated."),
 				h3("If an external group ", strong("is not specified"), "then all genes/contigs/locus share the same µ."),
@@ -1496,7 +1544,7 @@ server <- function(input, output, session = session) {
 			boxPlus(
 				title = "", width = NULL, icon = NULL, solidHeader = TRUE, gradientColor = "danger",
 				boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
-				enable_label = TRUE, label_text = "Informations", label_status = "danger",
+				enable_label = TRUE, label_text = "INFORMATION", label_status = "danger",
 				
 				h3("The effective population size ", em(strong("Ne")), "is the number of diploid individuals within current and ancestral species/populations."),
 				hr(),
@@ -1520,7 +1568,7 @@ server <- function(input, output, session = session) {
 				boxPlus(
 					title = "", width = NULL, icon = NULL, solidHeader = TRUE, gradientColor = "warning",
 					boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
-					enable_label = TRUE, label_text = "Informations", label_status = "warning",
+					enable_label = TRUE, label_text = "INFORMATION", label_status = "warning",
 					
 					h3("The speciation time", strong(em("Tsplit")), "is expressed", strong("in number of generations.")),
 					h3("For annual organisms: one generation = one year."),
@@ -1542,7 +1590,7 @@ server <- function(input, output, session = session) {
 				boxPlus(
 					title = "", width = NULL, icon = NULL, solidHeader = TRUE, gradientColor = "warning",
 					boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
-					enable_label = TRUE, label_text = "Informations", label_status = "warning",
+					enable_label = TRUE, label_text = "INFORMATION", label_status = "warning",
 					
 					h3("The time of demographic change", strong(em("Tdem")), "is expressed", strong("in number of generations.")),
 					h3("For annual organisms: one generation = one year."),
@@ -1569,7 +1617,7 @@ server <- function(input, output, session = session) {
 				boxPlus(
 					title = "", width = NULL, icon = NULL, solidHeader = TRUE, gradientColor = NULL,
 					boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
-					enable_label = TRUE, label_text = "Informations", label_status = "success",
+					enable_label = TRUE, label_text = "INFORMATION", label_status = "success",
 					h3("Migration rates are expressed in", strong(em("4.Ne.m,")), "where", strong(em("m")), "is the fraction of each subpopulation made up of new migrants each generation.")
 				)
 			)
@@ -1584,7 +1632,7 @@ server <- function(input, output, session = session) {
 		}else{
 			fluidPage(
 				fluidRow( width = 12,
-					selectInput('param_name', 'Parameter: ', list_parameters())
+					selectInput('param_name', 'Parameter: ', allData()[['list_parameters']])
 				),
 				
 				fluidRow( width = 12,
@@ -1601,7 +1649,7 @@ server <- function(input, output, session = session) {
 		}else{
 			fluidPage(
 				fluidRow( width = 12,
-					selectInput('param_name', 'Parameter: ', list_parameters())
+					selectInput('param_name', 'Parameter: ', allData()[['list_parameters']])
 				),
 				
 				fluidRow( width = 12,
@@ -1611,21 +1659,48 @@ server <- function(input, output, session = session) {
 		}
 	})
 
+	
+	output$distribution_gof <- renderUI({
+		fileName = input$results
+		if(is.null(fileName)) {
+			return()
+		}else{
+			fluidPage(
+				fluidRow( width = 12,
+					selectInput('stat_name', 'Summary statistic: ', list_statistics())
+				),
+				
+				fluidRow( width = 12,
+					plotlyOutput( outputId = 'density_statistic')
+				)
+			)
+		}
+	})
+
 
 	## Get the names of the parameters
-	list_parameters = reactive({
+	list_statistics = reactive({
 		fileName = input$results
 		if(is.null(fileName)){
 			return (NULL)
 		}else{
-			untar(fileName$datapath, exdir = getwd())
 			rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
-
-			res1 = read.table(paste(rootName, '/best_model/posterior_bestModel.txt', sep=''), h=T)
+			x = allData()[['distribution_PCA']] 
 			
+			toRemove = c(1)
+			for(i in 1:(ncol(x)-1)){ # -1 to keep the column prior/posterior/optimized/observed
+				if(sd(x[,i]) < 0.00001){
+					toRemove = c(toRemove, i)
+				}
+			}
+			toRemove = c(toRemove, grep('max', colnames(x)))
+			toRemove = c(toRemove, grep('min', colnames(x)))
+			toRemove = c(toRemove, grep('origin', colnames(x)))
+			toRemove = unique(toRemove)
+			x = x[, -toRemove]
+
 			# remove the temporary unarchived results
-			system(paste('rm -rf ', rootName, sep=''))
-			return(colnames(res1))
+			return(colnames(x))
 		}
 	})
 
@@ -1638,90 +1713,114 @@ server <- function(input, output, session = session) {
 		}else{
 			param_name = input$param_name
 			
-			untar(fileName$datapath, exdir = getwd())
 			rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
 
 			theme_set(theme_classic())
 			figure = list()
 
-			bpfile = read.table(paste(rootName, '/bpfile', sep=''), h=F, skip=1); nLoci = ncol(bpfile)
-			yaml = read_yaml(paste(rootName, '/config.yaml', sep=''))
-			Nref = as.numeric(read.table(paste(rootName, '/Nref.txt', sep='')))
-			res1 = read.table(paste(rootName, '/best_model/posterior_bestModel.txt', sep=''), h=T)
-			res2 = read.table(paste(rootName, '/best_model_3/posterior_bestModel.txt', sep=''), h=T)
-#			res3 = read.table(paste(rootName, '/best_model_5/posterior_bestModel.txt', sep=''), h=T)
-#			res4 = read.table(paste(rootName, '/best_model_7/posterior_bestModel.txt', sep=''), h=T)
+#			bpfile = read.table(paste(rootName, '/bpfile', sep=''), h=F, skip=1); nLoci = ncol(bpfile)
+			yaml = allData()[['yaml']]
+			Nref = allData()[['Nref']]
+			priorfile = allData()[['priorfile']]
+			res1 = allData()[['posterior']]
+			res2 = allData()[['optimized_posterior']]
 			
-			# remove the temporary unarchived results
-			system(paste('rm -rf ', rootName, sep=''))
-
-
 			# prior
-			nPrior = 0.5e6
-			prior_shape = runif(nPrior, 0.01, 50)
-			prior_founders = runif(nPrior, 0, 1)
-
-			scale = 1
-			if( param_name == 'N1' || param_name == 'N2' || param_name == 'Na' ){
+			if( param_name == 'N1' ){
 				scale = Nref
-				
-				# prior
-				min = yaml$N_min
-				max = yaml$N_max
-				prior = runif(nPrior, min, max)
+				prior = priorfile$N1*Nref
+			}
+			if( param_name == 'N2' ){
+				scale = Nref
+				prior = priorfile$N2*Nref
+			}
+			
+			if( param_name == 'Na' ){
+				scale = Nref
+				prior = priorfile$Na*Nref
+			}
+		
+			if( param_name == 'founders1' ){
+				scale = 1
+				prior = priorfile$founders1 
 			}
 
-			if( param_name == 'founders2' || param_name == 'founders1' ){
-				prior = prior_founders
+			if( param_name == 'founders2' ){
+				scale = 1
+				prior = priorfile$founders2 
 			}
 
-			if( param_name == 'M12' || param_name == 'M21' ){
-				prior = runif(nPrior, yaml$M_min, yaml$M_max)
+			if( param_name == 'M12'){
+				scale = 1
+				prior = priorfile$M12
+			}
+			
+			if( param_name == 'M21'){
+				scale = 1
+				prior = priorfile$M21
 			}
 
 			if( param_name == 'Tsplit' || param_name == 'Tam' || param_name == 'Tsc' || param_name == 'Tdem1' || param_name == 'Tdem2' ){
 				scale = 4*Nref
 				
-				# prior
-				min = yaml$Tsplit_min
-				max = yaml$Tsplit_max
 				if( param_name == 'Tsplit' ){
-					prior = runif(nPrior, min, max)
+					prior = priorfile$Tsplit*scale
 				}
 
 				if( param_name == 'Tam' ){
-					prior_Tsplit = runif(nPrior, min, max)
-					prior = vector(length = nPrior)
-					for(j in 1:nPrior){
-						prior[j] = runif(1, 0.5*prior_Tsplit[j], prior_Tsplit[j])
-					}
+					prior = priorfile$Tam*scale
 				}
 				
 				if( param_name == 'Tsc' ){
-					prior_Tsplit = runif(nPrior, min, max)
-					prior = vector(length = nPrior)
-					for(j in 1:nPrior){
-						prior[j] = runif(1, min, 0.2*prior_Tsplit[j])
-					}
+					prior = priorfile$Tsc*scale
 				}
 				
-				if( param_name == 'Tdem1' || param_name == 'Tdem2' ){
-					prior_Tsplit = runif(nPrior, min, max)
-					prior = vector(length = nPrior)
-					for(j in 1:nPrior){
-						prior[j] = runif(1, min, prior_Tsplit[j])
-					}
+				if( param_name == 'Tdem1'){
+					prior = priorfile$Tdem1*scale
+				}
+				
+				if( param_name == 'Tdem2'){
+					prior = priorfile$Tdem2*scale
 				}
 			}
 
 			if( param_name == "shape_N_a" || param_name == "shape_N_b" || param_name == "shape_M12_a" || param_name == "shape_M12_b" || param_name == "shape_M21_a" || param_name == "shape_M21_b" ){
-				prior = prior_shape
+				scale = 1
+				if( param_name == 'shape_N_a'){
+					prior = priorfile$shape_N_a
+				}
+				
+				if( param_name == 'shape_N_b'){
+					prior = priorfile$shape_N_b
+				}
+				
+				if( param_name == 'shape_M12_a'){
+					prior = priorfile$shape_M12_a
+				}
+				
+				if( param_name == 'shape_M12_b'){
+					prior = priorfile$shape_M12_b
+				}
+				
+				if( param_name == 'shape_M21_a'){
+					prior = priorfile$shape_M12_a
+				}
+				
+				if( param_name == 'shape_M21_b'){
+					prior = priorfile$shape_M12_b
+				}
 			}
 
-			if( param_name == "nBarriersM12" || param_name == "nBarriersM21" ){
-				prior = runif(nPrior, 0, nLoci)
+			if( param_name == "nBarriersM12" ){
+				scale = 1
+				prior = priorfile$nBarriersM12
 			}
-
+			
+			if( param_name == "nBarriersM21" ){
+				scale = 1
+				prior = priorfile$nBarriersM21
+			}
+			
 			#	prior = x[,i] * scale
 			#	prior = data.frame(x = prior, label=rep('prior', length(prior)))
 			prior = data.frame(x = prior, distribution=rep("Prior", length(prior)))
@@ -1729,24 +1828,12 @@ server <- function(input, output, session = session) {
 			posterior1 = data.frame(x = posterior1, distribution=rep('Posterior', length(posterior1)))
 			
 			posterior2 = res2[,which(colnames(res1)==param_name)] * scale
-#			posterior2 = data.frame(x = posterior2, distribution=rep('First optimization', length(posterior2)))
 			posterior2 = data.frame(x = posterior2, distribution=rep('Optimized posterior', length(posterior2)))
 #			
-#			posterior3 = res3[,which(colnames(res1)==param_name)] * scale
-#			posterior3 = data.frame(x = posterior3, distribution=rep('Second optimization', length(posterior3)))
-			
-#			posterior4 = res4[,which(colnames(res1)==param_name)] * scale
-##			posterior4 = data.frame(x = posterior4, distribution=rep('Third optimization', length(posterior4)))
-#			posterior4 = data.frame(x = posterior4, distribution=rep('Optimized posterior', length(posterior4)))
-			
-			#	df=rbind(prior, posterior)
-#			df=rbind(prior, posterior1, posterior2, posterior3, posterior4)
-#			df=rbind(prior, posterior1, posterior4)
 			df=rbind(prior, posterior1, posterior2)
 
 
-#			p <- ggplot(df, aes(x, fill = distribution)) + geom_density(alpha = 0.7, size = 0.25) + scale_fill_manual(values=c("white", viridis_pal(option="D")(5)[1:4])) + theme(axis.text.x = element_text(size=14), axis.text.y = element_text(size=14), legend.text = element_text(size = 15)) + scale_x_continuous(name = param_name)
-			p <- ggplot(df, aes(x, fill = distribution)) + geom_density(alpha = 0.7, size = 0.25) + scale_fill_manual(values=c("white", viridis_pal(option="D")(5)[c(1,4)])) + theme(axis.text.x = element_text(size=14), axis.text.y = element_text(size=14), legend.text = element_text(size = 15)) + scale_x_continuous(name = param_name)
+			p <- ggplot(df, aes(x, fill = distribution)) + geom_density(alpha = 0.7, size = 0.25) + scale_fill_manual(values=c("darkgray", viridis_pal(option="D")(5)[c(1,4)])) + theme(axis.text.x = element_text(size=14), axis.text.y = element_text(size=14), legend.text = element_text(size = 15)) + scale_x_continuous(name = param_name)
 			p <- ggplotly(p, width = 0.55*as.numeric(input$dimension[1]), height = 0.55*as.numeric(input$dimension[2]))
 
 			figure_estimations = ggplotly(p)
@@ -1763,62 +1850,21 @@ server <- function(input, output, session = session) {
 		}else{
 			param_name = input$param_name
 		
-			untar(fileName$datapath, exdir = getwd())
-			rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
 			theme_set(theme_classic())
-			figure = list()
-			bpfile = read.table(paste(rootName, '/bpfile', sep=''), h=F, skip=1); nLoci = ncol(bpfile)
-			yaml = read_yaml(paste(rootName, '/config.yaml', sep=''))
-			res1 = read.table(paste(rootName, '/best_model/posterior_bestModel.txt', sep=''), h=T)
-#			res2 = read.table(paste(rootName, '/best_model_3/posterior_bestModel.txt', sep=''), h=T)
-#			res3 = read.table(paste(rootName, '/best_model_5/posterior_bestModel.txt', sep=''), h=T)
-			res4 = read.table(paste(rootName, '/best_model_7/posterior_bestModel.txt', sep=''), h=T)
+			priorfile = allData()[['priorfile']]
+			res1 = allData()[['posterior']]
+			res2 = allData()[['optimized_posterior']]
+
+			prior = priorfile[,which(colnames(priorfile)==param_name)]
+			prior = data.frame(x = prior, distribution=rep('Prior', length(prior)))
 			
-			# remove the temporary unarchived results
-			system(paste('rm -rf ', rootName, sep=''))
-
-
-			# prior
-			nPrior = 0.5e6
-			prior_shape = runif(nPrior, 0.01, 50)
-
-			if( param_name == 'N' || param_name == 'Npast' ){
-				# prior
-				min = yaml$N_min
-				max = yaml$N_max
-				prior = runif(nPrior, min, max)
-			}
-
-			if( param_name == 'Tdem' ){
-				# prior
-				min = yaml$Tchanges_min
-				max = yaml$Tchanges_max
-				prior = runif(nPrior, min, max)
-
-			}
-
-			if( param_name == "shape_N_a" || param_name == "shape_N_b" ){
-				prior = prior_shape
-			}
-
-			#	prior = x[,i] * scale
-			#	prior = data.frame(x = prior, label=rep('prior', length(prior)))
-			prior = data.frame(x = prior, distribution=rep("Prior", length(prior)))
 			posterior1 = res1[,which(colnames(res1)==param_name)]
 			posterior1 = data.frame(x = posterior1, distribution=rep('Posterior', length(posterior1)))
 			
-#			posterior2 = res2[,which(colnames(res1)==param_name)]
-#			posterior2 = data.frame(x = posterior2, distribution=rep('First optimization', length(posterior2)))
-#			
-#			posterior3 = res3[,which(colnames(res1)==param_name)]
-#			posterior3 = data.frame(x = posterior3, distribution=rep('Second optimization', length(posterior3)))
+			posterior2 = res2[,which(colnames(res2)==param_name)]
+			posterior2 = data.frame(x = posterior2, distribution=rep('Optimized posterior', length(posterior2)))
 			
-			posterior4 = res4[,which(colnames(res1)==param_name)]
-			posterior4 = data.frame(x = posterior4, distribution=rep('Optimized posterior', length(posterior4)))
-			#	df=rbind(prior, posterior)
-			#df=rbind(prior, posterior1, posterior2, posterior3, posterior4)
-			df=rbind(prior, posterior1, posterior4)
-
+			df=rbind(prior, posterior1, posterior2)
 
 			p <- ggplot(df, aes(x, fill = distribution)) + geom_density(alpha = 0.7, size = 0.25) + scale_fill_manual(values=c("white", viridis_pal(option="D")(5)[c(1,4)])) + theme(axis.text.x = element_text(size=14), axis.text.y = element_text(size=14), legend.text = element_text(size = 15)) + scale_x_continuous(name = param_name)
 			p <- ggplotly(p, width = 0.55*as.numeric(input$dimension[1]), height = 0.55*as.numeric(input$dimension[2]))
@@ -1835,7 +1881,6 @@ server <- function(input, output, session = session) {
 		if (is.null(fileName)){
 			return(NULL)
 		}else{
-			untar(fileName$datapath, exdir = getwd())
 			rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
 		
 			# table
@@ -1843,15 +1888,10 @@ server <- function(input, output, session = session) {
 			figure = list()
 
 			# read informations
-			Nref = as.numeric(read.table(paste(rootName, '/Nref.txt', sep='')))
-			res1 = read.table(paste(rootName, '/best_model/posterior_bestModel.txt', sep=''), h=T) # first posterior
-			res2 = read.table(paste(rootName, '/best_model_3/posterior_bestModel.txt', sep=''), h=T) # first optimization
-#			res3 = read.table(paste(rootName, '/best_model_5/posterior_bestModel.txt', sep=''), h=T) # second optimization
-#			res4 = read.table(paste(rootName, '/best_model_7/posterior_bestModel.txt', sep=''), h=T) # second optimization
+			Nref = allData()[['Nref']]
+			res1 = allData()[['posterior']]
+			res2 = allData()[['optimized_posterior']]
 			
-			# remove the temporary unarchived results
-			system(paste('rm -rf ', rootName, sep=''))
-
 			# table
 			param_names = NULL
 			post1_Q1 = NULL
@@ -1860,12 +1900,6 @@ server <- function(input, output, session = session) {
 			post2_Q1 = NULL
 			post2_median = NULL
 			post2_Q2 = NULL
-#			post3_Q1 = NULL
-#			post3_median = NULL
-#			post3_Q2 = NULL
-#			post4_Q1 = NULL
-#			post4_median = NULL
-#			post4_Q2 = NULL
 
 			nparams = ncol(res1)
 			for(i in 1:nparams){
@@ -1885,12 +1919,6 @@ server <- function(input, output, session = session) {
 
 				posterior2 = res2[,i] * scale
 				posterior2 = data.frame(x = posterior2, label=rep('First optimization', length(posterior2)))
-
-#				posterior3 = res3[,i] * scale
-#				posterior3 = data.frame(x = posterior3, label=rep('Second optimization', length(posterior3)))
-
-#				posterior4 = res4[,i] * scale
-#				posterior4 = data.frame(x = posterior4, label=rep('Third optimization', length(posterior4)))
 				
 				# table
 				param_names = c(param_names, param_name)
@@ -1902,14 +1930,6 @@ server <- function(input, output, session = session) {
 					post2_Q1_tmp = formatC(round(quantile(posterior2$x, 0.025), 0), format='d', big.mark=' ')
 					post2_median_tmp = formatC(round(quantile(posterior2$x, 0.5), 0), format='d', big.mark=' ')
 					post2_Q2_tmp = formatC(round(quantile(posterior2$x, 0.975), 0), format='d', big.mark=' ')
-#
-#					post3_Q1_tmp = formatC(round(quantile(posterior3$x, 0.025), 0), format='d', big.mark=' ')
-#					post3_median_tmp = formatC(round(quantile(posterior3$x, 0.5), 0), format='d', big.mark=' ')
-#					post3_Q2_tmp = formatC(round(quantile(posterior3$x, 0.975), 0), format='d', big.mark=' ')
-					
-#					post4_Q1_tmp = formatC(round(quantile(posterior4$x, 0.025), 0), format='d', big.mark=' ')
-#					post4_median_tmp = formatC(round(quantile(posterior4$x, 0.5), 0), format='d', big.mark=' ')
-#					post4_Q2_tmp = formatC(round(quantile(posterior4$x, 0.975), 0), format='d', big.mark=' ')
 				}else{
 					post1_Q1_tmp = formatC(round(quantile(posterior1$x, 0.025), 5), format="f", big.mark=" ", digits=5)
 					post1_median_tmp = formatC(round(quantile(posterior1$x, 0.5), 5), format="f", big.mark=" ", digits=5)
@@ -1918,14 +1938,7 @@ server <- function(input, output, session = session) {
 					post2_Q1_tmp = formatC(round(quantile(posterior2$x, 0.025), 5), format="f", big.mark=" ", digits=5)
 					post2_median_tmp = formatC(round(quantile(posterior2$x, 0.5), 5), format="f", big.mark=" ", digits=5)
 					post2_Q2_tmp = formatC(round(quantile(posterior2$x, 0.975), 5), format="f", big.mark=" ", digits=5)
-#					
-#					post3_Q1_tmp = formatC(round(quantile(posterior3$x, 0.025), 5), format="f", big.mark=" ", digits=5)
-#					post3_median_tmp = formatC(round(quantile(posterior3$x, 0.5), 5), format="f", big.mark=" ", digits=5)
-#					post3_Q2_tmp = formatC(round(quantile(posterior3$x, 0.975), 5), format="f", big.mark=" ", digits=5)
 					
-#					post4_Q1_tmp = formatC(round(quantile(posterior4$x, 0.025), 5), format="f", big.mark=" ", digits=5)
-#					post4_median_tmp = formatC(round(quantile(posterior4$x, 0.5), 5), format="f", big.mark=" ", digits=5)
-#					post4_Q2_tmp = formatC(round(quantile(posterior4$x, 0.975), 5), format="f", big.mark=" ", digits=5)
 				}
 					
 				post1_Q1 = c(post1_Q1, post1_Q1_tmp)
@@ -1935,38 +1948,23 @@ server <- function(input, output, session = session) {
 				post2_Q1 = c(post2_Q1, post2_Q1_tmp)
 				post2_median = c(post2_median, post2_median_tmp)
 				post2_Q2 = c(post2_Q2, post2_Q2_tmp)
-#				
-#				post3_Q1 = c(post3_Q1, post3_Q1_tmp)
-#				post3_median = c(post3_median, post3_median_tmp)
-#				post3_Q2 = c(post3_Q2, post3_Q2_tmp)
-				
-#				post4_Q1 = c(post4_Q1, post4_Q1_tmp)
-#				post4_median = c(post4_median, post4_median_tmp)
-#				post4_Q2 = c(post4_Q2, post4_Q2_tmp)
 			}
 
 			# print table
 			col_tmp = viridis_pal(option="D", alpha=1)(5)
 			col_post1_header = col_tmp[1]
 			col_post2_header = col_tmp[4]
-#			col_post3_header = col_tmp[3]
-#			col_post4_header = col_tmp[4]
 			col_tmp = viridis_pal(option="D", alpha=0.4)(5)
 			col_post1 = col_tmp[1]
 			col_post2 = col_tmp[4]
-#			col_post3 = col_tmp[3]
-#			col_post4 = col_tmp[4]
 			green = "#C7F464"
 			dark_grey = "#1e2b37"
 			light_grey = "#556270"
 
 			table_estimations = plot_ly( type = 'table',
 				header = list(
-#					values = c("<b>Parameter</b>", "<b>HPD 0.025</b>", "<b>HPD median (posterior)</b>", "<b>HPD 0.975</b>", "<b>HPD 0.025</b>", "<b>HPD median (first optimization)</b>", "<b>HPD 0.975</b>", "<b>HPD 0.025</b>", "<b>HPD median (second optimization)</b>", "<b>HPD 0.975</b>", "<b>HPD 0.025</b>", "<b>HPD median (third optimization)</b>", "<b>HPD 0.975</b>"),
 					values = c("<b>Parameter</b>", "<b>HPD 0.025</b>", "<b>HPD median (posterior)</b>", "<b>HPD 0.975</b>", "<b>HPD 0.025</b>", "<b>HPD median (optimized posterior)</b>", "<b>HPD 0.975</b>"),
 					line = list(color = dark_grey),
-					#fill = list(color = c(dark_grey, col_post1_header, col_post1_header, col_post1_header, col_post2_header, col_post2_header, col_post2_header, col_post3_header, col_post3_header, col_post3_header, col_post4_header, col_post4_header, col_post4_header)),
-					#fill = list(color = c(dark_grey, col_post1_header, col_post1_header, col_post1_header, col_post4_header, col_post4_header, col_post4_header)),
 					fill = list(color = c(dark_grey, col_post1_header, col_post1_header, col_post1_header, col_post2_header, col_post2_header, col_post2_header)),
 					align = c('left','center'),
 					font = list(color = c(green, rep("white", 6), size = 30))
@@ -1981,18 +1979,8 @@ server <- function(input, output, session = session) {
 						post2_Q1,
 						paste('<b>', post2_median, '</b>', sep=''),
 						post2_Q2
-#						
-#						post3_Q1,
-#						paste('<b>', post3_median, '</b>', sep=''),
-#						post3_Q2,
-						
-#						post4_Q1,
-#						paste('<b>', post4_median, '</b>', sep=''),
-#						post4_Q2
 					),
 					line = list(color = dark_grey),
-#					fill = list(color = c(light_grey, col_post1, col_post1, col_post1, col_post2, col_post2, col_post2, col_post3, col_post3, col_post3, col_post4, col_post4, col_post4)),
-#					fill = list(color = c(light_grey, col_post1, col_post1, col_post1, col_post4, col_post4, col_post4)),
 					fill = list(color = c(light_grey, col_post1, col_post1, col_post1, col_post2, col_post2, col_post2)),
 					align = c('left', 'center'),
 					font = list(color = c(green, dark_grey,  size = 30))
@@ -2008,35 +1996,19 @@ server <- function(input, output, session = session) {
 		if (is.null(fileName)){
 			return(NULL)
 		}else{
-			untar(fileName$datapath, exdir = getwd())
-			rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
-		
 			# table
 			theme_set(theme_classic())
 			figure = list()
 
 			# read informations
-			res1 = read.table(paste(rootName, '/best_model/posterior_bestModel.txt', sep=''), h=T)
-#			res2 = read.table(paste(rootName, '/best_model_3/posterior_bestModel.txt', sep=''), h=T)
-#			res3 = read.table(paste(rootName, '/best_model_5/posterior_bestModel.txt', sep=''), h=T)
-			res4 = read.table(paste(rootName, '/best_model_7/posterior_bestModel.txt', sep=''), h=T)
+			res1 = allData()[['posterior']]
+			res4 = allData()[['optimized_posterior']]
 			
-			# remove the temporary unarchived results
-			system(paste('rm -rf ', rootName, sep=''))
-
 			# table
 			param_names = NULL
 			post1_Q1 = NULL
 			post1_median = NULL
 			post1_Q2 = NULL
-			
-#			post2_Q1 = NULL
-#			post2_median = NULL
-#			post2_Q2 = NULL
-#			
-#			post3_Q1 = NULL
-#			post3_median = NULL
-#			post3_Q2 = NULL
 			
 			post4_Q1 = NULL
 			post4_median = NULL
@@ -2049,11 +2021,6 @@ server <- function(input, output, session = session) {
 				posterior1 = res1[,i]
 				posterior1 = data.frame(x = posterior1, label=rep('Posterior', length(posterior1)))
 			
-#				posterior2 = res2[,i]
-#				posterior2 = data.frame(x = posterior2, label=rep('First optimization', length(posterior2)))
-#		
-#				posterior3 = res3[,i]
-#				posterior3 = data.frame(x = posterior3, label=rep('Second optimization', length(posterior3)))
 				
 				posterior4 = res4[,i]
 				posterior4 = data.frame(x = posterior4, label=rep('Optimized posterior', length(posterior4)))
@@ -2064,13 +2031,6 @@ server <- function(input, output, session = session) {
 					post1_median_tmp = formatC(round(quantile(posterior1$x, 0.5), 0), format='d', big.mark=' ')
 					post1_Q2_tmp = formatC(round(quantile(posterior1$x, 0.975), 0), format='d', big.mark=' ')
 					
-#					post2_Q1_tmp = formatC(round(quantile(posterior2$x, 0.025), 0), format='d', big.mark=' ')
-#					post2_median_tmp = formatC(round(quantile(posterior2$x, 0.5), 0), format='d', big.mark=' ')
-#					post2_Q2_tmp = formatC(round(quantile(posterior2$x, 0.975), 0), format='d', big.mark=' ')
-#					
-#					post3_Q1_tmp = formatC(round(quantile(posterior3$x, 0.025), 0), format='d', big.mark=' ')
-#					post3_median_tmp = formatC(round(quantile(posterior3$x, 0.5), 0), format='d', big.mark=' ')
-#					post3_Q2_tmp = formatC(round(quantile(posterior3$x, 0.975), 0), format='d', big.mark=' ')
 					
 					post4_Q1_tmp = formatC(round(quantile(posterior4$x, 0.025), 0), format='d', big.mark=' ')
 					post4_median_tmp = formatC(round(quantile(posterior4$x, 0.5), 0), format='d', big.mark=' ')
@@ -2080,13 +2040,6 @@ server <- function(input, output, session = session) {
 					post1_median_tmp = formatC(round(quantile(posterior1$x, 0.5), 5), format="f", big.mark=" ", digits=5)
 					post1_Q2_tmp = formatC(round(quantile(posterior1$x, 0.975), 5), format="f", big.mark=" ", digits=5)
 					
-#					post2_Q1_tmp = formatC(round(quantile(posterior2$x, 0.025), 5), format="f", big.mark=" ", digits=5)
-#					post2_median_tmp = formatC(round(quantile(posterior2$x, 0.5), 5), format="f", big.mark=" ", digits=5)
-#					post2_Q2_tmp = formatC(round(quantile(posterior2$x, 0.975), 5), format="f", big.mark=" ", digits=5)
-#					
-#					post3_Q1_tmp = formatC(round(quantile(posterior3$x, 0.025), 5), format="f", big.mark=" ", digits=5)
-#					post3_median_tmp = formatC(round(quantile(posterior3$x, 0.5), 5), format="f", big.mark=" ", digits=5)
-#					post3_Q2_tmp = formatC(round(quantile(posterior3$x, 0.975), 5), format="f", big.mark=" ", digits=5)
 					
 					post4_Q1_tmp = formatC(round(quantile(posterior4$x, 0.025), 5), format="f", big.mark=" ", digits=5)
 					post4_median_tmp = formatC(round(quantile(posterior4$x, 0.5), 5), format="f", big.mark=" ", digits=5)
@@ -2096,14 +2049,6 @@ server <- function(input, output, session = session) {
 				post1_Q1 = c(post1_Q1, post1_Q1_tmp)
 				post1_median = c(post1_median, post1_median_tmp)
 				post1_Q2 = c(post1_Q2, post1_Q2_tmp)
-				
-#				post2_Q1 = c(post2_Q1, post2_Q1_tmp)
-#				post2_median = c(post2_median, post2_median_tmp)
-#				post2_Q2 = c(post2_Q2, post2_Q2_tmp)
-#				
-#				post3_Q1 = c(post3_Q1, post3_Q1_tmp)
-#				post3_median = c(post3_median, post3_median_tmp)
-#				post3_Q2 = c(post3_Q2, post3_Q2_tmp)
 				
 				post4_Q1 = c(post4_Q1, post4_Q1_tmp)
 				post4_median = c(post4_median, post4_median_tmp)
@@ -2127,13 +2072,10 @@ server <- function(input, output, session = session) {
 
 			table_estimations = plot_ly( type = 'table',
 				header = list(
-#					values = c("<b>Parameter</b>", "<b>HPD 0.025</b>", "<b>HPD median (posterior)</b>", "<b>HPD 0.975</b>", "<b>HPD 0.025</b>", "<b>HPD median (first optimization)</b>", "<b>HPD 0.975</b>", "<b>HPD 0.025</b>", "<b>HPD median (second optimization)</b>", "<b>HPD 0.975</b>", "<b>HPD 0.025</b>", "<b>HPD median (third optimization)</b>", "<b>HPD 0.975</b>"),
 					values = c("<b>Parameter</b>", "<b>HPD 0.025</b>", "<b>HPD median (posterior)</b>", "<b>HPD 0.975</b>", "<b>HPD 0.025</b>", "<b>HPD median (optimized posterior)</b>", "<b>HPD 0.975</b>"),
 					line = list(color = dark_grey),
-					#fill = list(color = c(dark_grey, col_post1_header, col_post1_header, col_post1_header, col_post2_header, col_post2_header, col_post2_header, col_post3_header, col_post3_header, col_post3_header, col_post4_header, col_post4_header, col_post4_header)),
 					fill = list(color = c(dark_grey, col_post1_header, col_post1_header, col_post1_header, col_post4_header, col_post4_header, col_post4_header)),
 					align = c('left','center'),
-#					font = list(color = c(green, rep("white", 12), size = 30))
 					font = list(color = c(green, rep("white", 6), size = 30))
 				),
 				cells = list(
@@ -2143,21 +2085,12 @@ server <- function(input, output, session = session) {
 						paste('<b>', post1_median, '</b>', sep=''),
 						post1_Q2,
 						
-#						post2_Q1,
-#						paste('<b>', post2_median, '</b>', sep=''),
-#						post2_Q2,
-#						
-#						post3_Q1,
-#						paste('<b>', post3_median, '</b>', sep=''),
-#						post3_Q2,
-						
 						post4_Q1,
 						paste('<b>', post4_median, '</b>', sep=''),
 						post4_Q2
 
 					),
 					line = list(color = dark_grey),
-#					fill = list(color = c(light_grey, col_post1, col_post1, col_post1, col_post2, col_post2, col_post2, col_post3, col_post3, col_post3, col_post4, col_post4, col_post4)),
 					fill = list(color = c(light_grey, col_post1, col_post1, col_post1, col_post4, col_post4, col_post4)),
 					align = c('left', 'center'),
 					font = list(color = c(green, dark_grey,  size = 30))
@@ -2174,34 +2107,15 @@ server <- function(input, output, session = session) {
 	if (is.null(fileName)){
 		return(NULL)
 	}else{
-		untar(fileName$datapath, exdir = getwd())
-		rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
-		
 		if( input$posterior_choice == 1){
 			# if interested by the posterior
-			gof_table_name = paste(rootName, "/gof/goodness_of_fit_test.txt", sep='')
+			x = allData()[['gof_table']]
 		}else{
 			if( input$posterior_choice == 2){
-				# if interested by the first optimized posterior
-				gof_table_name = paste(rootName, "/gof_2/goodness_of_fit_test.txt", sep='')
+				# if interested by the optimized posterior
+				x = allData()[['gof2_table']]
 			}
-#			if( input$posterior_choice == 3){
-#				# if interested by the second optimized posterior
-#				gof_table_name = paste(rootName, "/gof_3/goodness_of_fit_test.txt", sep='')
-#			}
-#			if( input$posterior_choice == 4){
-#				# if interested by the third optimized posterior
-#				gof_table_name = paste(rootName, "/gof_4/goodness_of_fit_test.txt", sep='')
-#			}
-#			if( input$posterior_choice == 2){
-#				# if interested by the third optimized posterior
-#				gof_table_name = paste(rootName, "/gof_4/goodness_of_fit_test.txt", sep='')
-#			}
-			
 		}
-		#read.table("/home/croux/Documents/ABConline/data_visualization/oKybz73JWT/gof/goodness_of_fit_test.txt", header = TRUE)
-		x = read.table(gof_table_name, h=T)
-		system(paste('rm -rf ', rootName, sep=''))
 		return(x)
 		}
 	})
@@ -2224,6 +2138,53 @@ server <- function(input, output, session = session) {
 		}
 	})
 
+	
+	# distribution summary statistics
+	output$density_statistic <- renderPlotly({
+		fileName = input$results
+		if (is.null(fileName)){
+			return(NULL)
+		}else{
+			stat_name = input$stat_name
+		
+			rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
+			theme_set(theme_classic())
+			figure = list()
+			x = allData()[['distribution_PCA']]
+			
+			toRemove = c(1)
+			for(i in 1:(ncol(x)-1)){ # -1 to keep the column prior/posterior/optimized/observed
+				if(sd(x[,i]) < 0.00001){
+					toRemove = c(toRemove, i)
+				}
+			}
+			toRemove = c(toRemove, grep('max', colnames(x)))
+			toRemove = c(toRemove, grep('min', colnames(x)))
+			toRemove = unique(toRemove)
+			x = x[, -toRemove]
+
+
+			# keep simulations
+			simulations = select(filter(x, origin%in%c('prior', 'posterior', 'optimized posterior')), c('origin', stat_name))
+			colnames(simulations) = c('distribution', 'stat')
+
+			# keep observation 
+			observation = select(filter(x, origin%in%c('observed dataset')), c('origin', stat_name))
+			colnames(observation) = c('distribution', 'stat')
+
+
+			p <- ggplot(simulations, aes(stat, fill = distribution)) +
+			#	geom_histogram( alpha = 0.7 ) +
+				geom_density(alpha = 0.7, size = 0.25) +
+				scale_fill_manual(values=c("darkgray", viridis_pal(option="D")(5)[c(1,4)])[3:1]) +
+				geom_vline(xintercept=observation$stat, lwd=1.2, col=viridis_pal(option="D")(5)[5]) +
+				theme(axis.text.x = element_text(size=14), axis.text.y = element_text(size=14), legend.text = element_text(size = 15), panel.background = element_rect(fill = '#ffffff')) +
+				scale_x_continuous(name = stat_name)
+
+			return(p)
+		}
+	})
+
 
 	## plot the SFS : get the table
 	table_sfs <- reactive({
@@ -2231,22 +2192,18 @@ server <- function(input, output, session = session) {
 		if(is.null(fileName)){
 			return (NULL)
 		}else{
-			untar(fileName$datapath, exdir = getwd())
-			rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
 			if( input$posterior_choice == 1){
 				# if interested by the posterior
-				sfs_name = paste(rootName, "/gof/gof_sfs.txt", sep='')
+				table_sfs = allData()[['gof_sfs']]
 			}else{
 				if( input$posterior_choice == 2){
 					# if interested by the first optimized posterior
-					sfs_name = paste(rootName, "/gof_2/gof_sfs.txt", sep='')
+					table_sfs = allData()[['gof2_sfs']]
 				}
 				
 			}
-			
-			table_sfs = read.table(sfs_name, h=T)
 
-			if(users_infos()[1,2]==2){
+			if(allData()[['users_infos']][1,2]==2){
 				# if nPops = 2
 				## inelegant way to remove 'useless' bins...
 				table_sfs[4,which(log10(table_sfs[1,])==-Inf)] = NA
@@ -2254,7 +2211,6 @@ server <- function(input, output, session = session) {
 				## end ot the inelegant block
 			}
 			
-			system(paste('rm -rf ', rootName, sep=''))
 			return(table_sfs)
 		}
 	})
@@ -2285,19 +2241,19 @@ server <- function(input, output, session = session) {
 			)
 
 			xlab = list(
-				title=users_infos()[2,2],
+				title=allData()[['users_infos']][2,2],
 				titlefont=f,
 				tickfont=f2
 			)
 
 			ylab = list(
-				title=users_infos()[3,2],
+				title=allData()[['users_infos']][3,2],
 				titlefont=f,
 				tickfont=f2
 			)
 			
-			nameA = users_infos()[2,2]
-			nameB = users_infos()[3,2]
+			nameA = allData()[['users_infos']][2,2]
+			nameB = allData()[['users_infos']][3,2]
 			noms=matrix(unlist(strsplit(names(table_sfs()), '_')), byrow=T, ncol=2)
 			dat = data.frame(x=as.numeric(substr(noms[,1], 3, 10)), y=as.numeric(substr(noms[,2], 3, 10)), z=log10(as.numeric(table_sfs()[1,]))) # f(A) // f(B) // nSNPs
 			dat$z[dat$z==-Inf] = NA
@@ -2346,19 +2302,19 @@ server <- function(input, output, session = session) {
 			)
 
 			xlab = list(
-				title=users_infos()[2,2],
+				title=allData()[['users_infos']][2,2],
 				titlefont=f,
 				tickfont=f2
 			)
 
 			ylab = list(
-				title=users_infos()[3,2],
+				title=allData()[['users_infos']][3,2],
 				titlefont=f,
 				tickfont=f2
 			)
 			
-			nameA = users_infos()[2,2]
-			nameB = users_infos()[3,2]
+			nameA = allData()[['users_infos']][2,2]
+			nameB = allData()[['users_infos']][3,2]
 			noms=matrix(unlist(strsplit(names(table_sfs()), '_')), byrow=T, ncol=2)
 			dat = data.frame(x=as.numeric(substr(noms[,1], 3, 10)), y=as.numeric(substr(noms[,2], 3, 10)), z=log10(as.numeric(table_sfs()[2,]))) # f(A) // f(B) // nSNPs
 			dat$z[dat$z==-Inf] = NA
@@ -2406,19 +2362,19 @@ server <- function(input, output, session = session) {
 			)
 
 			xlab = list(
-				title=users_infos()[2,2],
+				title=allData()[['users_infos']][2,2],
 				titlefont=f,
 				tickfont=f2
 			)
 
 			ylab = list(
-				title=users_infos()[3,2],
+				title=allData()[['users_infos']][3,2],
 				titlefont=f,
 				tickfont=f2
 			)
 			
-			nameA = users_infos()[2,2]
-			nameB = users_infos()[3,2]
+			nameA = allData()[['users_infos']][2,2]
+			nameB = allData()[['users_infos']][3,2]
 			noms=matrix(unlist(strsplit(names(table_sfs()), '_')), byrow=T, ncol=2)
 			dat = data.frame(x=as.numeric(substr(noms[,1], 3, 10)), y=as.numeric(substr(noms[,2], 3, 10)), z=as.numeric(table_sfs()[3,])) # f(A) // f(B) // nSNPs
 			dat$z[dat$z==-Inf] = NA
@@ -2466,19 +2422,19 @@ server <- function(input, output, session = session) {
 			)
 
 			xlab = list(
-				title=users_infos()[2,2],
+				title=allData()[['users_infos']][2,2],
 				titlefont=f,
 				tickfont=f2
 			)
 
 			ylab = list(
-				title=users_infos()[3,2],
+				title=allData()[['users_infos']][3,2],
 				titlefont=f,
 				tickfont=f2
 			)
 			
-			nameA = users_infos()[2,2]
-			nameB = users_infos()[3,2]
+			nameA = allData()[['users_infos']][2,2]
+			nameB = allData()[['users_infos']][3,2]
 			noms=matrix(unlist(strsplit(names(table_sfs()), '_')), byrow=T, ncol=2)
 			dat = data.frame(x=as.numeric(substr(noms[,1], 3, 10)), y=as.numeric(substr(noms[,2], 3, 10)), z=as.numeric(table_sfs()[4,])) # f(A) // f(B) // nSNPs
 			dat$z[dat$z==-Inf] = NA
@@ -2545,12 +2501,17 @@ server <- function(input, output, session = session) {
 			data_sfs_reshape <- data_sfs %>%
 			  gather(sfs, Count, observed:expected)
 
+			if(input$posterior_choice == 1){ # if posterior
+				couleurs = viridis_pal(option = "D")(5)[c(1,5)]
+			}else{ # if optimized posterior
+				couleurs = viridis_pal(option = "D")(5)[c(4,5)]
+			}
 			data_sfs_reshape %>%
 				plot_ly(type = "bar",
 					x = ~nClasses,
 					y = ~Count,
 					color = ~sfs,
-					colors = viridis_pal(option = "D")(2), width = (0.75*as.numeric(input$dimension[1])), height = 0.65*as.numeric(input$dimension[2])) %>%
+					colors = couleurs, width = (0.75*as.numeric(input$dimension[1])), height = 0.65*as.numeric(input$dimension[2])) %>%
 					layout(xaxis=xlab, yaxis=ylab, legend=list(orientation = 'h', y=1.05, font=f_legend), hoverlabel = list(font=list(size=20)))
 		}
 	})
@@ -2559,7 +2520,7 @@ server <- function(input, output, session = session) {
 		if(is.null(input$results)){
 			return(NULL)
 		}else{
-			if(users_infos()[1,2]==2){
+			if(allData()[['users_infos']][1,2]==2){
 				# if nSpecies == 2
 				tabsetPanel(
 					tabPanel("Posterior", uiOutput("output_posterior_2pops")),
@@ -2567,7 +2528,7 @@ server <- function(input, output, session = session) {
 					tabPanel("PCA", selectInput("PCA_parameters_choice", label = h4("PCA on parameters"), choices = list("Plot" = 1, "Table" = 2), selected = 1), hr(), uiOutput("display_PCA_parameter"))
 				)
 			}else{
-				if(users_infos()[1,2]==1){
+				if(allData()[['users_infos']][1,2]==1){
 					# if nSpecies == 2
 					tabsetPanel(
 						tabPanel("Posterior", uiOutput("output_posterior_1pop")),
@@ -2578,25 +2539,25 @@ server <- function(input, output, session = session) {
 			}
 		}
 	})
-
+	
 	output$gof <- renderUI({
 		if(is.null(input$results)){
 			return(NULL)
 		}else{
-			if(users_infos()[1,2]==2){
+			if(allData()[['users_infos']][1,2]==2){
 				# if nSpecies == 2
 				tabsetPanel(
-#					tabPanel("Statistics", selectInput("posterior_choice", label = h4("Select the parameters estimate"), choices = list("Posterior" = 1, "First optimization" = 2, "Second optimization" = 3, "Third optimization" = 4), selected = 1), hr(), uiOutput("display_gof_table")),
-					tabPanel("Statistics", selectInput("posterior_choice", label = h4("Select the parameters estimate"), choices = list("Posterior" = 1, "Optimized posterior" = 2), selected = 1), hr(), uiOutput("display_gof_table")),
+					tabPanel("Distribution of statistics", uiOutput("distribution_gof")),
+					tabPanel("P-values", selectInput("posterior_choice", label = h4("Select the parameters estimate"), choices = list("Posterior" = 1, "Optimized posterior" = 2), selected = 1), hr(), uiOutput("display_gof_table")),
 					tabPanel("SFS", h4(textOutput("selected_output")), uiOutput("display_sfs_table")),
 					tabPanel("PCA", selectInput("PCA_gof_choice", label = h4("PCA on summary statistics"), choices = list("Plot" = 1, "Table" = 2), selected = 1), hr(), uiOutput("display_PCA_gof"))
 				)
 			}else{
-				if(users_infos()[1,2]==1){
+				if(allData()[['users_infos']][1,2]==1){
 					# if nSpecies == 1
 					tabsetPanel(
-#						tabPanel("Statistics", selectInput("posterior_choice", label = h4("Select the parameters estimate"), choices = list("Posterior" = 1, "First optimization" = 2, "Second optimization" = 3, "Third optimization" = 4), selected = 1), hr(), uiOutput("display_gof_table")),
-						tabPanel("Statistics", selectInput("posterior_choice", label = h4("Select the parameters estimate"), choices = list("Posterior" = 1, "Optimized posterior" = 2), selected = 1), hr(), uiOutput("display_gof_table")),
+						tabPanel("Distribution of statistics", uiOutput("distribution_gof")),
+						tabPanel("P-values", selectInput("posterior_choice", label = h4("Select the parameters estimate"), choices = list("Posterior" = 1, "Optimized posterior" = 2), selected = 1), hr(), uiOutput("display_gof_table")),
 						tabPanel("SFS", h4(textOutput("selected_output")), uiOutput("display_sfs_table")),
 						tabPanel("PCA", selectInput("PCA_gof_choice", label = h4("PCA on summary statistics"), choices = list("Plot" = 1, "Table" = 2), selected = 1), hr(), uiOutput("display_PCA_gof"))
 					)
@@ -2614,15 +2575,6 @@ server <- function(input, output, session = session) {
 			if( input$posterior_choice == 2 ){
 				posterior = 'optimized posterior'
 			}
-#			if( input$posterior_choice == 3 ){
-#				posterior = 'second optimization'
-#			}
-#			if( input$posterior_choice == 4 ){
-#				posterior = 'third optimization'
-#			}
-#			if( input$posterior_choice == 2 ){
-#				posterior = 'optimized posterior'
-#			}
 		}
 		paste('Selected parameters estimate', posterior, sep=' : ' )
 	})
@@ -2669,25 +2621,13 @@ server <- function(input, output, session = session) {
 			green = "#C7F464"
 			dark_grey = "#1e2b37"
 			light_grey = "#556270"
-			
-			untar(fileName$datapath, exdir = getwd())
-			rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
 
-			x=read.table(paste(rootName, "/best_model/posterior_bestModel.txt", sep=''), h=T)
-#			y=read.table(paste(rootName, "/best_model_3/posterior_bestModel.txt", sep=''), h=T)
-#			y2=read.table(paste(rootName, "/best_model_5/posterior_bestModel.txt", sep=''), h=T)
-#			y3=read.table(paste(rootName, "/best_model_7/posterior_bestModel.txt", sep=''), h=T)
-			y3=read.table(paste(rootName, "/best_model_3/posterior_bestModel.txt", sep=''), h=T)
-			
-			# delete the untar results
-			system(paste('rm -rf ', rootName, sep=''))
+			x = allData()[['posterior']]
+			y3 = allData()[['optimized_posterior']]
 		
-#			origin = c(rep("posterior", nrow(x)), rep("first optimization", nrow(y)), rep("second optimization", nrow(y2)), rep("third optimization", nrow(y3)))
 			origin = c(rep("posterior", nrow(x)), rep("optimized posterior", nrow(y3)))
 
 			posterior = which(origin == "posterior")
-#			optimized = which(origin == "first optimization")
-#			optimized2 = which(origin == "second optimization")
 			optimized3 = which(origin == "optimized posterior")
 
 #			data = rbind(x, y, y2, y3)
@@ -2707,32 +2647,6 @@ server <- function(input, output, session = session) {
 				z = res.pca$ind$coord[,3][posterior]
 			)
 
-#			trace2 <- list(
-#				mode = "markers", 
-#				name = "first optimization", 
-#				type = "scatter3d", 
-#				x = res.pca$ind$coord[,1][optimized],
-#				y = res.pca$ind$coord[,2][optimized],
-#				z = res.pca$ind$coord[,3][optimized]
-#			)
-#
-#			trace3 <- list(
-#				mode = "markers", 
-#				name = "second optimization", 
-#				type = "scatter3d", 
-#				x = res.pca$ind$coord[,1][optimized2],
-#				y = res.pca$ind$coord[,2][optimized2],
-#				z = res.pca$ind$coord[,3][optimized2]
-#			)
-#			
-#			trace4 <- list(
-#				mode = "markers", 
-#				name = "third optimization", 
-#				type = "scatter3d", 
-#				x = res.pca$ind$coord[,1][optimized3],
-#				y = res.pca$ind$coord[,2][optimized3],
-#				z = res.pca$ind$coord[,3][optimized3]
-#			)
 			trace2 <- list(
 				mode = "markers", 
 				name = "optimized posterior", 
@@ -2771,27 +2685,12 @@ server <- function(input, output, session = session) {
 			dark_grey = "#1e2b37"
 			light_grey = "#556270"
 			
-			untar(fileName$datapath, exdir = getwd())
-			rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
-
-			x=read.table(paste(rootName, "/best_model/posterior_bestModel.txt", sep=''), h=T)
-#			y=read.table(paste(rootName, "/best_model_3/posterior_bestModel.txt", sep=''), h=T)
-#			y2=read.table(paste(rootName, "/best_model_5/posterior_bestModel.txt", sep=''), h=T)
-#			y3=read.table(paste(rootName, "/best_model_7/posterior_bestModel.txt", sep=''), h=T)
-			y3=read.table(paste(rootName, "/best_model_3/posterior_bestModel.txt", sep=''), h=T)
+			x = allData()[['posterior']]#read.table(paste(rootName, "/best_model/posterior_bestModel.txt", sep=''), h=T)
+			y3 = allData()[['optimized_posterior']]#read.table(paste(rootName, "/best_model_5/posterior_bestModel.txt", sep=''), h=T)
 			
-			# delete the untar results
-			system(paste('rm -rf ', rootName, sep=''))
-		
-#			origin = c(rep("posterior", nrow(x)), rep("first optimization", nrow(y)), rep("second optimization", nrow(y2)), rep("third optimization", nrow(y3)))
 			origin = c(rep("posterior", nrow(x)), rep("optimized posterior", nrow(y3)))
 
-			posterior = which(origin == "posterior")
-#			optimized1 = which(origin == "first optimization")
-#			optimized2 = which(origin == "second optimization")
-			optimized3 = which(origin == "third optimization")
 
-#			data = rbind(x, y, y2, y3)
 			data = rbind(x, y3)
 			data = cbind(data, origin)
 
@@ -2815,22 +2714,19 @@ server <- function(input, output, session = session) {
 		if (is.null(fileName)){
 			return(NULL)
 		}else{
-			untar(fileName$datapath, exdir = getwd())
-			rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
-			nspecies = read.csv(paste(rootName, "/general_infos.txt", sep=''), h=F)
-			coord_PCA_SS = read.table(paste(rootName, "/table_coord_PCA_SS.txt", sep=''), h=T, sep='\t')
-			contrib_PCA_SS = read.table(paste(rootName, "/table_contrib_PCA_SS.txt", sep=''), h=T, sep='\t')
-			eigen = read.table(paste(rootName, "/table_eigenvalues_PCA_SS.txt", sep=''), h=T, sep='\t')
+			nspecies = allData()[['users_infos']] #read.csv(paste(rootName, "/general_infos.txt", sep=''), h=F)
+			coord_PCA_SS = allData()[['coord_PCA_SS']] #read.table(paste(rootName, "/table_coord_PCA_SS.txt", sep=''), h=T, sep='\t')
+			contrib_PCA_SS = allData()[['contribution_PCA']]#read.table(paste(rootName, "/table_contrib_PCA_SS.txt", sep=''), h=T, sep='\t')
+			eigen = allData()[['eigen']]#read.table(paste(rootName, "/table_eigenvalues_PCA_SS.txt", sep=''), h=T, sep='\t')
 				
-			nPoints = 5000	
 			observed = which(coord_PCA_SS$origin == 'observed dataset')
-			prior = sample(which(coord_PCA_SS$origin == 'prior'), nPoints, replace=F)
-			posterior = sample(which(coord_PCA_SS$origin == 'posterior'), nPoints, replace=F)
+			prior = which(coord_PCA_SS$origin == 'prior')
+			posterior = which(coord_PCA_SS$origin == 'posterior')
 
 			if(nspecies[1,2] == 2){	
-				optimized_posterior = sample(which(coord_PCA_SS$origin == 'optimized posterior1'), nPoints, replace=F)
+				optimized_posterior = which(coord_PCA_SS$origin == 'optimized posterior')
 			}else{
-				optimized_posterior = sample(which(coord_PCA_SS$origin == 'optimized posterior3'), nPoints, replace=F)
+				optimized_posterior = which(coord_PCA_SS$origin == 'optimized posterior')
 			}
 
 			axe1 = as.numeric(input$axe1)
@@ -2900,14 +2796,10 @@ server <- function(input, output, session = session) {
 					dark_grey = "#1e2b37"
 					light_grey = "#556270"
 					
-					untar(fileName$datapath, exdir = getwd())
-					rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
-					data = read.table( paste(rootName, "/table_contrib_PCA_SS.txt", sep=''), h=T, sep='\t')
+					data = allData()[['contribution_PCA']]#read.table( paste(rootName, "/table_contrib_PCA_SS.txt", sep=''), h=T, sep='\t')
 					
 					data = data[ order(data[,1], decreasing=T), ]
 						
-					# delete the untar results
-					system(paste('rm -rf ', rootName, sep=''))
 					
 					x = t(round(data, 2))
 					x = rbind( paste('<b>', rownames(data), '</b>', sep=''), x)
@@ -2926,7 +2818,7 @@ server <- function(input, output, session = session) {
 		if(is.null(table_sfs())){
 			return(NULL)
 		}else{
-			if(users_infos()[1,2]==2){
+			if(allData()[['users_infos']][1,2]==2){
 			# if nSpecies == 2
 				fluidPage(
 					hr(),
@@ -2952,7 +2844,7 @@ server <- function(input, output, session = session) {
 					)
 				)
 			}else{
-				if(users_infos()[1,2]==1){
+				if(allData()[['users_infos']][1,2]==1){
 					# if nSpecies == 1
 					fluidPage(
 						fluidRow(
@@ -2974,34 +2866,14 @@ server <- function(input, output, session = session) {
 		if (is.null(fileName)){
 			return(NULL)
 		}else{
-			
-			untar(fileName$datapath, exdir = getwd())
-
-			rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
-			
-			infos_tmp = as.matrix(read.csv(paste(rootName, "/general_infos.txt", sep=''), h=F))
+			infos_tmp = as.matrix(allData()[['users_infos']])#as.matrix(read.csv(paste(rootName, "/general_infos.txt", sep=''), h=F))
 			nSpecies = infos_tmp[1,2]
 			
-			#print(nSpecies)
-			#print(class(nSpecies))
-				
-			if( nSpecies == '2'){
-				locus_spe_name = paste(rootName, "/locus_modelComp/locus_specific_modelComp.txt", sep='')
-				locus_infos_name = paste(rootName, "/", infos_tmp[2,2], "_", infos_tmp[3,2], "_infos.txt", sep='')
-			}else{
-				if( nSpecies == '1' ){
-					locus_spe_name = paste(rootName, "/ABCstat_loci.txt", sep='')
-					locus_infos_name = paste(rootName, "/", infos_tmp[2,2], "_infos.txt", sep='')
-				}
-			}
 			#read the table
-			locus_spe_tmp = read.table(locus_spe_name, h=T)
-			locus_infos = read.table(locus_infos_name, h=T)
+			locus_spe_tmp = allData()[['locus_spe']]#read.table(locus_spe_name, h=T)
+			locus_infos = allData()[['locus_infos']]#read.table(locus_infos_name, h=T)
 			
 			locus_spe = merge(locus_spe_tmp, locus_infos, by.x=1, by.y=1)
-			
-			# delete the untar results
-			system(paste('rm -rf ', rootName, sep=''))
 			
 			# return the read object
 			return(locus_spe)
@@ -3054,15 +2926,15 @@ server <- function(input, output, session = session) {
 		)
 		
 		statistics_obs_sites = c(locus_spe()$sf_avg, locus_spe()$sxA_avg, locus_spe()$sxB_avg, locus_spe()$ss_avg)
-		statistics_names_sites = rep(c("Sf", paste("Sx", users_infos()[2,2], sep=' '), paste("Sx", users_infos()[3,2], sep= ' '), "Ss"), each = nLoci)
+		statistics_names_sites = rep(c("Sf", paste("Sx", allData()[['users_infos']][2,2], sep=' '), paste("Sx", allData()[['users_infos']][3,2], sep= ' '), "Ss"), each = nLoci)
 		locus_names_sites = rep(locus_spe()$dataset, 4)
 		
 		data_obs_sites = data.frame(statistics_obs_sites, statistics_names_sites, locus_names_sites)
 		
 		if(input$show_points_stats_sites == T){
-			graph_sites = plot_ly(data_obs_sites, y=~statistics_obs_sites, x=~statistics_names_sites, color=~statistics_names_sites, type="box", boxpoints="all", text = ~paste0("locus: ", locus_names_sites, "<br>", statistics_obs_sites), hoverinfo="text", width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(4)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
+			graph_sites = plot_ly(data_obs_sites, y=~statistics_obs_sites, x=~statistics_names_sites, color=~statistics_names_sites, type="box", boxpoints="all", boxmean=T, text = ~paste0("locus: ", locus_names_sites, "<br>", statistics_obs_sites), hoverinfo="text", width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(4)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
 		}else{
-			graph_sites = plot_ly(data_obs_sites, y=~statistics_obs_sites, x=~statistics_names_sites, color=~statistics_names_sites, type="box", boxpoints="none", width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(4)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
+			graph_sites = plot_ly(data_obs_sites, y=~statistics_obs_sites, x=~statistics_names_sites, color=~statistics_names_sites, type="box", boxpoints="none", boxmean=T, width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(4)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
 		}
 		
 		return(graph_sites)
@@ -3088,15 +2960,15 @@ server <- function(input, output, session = session) {
 		tickfont = list(size = 20)
 		)
 		statistics_obs_diversity = c(locus_spe()$piA_avg, locus_spe()$piB_avg, locus_spe()$thetaA_avg, locus_spe()$thetaB_avg)
-		statistics_names_diversity = rep(c(paste("pi", users_infos()[2,2], sep=' '), paste("pi", users_infos()[3,2], sep=' '), paste("Watterson's theta", users_infos()[2,2], sep= ' '), paste("Watterson's theta", users_infos()[3,2], sep= ' ')), each = nLoci)
+		statistics_names_diversity = rep(c(paste("pi", allData()[['users_infos']][2,2], sep=' '), paste("pi", allData()[['users_infos']][3,2], sep=' '), paste("Watterson's theta", allData()[['users_infos']][2,2], sep= ' '), paste("Watterson's theta", allData()[['users_infos']][3,2], sep= ' ')), each = nLoci)
 		locus_names_diversity = rep(locus_spe()$dataset, 4)
 		
 		data_obs_diversity = data.frame(statistics_obs_diversity, statistics_names_diversity, locus_names_diversity)
 		
 		if(input$show_points_diversity == T){
-			graph_diversity = plot_ly(data_obs_diversity, y=~statistics_obs_diversity, x=~statistics_names_diversity, color=~statistics_names_diversity, type="box", boxpoints="all", text = ~paste0("locus: ", locus_names_diversity, "<br>", statistics_obs_diversity), hoverinfo="text", width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(4)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
+			graph_diversity = plot_ly(data_obs_diversity, y=~statistics_obs_diversity, x=~statistics_names_diversity, color=~statistics_names_diversity, type="box", boxpoints="all", boxmean=T, text = ~paste0("locus: ", locus_names_diversity, "<br>", statistics_obs_diversity), hoverinfo="text", width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(4)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
 		}else{
-			graph_diversity = plot_ly(data_obs_diversity, y=~statistics_obs_diversity, x=~statistics_names_diversity, color=~statistics_names_diversity, type="box", boxpoints="none", width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(4)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
+			graph_diversity = plot_ly(data_obs_diversity, y=~statistics_obs_diversity, x=~statistics_names_diversity, color=~statistics_names_diversity, type="box", boxpoints="none", boxmean=T, width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(4)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
 		}
 		
 		return(graph_diversity)
@@ -3122,14 +2994,14 @@ server <- function(input, output, session = session) {
 			tickfont = list(size = 20)
 		)
 		statistics_obs_tajima = c(locus_spe()$DtajA_avg, locus_spe()$DtajB_avg)
-		statistics_names_tajima = rep(c(paste("Tajima's D", users_infos()[2,2], sep=' '), paste("Tajima's D", users_infos()[3,2], sep=' ')), each = nLoci)
+		statistics_names_tajima = rep(c(paste("Tajima's D", allData()[['users_infos']][2,2], sep=' '), paste("Tajima's D", allData()[['users_infos']][3,2], sep=' ')), each = nLoci)
 		locus_names_tajima = rep(locus_spe()$dataset, 2)
 		data_obs_tajima = data.frame(statistics_obs_tajima, statistics_names_tajima, locus_names_tajima)
 		
 		if(input$show_points_Tajima==T){
-			graph_tajima = plot_ly(data_obs_tajima, y=~statistics_obs_tajima, x=~statistics_names_tajima, color=~statistics_names_tajima, type="box", boxpoints="all", text = ~paste0("locus: ", locus_names_tajima, "<br>", statistics_obs_tajima), hoverinfo="text", width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(2)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
+			graph_tajima = plot_ly(data_obs_tajima, y=~statistics_obs_tajima, x=~statistics_names_tajima, color=~statistics_names_tajima, type="box", boxpoints="all", boxmean=T, text = ~paste0("locus: ", locus_names_tajima, "<br>", statistics_obs_tajima), hoverinfo="text", width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(2)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
 		}else{
-			graph_tajima = plot_ly(data_obs_tajima, y=~statistics_obs_tajima, x=~statistics_names_tajima, color=~statistics_names_tajima, type="box", boxpoints="none", width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(2)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
+			graph_tajima = plot_ly(data_obs_tajima, y=~statistics_obs_tajima, x=~statistics_names_tajima, color=~statistics_names_tajima, type="box", boxpoints="none", boxmean=T, width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(2)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
 		}
 		
 		return(graph_tajima)
@@ -3162,9 +3034,9 @@ server <- function(input, output, session = session) {
 		data_obs_divergence = data.frame(statistics_obs_divergence, statistics_names_divergence, locus_names_divergence)
 		
 		if(input$show_points_divergence==T){
-			graph_divergence = plot_ly(data_obs_divergence, y=~statistics_obs_divergence, x=~statistics_names_divergence, color=~statistics_names_divergence, type="box", boxpoints="all", text = ~paste0("locus: ", locus_names_divergence, "<br>", statistics_obs_divergence), hoverinfo="text", width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(3)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
+			graph_divergence = plot_ly(data_obs_divergence, y=~statistics_obs_divergence, x=~statistics_names_divergence, color=~statistics_names_divergence, type="box", boxpoints="all", boxmean=T, text = ~paste0("locus: ", locus_names_divergence, "<br>", statistics_obs_divergence), hoverinfo="text", width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(3)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
 		}else{
-			graph_divergence = plot_ly(data_obs_divergence, y=~statistics_obs_divergence, x=~statistics_names_divergence, color=~statistics_names_divergence, type="box", boxpoints="none", width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(3)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
+			graph_divergence = plot_ly(data_obs_divergence, y=~statistics_obs_divergence, x=~statistics_names_divergence, color=~statistics_names_divergence, type="box", boxpoints="none", boxmean=T, width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(3)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
 		}
 		
 		return(graph_divergence)
@@ -3190,19 +3062,32 @@ server <- function(input, output, session = session) {
 			titlefont = f,
 			tickfont = list(size = 20)
 		)
-		
-		statistics_obs_polyM = c(locus_spe()$piA_avg, locus_spe()$thetaA_avg) # piA_avg thetaA_avg DtajA_avg
-		statistics_names_polyM = rep(c(paste('pi ', as.character(users_infos()[2,2]), sep=''), paste('theta ', as.character(users_infos()[2,2]), sep='')), each = nLoci)
-		locus_names_polyM = rep(locus_spe()$dataset, 2)
-		data_obs_polyM = data.frame(statistics_obs_polyM, statistics_names_polyM, locus_names_polyM)
-		graph_polyM = plot_ly(data_obs_polyM, y=~statistics_obs_polyM, x=~statistics_names_polyM, color=~statistics_names_polyM, type="box", boxpoints="all", text = ~paste0("locus: ", locus_names_polyM, "<br>", statistics_obs_polyM), hoverinfo="text", width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(2)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
-		
-		statistics_obs_TajD = c(locus_spe()$DtajA_avg) # piA_avg thetaA_avg DtajA_avg
-		statistics_names_TajD = rep(paste("Tajima's D ", as.character(users_infos()[2,2]), sep=''), each = nLoci)
-		locus_names_TajD = locus_spe()$dataset
-		data_obs_TajD = data.frame(statistics_obs_TajD, statistics_names_TajD, locus_names_TajD)
-		graph_TajD = plot_ly(data_obs_TajD, y=~statistics_obs_TajD, x=~statistics_names_TajD, color=~statistics_names_TajD, type="box", boxpoints="all", text = ~paste0("locus: ", locus_names_TajD, "<br>", statistics_obs_TajD), hoverinfo="text", width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "C")(1)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
-		
+	
+		if(input$show_points_stats_sites_1pop == TRUE){	
+			statistics_obs_polyM = c(locus_spe()$piA_avg, locus_spe()$thetaA_avg) # piA_avg thetaA_avg DtajA_avg
+			statistics_names_polyM = rep(c(paste('pi ', as.character(allData()[['users_infos']][2,2]), sep=''), paste('theta ', as.character(allData()[['users_infos']][2,2]), sep='')), each = nLoci)
+			locus_names_polyM = rep(locus_spe()$dataset, 2)
+			data_obs_polyM = data.frame(statistics_obs_polyM, statistics_names_polyM, locus_names_polyM)
+			graph_polyM = plot_ly(data_obs_polyM, y=~statistics_obs_polyM, x=~statistics_names_polyM, color=~statistics_names_polyM, type="box", boxpoints="all", boxmean=T, text = ~paste0("locus: ", locus_names_polyM, "<br>", statistics_obs_polyM), hoverinfo="text", width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(2)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
+			
+			statistics_obs_TajD = c(locus_spe()$DtajA_avg) # piA_avg thetaA_avg DtajA_avg
+			statistics_names_TajD = rep(paste("Tajima's D ", as.character(allData()[['users_infos']][2,2]), sep=''), each = nLoci)
+			locus_names_TajD = locus_spe()$dataset
+			data_obs_TajD = data.frame(statistics_obs_TajD, statistics_names_TajD, locus_names_TajD)
+			graph_TajD = plot_ly(data_obs_TajD, y=~statistics_obs_TajD, x=~statistics_names_TajD, color=~statistics_names_TajD, type="box", boxpoints="all", boxmean=T, text = ~paste0("locus: ", locus_names_TajD, "<br>", statistics_obs_TajD), hoverinfo="text", width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "C")(1)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
+		}else{
+			statistics_obs_polyM = c(locus_spe()$piA_avg, locus_spe()$thetaA_avg) # piA_avg thetaA_avg DtajA_avg
+			statistics_names_polyM = rep(c(paste('pi ', as.character(allData()[['users_infos']][2,2]), sep=''), paste('theta ', as.character(allData()[['users_infos']][2,2]), sep='')), each = nLoci)
+			locus_names_polyM = rep(locus_spe()$dataset, 2)
+			data_obs_polyM = data.frame(statistics_obs_polyM, statistics_names_polyM, locus_names_polyM)
+			graph_polyM = plot_ly(data_obs_polyM, y=~statistics_obs_polyM, x=~statistics_names_polyM, color=~statistics_names_polyM, type="box", boxpoints="none", boxmean=T, width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "D")(2)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
+			
+			statistics_obs_TajD = c(locus_spe()$DtajA_avg) # piA_avg thetaA_avg DtajA_avg
+			statistics_names_TajD = rep(paste("Tajima's D ", as.character(allData()[['users_infos']][2,2]), sep=''), each = nLoci)
+			locus_names_TajD = locus_spe()$dataset
+			data_obs_TajD = data.frame(statistics_obs_TajD, statistics_names_TajD, locus_names_TajD)
+			graph_TajD = plot_ly(data_obs_TajD, y=~statistics_obs_TajD, x=~statistics_names_TajD, color=~statistics_names_TajD, type="box", boxpoints="none", boxmean=T, width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2]), colors = viridis_pal(option = "C")(1)) %>% layout(xaxis = axis_x, yaxis = axis_y, legend=list(orientation = 'h', y=1.05, font = list(size = 15)), hoverlabel = list(font=list(size=20)) )
+		}
 		p <- subplot(graph_polyM, graph_TajD)
 		return(p)
 	})
@@ -3250,12 +3135,12 @@ server <- function(input, output, session = session) {
 			tickfont=f2
 		)
 		
-		lab_piA = list(title=paste('pi', users_infos()[2,2], sep=' '),
+		lab_piA = list(title=paste('pi', allData()[['users_infos']][2,2], sep=' '),
 			titlefont=f,
 			tickfont=f2
 		)
 		
-		lab_piB = list(title=paste('pi', users_infos()[3,2], sep=' '),
+		lab_piB = list(title=paste('pi', allData()[['users_infos']][3,2], sep=' '),
 			titlefont=f,
 			tickfont=f2
 		)
@@ -3266,13 +3151,13 @@ server <- function(input, output, session = session) {
 		allocation[which(locus_spe()$post_proba<threshold)] = 'ambiguous'
 		y = data.frame(netdivAB=locus_spe()$netdivAB_avg, pi=(locus_spe()$piA_avg+locus_spe()$piB_avg)/2, FST=locus_spe()$FST_avg, allocation=allocation, post_prob=locus_spe()$post_prob, dataset=locus_spe()$dataset, piA=locus_spe()$piA_avg, piB=locus_spe()$piB_avg)
 		
-		plot_locus_modComp_2species_divergence <- y %>% plot_ly(x =~FST, y =~netdivAB, type = 'scatter', color =~allocation, legendgroup = ~allocation, colors = viridis_pal(option = "D")(3), marker= list(size=18, opacity=0.75), text = ~paste("Locus: ", dataset, '<br>Status: ', allocation, '<br>Posterior probability: ', round(post_prob, 5), '<br>Fst: ', round(FST, 5), '<br>net divergence: ', round(netdivAB, 5), paste('<br>pi', as.character(users_infos()[2,2]), ':', sep=' '), round(piA, 5), paste('<br>pi', as.character(users_infos()[3,2]), ':', sep=' '), round(piB, 5)),
+		plot_locus_modComp_2species_divergence <- y %>% plot_ly(x =~FST, y =~netdivAB, type = 'scatter', color =~allocation, legendgroup = ~allocation, colors = viridis_pal(option = "D")(3), marker= list(size=18, opacity=0.75), text = ~paste("Locus: ", dataset, '<br>Status: ', allocation, '<br>Posterior probability: ', round(post_prob, 5), '<br>Fst: ', round(FST, 5), '<br>net divergence: ', round(netdivAB, 5), paste('<br>pi', as.character(allData()[['users_infos']][2,2]), ':', sep=' '), round(piA, 5), paste('<br>pi', as.character(allData()[['users_infos']][3,2]), ':', sep=' '), round(piB, 5)),
 		hoverinfo='text', width = (0.75*as.numeric(input$dimension[1])), height = 0.75*as.numeric(input$dimension[2])) %>% layout(xaxis = xlab, yaxis = ylab_divergence, legend=list(orientation = 'h', y=1.05, font = list(size = 25), hoverlabel = list(font=list(size=20))))
 
-		plot_locus_modComp_2species_pi_AB <- y %>% plot_ly(x =~FST, y =~pi, type = 'scatter', color =~allocation, legendgroup = ~allocation, colors = viridis_pal(option = "D")(3), showlegend=FALSE, marker= list(size=18, opacity=0.75), text = ~paste("Locus: ", dataset, '<br>Status: ', allocation, '<br>Posterior probability: ', round(post_prob, 5), '<br>Fst: ', round(FST, 5), '<br>net divergence: ', round(netdivAB, 5), paste('<br>pi', as.character(users_infos()[2,2]), ':', sep=' '), round(piA, 5), paste('<br>pi', as.character(users_infos()[3,2]), ':', sep=' '), round(piB, 5)),
+		plot_locus_modComp_2species_pi_AB <- y %>% plot_ly(x =~FST, y =~pi, type = 'scatter', color =~allocation, legendgroup = ~allocation, colors = viridis_pal(option = "D")(3), showlegend=FALSE, marker= list(size=18, opacity=0.75), text = ~paste("Locus: ", dataset, '<br>Status: ', allocation, '<br>Posterior probability: ', round(post_prob, 5), '<br>Fst: ', round(FST, 5), '<br>net divergence: ', round(netdivAB, 5), paste('<br>pi', as.character(allData()[['users_infos']][2,2]), ':', sep=' '), round(piA, 5), paste('<br>pi', as.character(allData()[['users_infos']][3,2]), ':', sep=' '), round(piB, 5)),
 		hoverinfo='text') %>% layout(xaxis = xlab, yaxis = ylab_diversity)
 
-		plot_locus_modComp_2species_piA_piB <- y %>% plot_ly(x =~piA, y =~piB, type = 'scatter', color =~allocation, legendgroup = ~allocation, colors = viridis_pal(option = "D")(3), showlegend=FALSE, marker= list(size=12, opacity=0.65), text = ~paste("Locus: ", dataset, '<br>Status: ', allocation, '<br>Posterior probability: ', round(post_prob, 5), '<br>Fst: ', round(FST, 5), '<br>net divergence: ', round(netdivAB, 5), paste('<br>pi', as.character(users_infos()[2,2]), ':', sep=' '), round(piA, 5), paste('<br>pi', as.character(users_infos()[3,2]), ':', sep=' '), round(piB, 5)),
+		plot_locus_modComp_2species_piA_piB <- y %>% plot_ly(x =~piA, y =~piB, type = 'scatter', color =~allocation, legendgroup = ~allocation, colors = viridis_pal(option = "D")(3), showlegend=FALSE, marker= list(size=12, opacity=0.65), text = ~paste("Locus: ", dataset, '<br>Status: ', allocation, '<br>Posterior probability: ', round(post_prob, 5), '<br>Fst: ', round(FST, 5), '<br>net divergence: ', round(netdivAB, 5), paste('<br>pi', as.character(allData()[['users_infos']][2,2]), ':', sep=' '), round(piA, 5), paste('<br>pi', as.character(allData()[['users_infos']][3,2]), ':', sep=' '), round(piB, 5)),
 		hoverinfo='text') %>% layout(xaxis = lab_piA, yaxis = lab_piB)
 		
 		barplot_locus_modComp_2species <- y %>% plot_ly(x = ~allocation, color = ~allocation, legendgroup = ~allocation, colors = viridis_pal(option = "D")(3), showlegend=FALSE) %>% layout(hoverlabel = list(font=list(size=20)), yaxis= list(titlefont=f, tickfont=f2), xaxis = list(titlefont=f, tickfont=f2))
@@ -3282,6 +3167,49 @@ server <- function(input, output, session = session) {
 		
 		return(figure)
 	})
+
+
+	output$page_greyzone <- renderUI({
+		fileName = input$results
+			if (is.null(fileName)){
+				htmltools::div(style = "display:inline-block", plotlyOutput("plot_greyzone", width = "auto"))
+			}else{
+				fluidPage(style="margin-top:-3em",
+					fluidRow(
+						HTML('<H4>Clicking on this button <u>will save</u>:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>1)</b> the user&#39;s email address to contact him/her for future collaborative meta-analysis<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>2)</b> the names of the organisms and the position of the point on the graph<br>An unfortunate click can be cancelled by contacting the site&#39s support</H4>'),
+						actionButton("update_greyzone", "UPDATE THE FIGURE WITH YOUR RESULTS")
+					),
+					
+					fluidRow(
+						htmltools::div(style = "display:inline-block", plotlyOutput("plot_greyzone", width = "auto"))
+					)
+				)
+			}
+	})
+	
+	observeEvent(input$update_greyzone, {if (input$update_greyzone == 1)	removeUI(selector='#update_greyzone', immediate=TRUE)}, autoDestroy=TRUE)
+	
+	observeEvent(input$update_greyzone,
+		{if (input$update_greyzone == 1)
+			fileName = input$results
+			if (is.null(fileName)){
+			}else{	
+				
+				species_A_user = as.character(allData()[['users_infos']][2,2])
+				species_B_user = as.character(allData()[['users_infos']][3,2])
+				author_user = as.character(allData()[['users_infos']][5,2])
+				modelComp = allData()[['hierarchical']]
+				ABCstat = allData()[['ABCstatGlobal']] 
+			
+				best_model = as.character(modelComp[1,1])
+				piA_user = ABCstat$piA_avg
+				piB_user = ABCstat$piB_avg
+				divergence_user = ABCstat$netdivAB_avg
+
+				print(c(author_user, species_A_user, species_B_user, best_model, piA_user, piB_user, divergence_user))
+			}
+		}
+	)
 	
 	output$plot_greyzone <- renderPlotly({
 		# GREYZONE PART
@@ -3318,28 +3246,30 @@ server <- function(input, output, session = session) {
 		if (is.null(fileName)){
 			col = c(grey(0.25), 'turquoise', 'purple', 'red')
 		}else{	
-			if(users_infos()[1,2]==2){
+			if(allData()[['users_infos']][1,2]==2){
 				col = c(grey(0.25), 'turquoise', 'purple', 'red', '#fdae61')
-				untar(fileName$datapath, exdir = getwd())
 				
 				rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
-				ABCstat = read.table(paste(rootName, "/ABCstat_global.txt", sep=''), h=T)
-					
+				ABCstat = allData()[['ABCstatGlobal']]
+				modelComp = allData()[['hierarchical']][-1,]
+				
 				divergence_user = log10(ABCstat$netdivAB_avg)
-				model_user = system(paste("grep best ", rootName, "/modelComp/report_*.txt | head -n1 | cut -d ' ' -f3", sep=''), intern=T)
+				
+				model_user = as.character(modelComp[1,1])
+				P = as.numeric(as.character(modelComp[2,1]))
+				
 				status_user = "user's point"
 				
-				P = as.numeric(system(paste("grep proba ", rootName, "/modelComp/report_*.txt | head -n1 | cut -d ' ' -f4", sep=''), intern=T))
 				if(model_user == 'migration'){
 					proba_migration_user = P
 				}else{
 					proba_migration_user = 1-P
 				}
-				species_A_user = as.character(users_infos()[2,2])
-				species_B_user = as.character(users_infos()[3,2])
+				species_A_user = as.character(allData()[['users_infos']][2,2])
+				species_B_user = as.character(allData()[['users_infos']][3,2])
 				piA_user = ABCstat$piA_avg
 				piB_user = ABCstat$piB_avg
-				author_user = as.character(users_infos()[5,2])
+				author_user = as.character(allData()[['users_infos']][5,2])
 			
 				divergence = c(divergence, divergence_user)
 				model = c(model, model_user)
@@ -3351,7 +3281,6 @@ server <- function(input, output, session = session) {
 				piB = c(piB, piB_user)
 				author = c(author, author_user)
 				
-				system(paste('rm -rf ', rootName, sep=''))
 			}else{
 				col = c(grey(0.25), 'turquoise', 'purple', 'red')
 			}
