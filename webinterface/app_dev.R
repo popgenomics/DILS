@@ -220,6 +220,9 @@ welcome_page <- fluidPage(
 	),
 	
 	boxPlus(title = h2("Compared genomic models"), width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+		tags$style(type = "text/css", HTML(".irs-single { color: #1e2b37; font-size: 18px; background: transparent }")), # change the font of the sliderInput
+		tags$head(tags$style(type='text/css', ".irs-grid-text { color: #556270; font-size: 12pt; }")),
+		
 		fluidRow(
 			column(width=12,
 				h3("All demographic models exist under AT LEAST two alternative genomic models concerning the effective size:"),
