@@ -1308,6 +1308,8 @@ server <- function(input, output, session = session) {
 			gof_sfs = read.table(paste(rootName, "/gof/gof_sfs.txt", sep=''), h=T)
 			gof2_sfs = read.table(paste(rootName, "/gof_2/gof_sfs.txt", sep=''), h=T)
 			
+			meta = read.table('metaanalysis.txt', sep='\t', h=T)
+			
 			# if 2 species
 			if(users_infos[1,2]==2){
 				yaml = read_yaml(paste(rootName, '/config.yaml', sep=''))
@@ -1353,6 +1355,7 @@ server <- function(input, output, session = session) {
 			allData[['gof2_table']] = gof2_table 
 			allData[['gof_sfs']] = gof_sfs 
 			allData[['gof2_sfs']] = gof2_sfs 
+			allData[['meta']] = meta
 			
 			return(allData)
 		}
@@ -3174,11 +3177,20 @@ server <- function(input, output, session = session) {
 			if (is.null(fileName)){
 				htmltools::div(style = "display:inline-block", plotlyOutput("plot_greyzone", width = "auto"))
 			}else{
+				rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
 				fluidPage(style="margin-top:-3em",
-					fluidRow(
-						HTML('<H4>Clicking on this button <u>will save</u>:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>1)</b> the user&#39;s email address to contact him/her for future collaborative meta-analysis<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>2)</b> the names of the organisms and the position of the point on the graph<br>An unfortunate click can be cancelled by contacting the site&#39s support</H4>'),
-						actionButton("update_greyzone", "UPDATE THE FIGURE WITH YOUR RESULTS")
-					),
+					if( rootName%in%allData()[['meta']][,1]==FALSE ){
+						fluidRow(
+							HTML('<H4>Clicking on this button <b>will save</b>:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>1)</b> the user&#39;s email address to contact him/her for future collaborative meta-analysis<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>2)</b> the names of the organisms and the position of the point on the graph<br>An unfortunate click can be cancelled by contacting the site&#39s support</H4>'),
+							actionButton("update_greyzone", "UPDATE THE FIGURE WITH YOUR RESULTS")
+						)
+					}else{
+						fluidRow(
+							HTML('<H4>Clicking on this button <b>will remove</b> the new point because <b>this analysis is already part of the figure</b></H4>'),
+							actionButton("downgrade_greyzone", "REMOVE THE POINT")
+						)
+
+					},
 					
 					fluidRow(
 						htmltools::div(style = "display:inline-block", plotlyOutput("plot_greyzone", width = "auto"))
@@ -3189,12 +3201,13 @@ server <- function(input, output, session = session) {
 	
 	observeEvent(input$update_greyzone, {if (input$update_greyzone == 1)	removeUI(selector='#update_greyzone', immediate=TRUE)}, autoDestroy=TRUE)
 	
+	observeEvent(input$downgrade_greyzone, {if (input$downgrade_greyzone == 1)	removeUI(selector='#downgrade_greyzone', immediate=TRUE)}, autoDestroy=TRUE)
+	
 	observeEvent(input$update_greyzone,
 		{if (input$update_greyzone == 1)
 			fileName = input$results
 			if (is.null(fileName)){
 			}else{	
-				
 				rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
 				species_A_user = as.character(allData()[['users_infos']][2,2])
 				species_B_user = as.character(allData()[['users_infos']][3,2])
@@ -3223,18 +3236,31 @@ server <- function(input, output, session = session) {
 				divergence_user = ABCstat$netdivAB_avg
 
 				res = read.table('metaanalysis.txt', sep='\t', h=T)
-				print(res)
+				
 				if(sum(rootName%in%res$yaml) == 0){ # if the rootName is absent from the metaanalysis
 					
 					colnames = c('yaml', 'mail_address', 'speciesA', 'speciesB', 'bestModel', 'probaMigration', 'probaMigHetero', 'status', 'piA', 'piB', 'netDivergence')
 					a = c(rootName, author_user, species_A_user, species_B_user, best_model, probaMigration, pMigHetero, status, piA_user, piB_user, divergence_user)
-					print(a)
+			
 					obs = data.frame(yaml=a[1], mail_address=a[2], speciesA=a[3], speciesB=a[4], bestModel=a[5], probaMigration=a[6], probaMigHetero=a[7], status=a[8], piA=a[9], piB=a[10], netDivergence=a[11])
 					res = rbind(res, obs)
 					write.table(res, 'metaanalysis.txt', col.names=colnames, row.names=F, sep='\t', quote=F)
 				}
-
+			}
+		}
+	)
+	
+	observeEvent(input$downgrade_greyzone,
+		{if (input$downgrade_greyzone == 1)
+			fileName = input$results
+			if (is.null(fileName)){
+			}else{	
+				rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
+				res = read.table('metaanalysis.txt', sep='\t', h=T)
+				toRemove = which(res[,1] == rootName)
 				
+				colnames = c('yaml', 'mail_address', 'speciesA', 'speciesB', 'bestModel', 'probaMigration', 'probaMigHetero', 'status', 'piA', 'piB', 'netDivergence')
+				write.table(res[-toRemove,], 'metaanalysis.txt', col.names=colnames, row.names=F, sep='\t', quote=F)
 			}
 		}
 	)
