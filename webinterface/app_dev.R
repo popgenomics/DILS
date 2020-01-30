@@ -520,7 +520,7 @@ filtering <- fluidPage(
 		
 		column(width = 4,
 			boxPlus(title = h2("Minimum sequence length per gene"), height = 225, width = NULL, closable = FALSE, status = "success", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
-				numericInput("Lmin", label = NULL, value = 30)
+				numericInput("Lmin", label = NULL, value = 30, min = 1, max = 10000)
 			),
 
 			boxPlus(
@@ -547,7 +547,7 @@ filtering <- fluidPage(
 		
 		column(width = 4,
 			boxPlus(title = h2("Minimum number of sequences per gene and per population/species"), height = 225, width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
-				numericInput("nMin", label = NULL, value = 12)
+				numericInput("nMin", label = NULL, value = 12, min = 2)
 			),
 			
 			boxPlus(
@@ -1517,8 +1517,8 @@ server <- function(input, output, session = session) {
 		fluidPage(
 			boxPlus(title = h2("Mutation and recombination"), height = NULL, width = NULL, closable = FALSE, status = "primary", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
 				fluidRow(
-					column(width=5, numericInput("mu", label = h5('Mutation rate'), value = 0.000000003)),
-					column(width=5, numericInput("rho_over_theta", label = h5('Ratio r/µ'), value = 0.1))
+					column(width=5, numericInput("mu", label = h5('Mutation rate'), value = 0.000000003, min = 0, max = 0.00001)),
+					column(width=5, numericInput("rho_over_theta", label = h5('Ratio r/µ'), value = 0.1, min = 0, max = 5))
 				)
 			),
 			
@@ -1542,8 +1542,8 @@ server <- function(input, output, session = session) {
 		fluidPage(
 			boxPlus(title = h2("Population size"), height = 300, width = NULL, closable = FALSE, status = "danger", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
 				fluidRow(
-					column(width=5, numericInput("N_min", label = h5('min'), value = 100)),
-					column(width=5, numericInput("N_max", label = h5('max'), value = 1000000))
+					column(width=5, numericInput("N_min", label = h5('min'), value = 100, min = 0, max = 19999999)),
+					column(width=5, numericInput("N_max", label = h5('max'), value = 1000000, min = 1, max = 20000000))
 				)
 			),
 			
@@ -1566,8 +1566,8 @@ server <- function(input, output, session = session) {
 			fluidPage(
 				boxPlus(title = h2("Time of split"), height = NULL, width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
 					fluidRow(
-						column(width=5, numericInput("Tsplit_min", label = h5('min'), value = 100)),
-						column(width=5, numericInput("Tsplit_max", label = h5('max'), value = 1000000))
+						column(width=5, numericInput("Tsplit_min", label = h5('min'), value = 100, min = 0, max = 49999999)),
+						column(width=5, numericInput("Tsplit_max", label = h5('max'), value = 1000000, min = 1, max = 50000000))
 					)
 				),
 
@@ -3184,12 +3184,12 @@ server <- function(input, output, session = session) {
 				fluidPage(style="margin-top:-3em",
 					if( rootName%in%allData()[['meta']][,1]==FALSE ){
 						fluidRow(
-							HTML('<H4>Clicking on this button <b>will save</b>:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>1)</b> the user&#39;s email address to contact him/her for future collaborative meta-analysis<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>2)</b> the names of the organisms and the position of the point on the graph<br>An unfortunate click can be cancelled by uploading the same archive a second time and then clicking on <b>REMOVE THE POINT</b> button</H4>'),
+							HTML('<H4>Clicking on this button <b>will save</b>:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>1)</b> the user&#39;s email address to contact him/her for future collaborative meta-analysis<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>2)</b> the names of the organisms and the position of the point on the graph<br>An unfortunate click <b>can be cancelled</b> by uploading the same archive a second time and then clicking on <b>REMOVE THE POINT</b> button</H4>'),
 							actionButton("update_greyzone", "UPDATE THE FIGURE WITH YOUR RESULTS")
 						)
 					}else{
 						fluidRow(
-							HTML('<H4>Clicking on this button <b>will remove</b> the new point because <b>this analysis is already part of the figure</b></H4>'),
+							HTML('<H4><b>This analysis is already part of the figure</b>.<br>You can remove it by clicking on the <b>REMOVE THE POINT</b> button.</H4>'),
 							actionButton("downgrade_greyzone", "REMOVE THE POINT")
 						)
 
