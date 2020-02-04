@@ -113,12 +113,14 @@ rule targets:
 		priorfile = expand("{timeStamp}/best_model/priorfile.txt", timeStamp=timeStamp),
 		reportBest = expand("{timeStamp}/best_model/report_{nameA}_{nameB}.txt", timeStamp=timeStamp, nameA=nameA, nameB=nameB),
 		posteriorBest = expand("{timeStamp}/best_model/posterior_bestModel.txt", timeStamp=timeStamp),
+		posteriorBestRF = expand("{timeStamp}/best_model/posterior_summary_RandomForest_bestModel.txt", timeStamp=timeStamp),
 		posteriorBestPlot = expand("{timeStamp}/best_model/posterior_bestModel.pdf", timeStamp=timeStamp),
 		gof = expand("{timeStamp}/gof/goodness_of_fit_test.txt", timeStamp=timeStamp),
 		gofSFS = expand("{timeStamp}/gof/gof_sfs.txt", timeStamp=timeStamp),
 		
 		reportBest3 = expand("{timeStamp}/best_model_5/report_{nameA}_{nameB}.txt", timeStamp=timeStamp, nameA=nameA, nameB=nameB),
 		posteriorBest3 = expand("{timeStamp}/best_model_5/posterior_bestModel.txt", timeStamp=timeStamp),
+		posteriorBestRF3 = expand("{timeStamp}/best_model_5/posterior_summary_RandomForest_bestModel.txt", timeStamp=timeStamp),
 		gof2 = expand("{timeStamp}/gof_2/goodness_of_fit_test.txt", timeStamp=timeStamp),
 		gofSFS2 = expand("{timeStamp}/gof_2/gof_sfs.txt", timeStamp=timeStamp),
 		
@@ -131,7 +133,7 @@ rule targets:
 
 	shell:
 		"""
-		tar -zcvf {timeStamp}.tar.gz {input.generalInfos} {input.lociInfos} {input.yaml} {input.Nref} {input.ABCloci} {input.ABCglobal} {input.recombination} {input.hierarchicalModel} {input.locusSpecificModelComp} {input.priorfile} {input.posteriorBest} {input.posteriorBest3} {input.gof} {input.gof2} {input.gofSFS} {input.gofSFS2} {input.allGOF} {input.PCAcoordSS} {input.PCAcontribSS} {input.PCAeigenSS}
+		tar -zcvf {timeStamp}.tar.gz {input.generalInfos} {input.lociInfos} {input.yaml} {input.Nref} {input.ABCloci} {input.ABCglobal} {input.recombination} {input.hierarchicalModel} {input.locusSpecificModelComp} {input.priorfile} {input.posteriorBest} {input.posteriorBestRF}  {input.posteriorBest3} {input.posteriorBestRF3} {input.gof} {input.gof2} {input.gofSFS} {input.gofSFS2} {input.allGOF} {input.PCAcoordSS} {input.PCAcontribSS} {input.PCAeigenSS}
 		touch slurm_tmp.out
 		rm slurm*out
 		rm -rf {timeStamp}		
@@ -201,16 +203,7 @@ rule RNAseqFGT:
 	threads: 1
 	shell:	
 		"""
-		x=$(cat {input.infos}  | grep -v locusName | awk '{{print $2}}' | sort -n | tail -n1)
-		if (($x<99990)); then
-			{binpath}/RNAseqFGT {input.fasta} {output.tmp}
-			head -n1 {output.tmp} > {output.results}
-			cat {output.tmp} | grep {nameA} >> {output.results}
-			cat {output.tmp} | grep {nameB} >> {output.results}
-			
-		else
-			echo "{input.fasta} not in correct FASTA format (line length > 100000)" > {output.results}
-		fi
+		{binpath}/RNAseqFGT.sh {params.nameA} {params.nameB} {input.infos} {input.fasta} {input.nLoci} {output.tmp} {output.results} {binpath} || true
 		"""
 
 
@@ -283,7 +276,9 @@ rule estimation_best_model:
 		expand("{timeStamp}/best_model/priorfile.txt", timeStamp=timeStamp),
 		expand("{timeStamp}/best_model/report_{nameA}_{nameB}.txt", timeStamp=timeStamp, nameA=nameA, nameB=nameB),
 		expand("{timeStamp}/best_model/posterior_bestModel.txt", timeStamp=timeStamp),
-		expand("{timeStamp}/best_model/posterior_bestModel.pdf", timeStamp=timeStamp)
+		expand("{timeStamp}/best_model/posterior_bestModel.pdf", timeStamp=timeStamp),
+		expand("{timeStamp}/best_model/posterior_summary_RandomForest_bestModel.txt", timeStamp=timeStamp)
+
 	threads: nCPU_R
 	shell:
 		"""
@@ -407,7 +402,8 @@ rule estimation_best_model_5:
 		simulations=expand("{timeStamp}/best_model_5/best_model_{i}/ABCstat.txt", timeStamp=timeStamp, i=ITERATIONS_ESTIMATES_1_3)
 	output:
 		expand("{timeStamp}/best_model_5/report_{nameA}_{nameB}.txt", timeStamp=timeStamp, nameA=nameA, nameB=nameB),
-		expand("{timeStamp}/best_model_5/posterior_bestModel.txt", timeStamp=timeStamp)
+		expand("{timeStamp}/best_model_5/posterior_bestModel.txt", timeStamp=timeStamp),
+		expand("{timeStamp}/best_model_5/posterior_summary_RandomForest_bestModel.txt", timeStamp=timeStamp)
 	threads: nCPU_R
 	shell:
 		"""

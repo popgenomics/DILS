@@ -149,11 +149,11 @@ if sys.argv[1] == "Expansion_1N":
 	theta = [ 4*L[i]*mu[i] for i in range(nLoci) ] # vector of theta/N
 	rho = [ 4*L[i]*rec[i] for i in range(nLoci) ] # vector of rho/N
 	
-#	T = uniform(low = T_bound[0], high = T_bound[1], size = nMultilocus)
-	T = [ uniform(low = 0.1*i, high = 4*i, size = 1)[0] for i in N ]
+	T = [ uniform(low = 0.1*i, high = 4*i, size = 1)[0] for i in N ] # uncommented for the distributed version
+#	T = uniform(low = T_bound[0], high = T_bound[1], size = nMultilocus) # explore the whole space of parameters for the paper, to show the limits
 	
-#	Nanc = [ uniform(low = N_bound[0], high = 0.5*i, size = 1)[0] for i in N ]
-	Nanc = [ uniform(low = 0, high = 0.5*i, size = 1)[0] for i in N ]
+	Nanc = [ uniform(low = 0, high = 0.5*i, size = 1)[0] for i in N ]# uncommented for the distributed version
+#	Nanc = [ uniform(low = 0, high = 1*i, size = 1)[0] for i in N ]#  for the paper
 	
 	# param monolocus: values that will be read by ms
 	priorfile = "N\tNpast\tTdem\n"
@@ -183,11 +183,10 @@ if sys.argv[1] == "Expansion_2N":
 	shape_N_a = uniform(low = shape_bound[0], high=shape_bound[1], size = nMultilocus)
 	shape_N_b = uniform(low = shape_bound[0], high=shape_bound[1], size = nMultilocus)
 	
-#	T = uniform(low = T_bound[0], high = T_bound[1], size = nMultilocus)
-#	T = [ uniform(low = T_bound[0], high = 2*i, size = 1)[0] for i in N ]
-	T = [ uniform(low = 0.1*i, high = 4*i, size = 1)[0] for i in N ]
-#	Nanc = [ uniform(low = N_bound[0], high = 0.5*i, size = 1)[0] for i in N ]
-	Nanc = [ uniform(low = 0, high = 0.5*i, size = 1)[0] for i in N ]
+	T = uniform(low = T_bound[0], high = T_bound[1], size = nMultilocus)# uncommented for the distributed version
+#	T = [ uniform(low = 0.1*i, high = 4*i, size = 1)[0] for i in N ]# explore the whole space of parameters for the paper, to show the limits
+	Nanc = [ uniform(low = N_bound[0], high = 1*i, size = 1)[0] for i in N ]# uncommented for the distributed version
+#	Nanc = [ uniform(low = 0, high = 0.5*i, size = 1)[0] for i in N ]# explore the whole space of parameters for the paper, to show the limits
 	
 	# param monolocus: values that will be read by ms
 	priorfile = "N\tNpast\tshape_N_a\tshape_N_b\tTdem\n"
@@ -216,9 +215,12 @@ if sys.argv[1] == "Contraction_1N":
 	rho = [ 4*L[i]*rec[i] for i in range(nLoci) ] # vector of rho/N
 	
 	Nanc = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	N = [ uniform(low = N_bound[0], high = 0.25*i, size = 1)[0] for i in Nanc ]
-#	T = uniform(low = T_bound[0], high = T_bound[1], size = nMultilocus)
-	T = [ uniform(low = 0.1*i, high = 4*i, size = 1)[0] for i in N ]
+	
+#	N = [ uniform(low = N_bound[0], high = i, size = 1)[0] for i in Nanc ] # explore the whole space of parameters for the paper, to show the limits
+	N = [ uniform(low = N_bound[0], high = 0.25*i, size = 1)[0] for i in Nanc ]# uncommented for the distributed version
+
+#	T = uniform(low = T_bound[0], high = T_bound[1], size = nMultilocus)# explore the whole space of parameters for the paper, to show the limits
+	T = [ uniform(low = 0.1*i, high = 4*i, size = 1)[0] for i in N ]# uncommented for the distributed version
 	
 	
 	# param monolocus: values that will be read by ms
@@ -245,14 +247,16 @@ if sys.argv[1] == "Contraction_2N":
 	rho = [ 4*L[i]*rec[i] for i in range(nLoci) ] # vector of rho/N
 	
 	Nanc = uniform(low = N_bound[0], high = N_bound[1], size = nMultilocus)
-	N = [ uniform(low = N_bound[0], high = 0.1*i, size = 1)[0] for i in Nanc ]
 	
 	shape_N_a = uniform(low = shape_bound[0], high=shape_bound[1], size = nMultilocus)
 	shape_N_b = uniform(low = shape_bound[0], high=shape_bound[1], size = nMultilocus)
 	
-#	T = uniform(low = T_bound[0], high = T_bound[1], size = nMultilocus)
-#	T = [ uniform(low = T_bound[0], high = 2*i, size = 1)[0] for i in N ]
-	T = [ uniform(low = 0.1*i, high = 4*i, size = 1)[0] for i in N ]
+	
+#	N = [ uniform(low = N_bound[0], high = i, size = 1)[0] for i in Nanc ] # explore the whole space of parameters for the paper, to show the limits
+	N = [ uniform(low = N_bound[0], high = 0.25*i, size = 1)[0] for i in Nanc ]# uncommented for the distributed version
+
+#	T = uniform(low = T_bound[0], high = T_bound[1], size = nMultilocus)# explore the whole space of parameters for the paper, to show the limits
+	T = [ uniform(low = 0.1*i, high = 4*i, size = 1)[0] for i in N ]# uncommented for the distributed version
 	
 	# param monolocus: values that will be read by ms
 	priorfile = "N\tNpast\tshape_N_a\tshape_N_b\tTdem\n"
