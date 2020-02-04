@@ -389,8 +389,8 @@ upload_data <- fluidPage(
 	),
 
 	fluidRow(NULL, soldHeader = TRUE, status ="danger",
-		boxPlus(title = h2("Sequence Alignment Upload"), height = 200,	width = 6, closable = FALSE, status = "success", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
-		fileInput("infile", label = NULL),
+		boxPlus(title = h2("Input file upload"), height = 200,	width = 6, closable = FALSE, status = "success", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
+		fileInput("infile", label = NULL, accept = c('.fasta', '.fas', '.fa')),
 		tags$style(".progress-bar {background-color: #1e2b37;}")
 		),
 	
@@ -494,8 +494,8 @@ upload_data <- fluidPage(
 			p("etc ..."),
 			h3("Two genes are displayed in this example, they are named: ", strong("Hmel210004_196"), " and", strong("Hmel219015_26.")),
 			h3("Four populations are present in this example, named: ", strong("chi, flo, ros and num.")),
-			h3("Only species whose names are specified in the ", strong("Populations/species"), " menu are considered. This does not prevent the uploaded file from containing other species."),
-			h3("Two diploid individuals are sequenced for each species/population of this example, but this number is obviously allowed to vary between species/populations, according to the sequencing strategy and its success.")
+			h3("Only species whose names are specified in the ", strong("Populations/species"), " menu are considered, but the uploaded file can contain other species."),
+			h3("Two diploid individuals are sequenced for each species/population. For example for chi: chi.CJ560 and chi.CJ564. This number can obviously vary between species/populations, according to the sequencing strategy and its success.")
 		)
 	)
 )
@@ -511,8 +511,8 @@ filtering <- fluidPage(
 				title = h3("max_N_tolerated"), width = NULL, icon = NULL, solidHeader = TRUE, background = NULL,
 				boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
 				enable_label = TRUE, label_text = "INFORMATION", label_status = "primary",
-				h3("-Variable between 0 and 1."),
-				h3("-Defines the maximum proportion of N in the sequence of a gene in an individual beyond which this sequence is not considered."),
+				h3("-Float between 0.0 and 1.0."),
+				h3("-Defines the maximum proportion of N in the sequence of a gene beyond which this sequence is not considered."),
 				hr(),
 				h3(a(span(strong("Example", style = "color:blue")), href="https://raw.githubusercontent.com/popgenomics/ABConline/master/webinterface/pictures_folder/max_N_tolerated.png", target="_blank"))
 			)
@@ -556,10 +556,10 @@ filtering <- fluidPage(
 				enable_label = TRUE, label_text = "INFORMATION", label_status = "warning",
 				h3(strong("DILS"), " starts for each gene by eliminating individual sequences containing too many N and gaps", span(strong("(max_N_tolerated; blue box)", style = "color:blue")), "."),
 				br(),
-				h3("If for a gene and", strong("within a population/species"), "there are fewer ", strong("nMin"), "sequences left, then the gene is not considered in the ", strong("ABC"), "analysis."),
+				h3("If for a gene and", strong("within a population/species"), "there are fewer than", strong("nMin"), "sequences left, then the gene is not considered in the ", strong("ABC"), "analysis."),
 				br(),
 				h3(strong("If an outgroup is specified:")),
-				h3(strong("nMin"), " becomes the number of sequences sampled for each species, for each locus, to produce a standardized joint SFS used by ", strong("ABC"), "."),
+				h3(strong("nMin"), " becomes the number of sequences sampled for each species at each locus, to produce a standardized joint site frequency spectrum (jSFS) used by ", strong("ABC"), "."),
 				hr(),
 				h3(a(span(strong("Example", style = "color:orange")), href="https://raw.githubusercontent.com/popgenomics/ABConline/master/webinterface/pictures_folder/nMin.png", target="_blank"))
 			)
@@ -584,16 +584,19 @@ populations <- fluidPage(
 			#	prettyRadioButtons("nspecies", label = h3("Number of gene pools"), shape = "round", status = "primary", fill = TRUE, inline = FALSE, animation = "pulse", bigger = TRUE,
 			#	choices = list("One gene pool" = 1, "Two gene pools" = 2, "Four gene pools" = 4), selected = 2),
 
-			prettyRadioButtons("nspecies", label = h3("Number of gene pools"), shape = "round", status = "primary", fill = TRUE, inline = FALSE, animation = "pulse", bigger = TRUE,
+			prettyRadioButtons("nspecies", label = NULL, shape = "round", status = "primary", fill = TRUE, inline = FALSE, animation = "pulse", bigger = TRUE,
 			choices = list("One gene pool" = 1, "Two gene pools" = 2), selected = 2),
+			HTML('<h4>If <b>set to one</b>: a model for a single panmictic population is evaluated.<br>If <b>set to two</b>: a model of divergence between two populations/species is evaluated.<br></h4>'),
 			em(strong(h4('Analysis for 4 populations/species will be soon available'))),
 			uiOutput("input_names_ui")
 		),
 		
-		boxPlus(title = h2("Outgroup species"), height = NULL, width = 4, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
-			prettyRadioButtons("presence_outgroup", label = h3("Presence of an outgroup"), shape = "round", status = "warning", fill = TRUE, inline = FALSE, animation = "pulse", bigger = TRUE,
+		boxPlus(title = h2("Presence of an outgroup"), height = NULL, width = 4, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
+			prettyRadioButtons("presence_outgroup", label = NULL, shape = "round", status = "warning", fill = TRUE, inline = FALSE, animation = "pulse", bigger = TRUE,
 			choices = list("no" = "no", "yes" = "yes"), selected = "no"),
-			uiOutput("input_names_outgroup_ui")
+			uiOutput("input_names_outgroup_ui"),
+			HTML('<h4>If <b>set to yes</b>: the used joint site frequency spectrum (jSFS) is <b>unfolded</b>, and the mutation rate for each locus is corrected by its divergence with the outgroup.</h4>'),
+			HTML('<h4>If <b>set to no</b>: the used jSFS is <b>folded</b>, and the mutation rate is the same for all loci.</h4>')
 		),
 		uiOutput("size_change")
 	),
@@ -667,8 +670,9 @@ run_ABC <- fluidPage(
 upload_results <- fluidPage(
 	# upload results
 	fluidRow(NULL, soldHeader = TRUE, status ="danger",
-		boxPlus(title = h2("Results to upload (i.e, DILS's archived output)"), height = 200,	width = 12, closable = FALSE, status = "success", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
-			fileInput("results", label = NULL),
+		boxPlus(title = h2("Results to upload (i.e, DILS's archived output)"), height = 240,	width = 12, closable = FALSE, status = "success", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
+			HTML('<h3>This is the DILS&#39;s archived output that you downloaded from the link sent to your email address</h3>'),
+			fileInput("results", label = NULL, accept=c('.tar.gz')),
 			tags$style(".progress-bar {background-color: #1e2b37;}")
 		)
 	),
@@ -704,7 +708,7 @@ collaborative <- fluidPage(
 )
 
 
-informations <- fluidPage(
+information <- fluidPage(
 	fluidRow(
 		column(width = 12,
 			#box(title = h2("Citations"), width = 12, solidHeader = TRUE, background = NULL, status = "primary",
@@ -757,7 +761,7 @@ ui <- dashboardPage(
 				menuSubItem(("Collaborative science"), tabName = "collaborative", icon = icon("lock-open"))
 			),
 			
-			menuItem(("Informations"), tabName = "information", icon = icon("info-circle"))
+			menuItem(("Information"), tabName = "information", icon = icon("info-circle"))
 		)
 	),
 	
@@ -883,9 +887,9 @@ ui <- dashboardPage(
 				collaborative
 			),
 			
-			# Informations
+			# Information
 			tabItem(tabName = "information",
-				informations
+				information
 			)
 		)
 	)
@@ -1035,9 +1039,9 @@ server <- function(input, output, session = session) {
 	nIndividuals = reactive({length(system(paste("cat", input$infile$datapath, "| grep '>' | cut -d '|' -f3 | sort -u", sep=" "), intern = T))})
 	nLoci = reactive({length(system(paste("cat", input$infile$datapath, "| grep '>' | cut -d '|' -f1 | sort -u", sep=" "), intern = T))})
 	
-	output$general_informations <- renderTable({
+	output$general_information <- renderTable({
 		if(is.null(input$infile)){return ()}
-		withProgress(message = 'Producing the table of informations', detail = NULL, value = 0, {
+		withProgress(message = 'Producing the table of information', detail = NULL, value = 0, {
 		incProgress(1/2)
 		return(data.frame("nSpecies" = length(list_species()), "nIndividuals" = length(list_individuals()), "nLoci" = length(list_loci())))
 		incProgress(1/2)
@@ -1051,7 +1055,7 @@ server <- function(input, output, session = session) {
 		if(is.null(input$infile)) {return(loadingState())}
 		else
 			tabsetPanel(
-				tabPanel("General informations", tableOutput("general_informations")),
+				tabPanel("General information", tableOutput("general_information")),
 				tabPanel("List of individuals", dataTableOutput("list_individuals")),
 				tabPanel("List of populations or species", dataTableOutput("list_species")),
 				tabPanel("List of loci", dataTableOutput("list_loci"))
@@ -1090,14 +1094,15 @@ server <- function(input, output, session = session) {
 		boxPlus(title = h2("Size change over time"), height = NULL, width = 4, closable = FALSE, status = "danger", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
 			prettyRadioButtons("population_growth", label = h3("Assuming constant or variable population sizes"), shape = "round", status = "danger", fill = TRUE, inline = FALSE, animation = "pulse", bigger = TRUE,
 			choices = list("constant" = "constant", "variable" = "variable"), selected = "constant"),
-			em(strong(h4('If setted to constant: the sizes of the daughter populations is assumed to differ from the ancestral population from the split, and remain constant during the ABC inferences.'))),
-			em(strong(h4('If setted to variable: the sizes of the daughter populations are assumed to be be equal to x and (1-x) times the ancestral population size at time of split, and then, suddenly increase or decrease to reach the current population sizes.')))
+			HTML('<h4>If <b>set to constant</b>: the sizes of the daughter populations differ from that of the ancestral population from the split, and then they remain constant.<h4>'),
+			HTML('<h4>If <b>set to variable</b>: daughter populations each have two distinct sizes, one at the origin of the population and one present since T<sub>dem</sub> generations.</h4>')
 			)
 		}else{
 			boxPlus(title = h2("Size change over time"), height = NULL, width = 4, closable = FALSE, status = "danger", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
 				prettyRadioButtons("population_growth", label = h3("The ABC analysis will test for variation in population size"), shape = "round", status = "danger", fill = TRUE, inline = FALSE, animation = "pulse", bigger = TRUE,
 				choices = list("variable" = "variable"), selected = "variable"),
-				em(strong(h4('The ABC analysis will compute the probabilities of models of constant population size (a single Ne as parameter), of population expansion and of population contraction (3 parameters: current Ne, ancestral Ne, time of demographic change).')))
+				em(strong(h4('The ABC analysis will compute the probabilities of models of constant population size (a single Ne as parameter), of population expansion and of population contraction (3 parameters: current Ne, ancestral Ne, time of demographic change).'))),
+				return(NULL) # return(NULL) to hide this box if nspecies==1
 			)
 		}
 	})
@@ -1114,6 +1119,8 @@ server <- function(input, output, session = session) {
 			species_names = c(input$nameA)
 			species_names_row = c('nameA')
 		}else{
+			M_min = input$M_min
+			M_max = input$M_max
 			if(nspecies == 2){
 				species_names = c(input$nameA, input$nameB)
 				species_names_row = c('nameA', "nameB")
@@ -1142,13 +1149,17 @@ server <- function(input, output, session = session) {
 		N_max = input$N_max
 		Tsplit_min = input$Tsplit_min
 		Tsplit_max = input$Tsplit_max
-		M_min = input$M_min
-		M_max = input$M_max
 		population_growth = input$population_growth
+	
+		if(nspecies == 1){
+			res = matrix(c(mail_address, config_yaml, infile, region, nspecies, species_names, nameOutgroup, Lmin, nMin, mu, rho_over_theta, N_min, N_max, Tsplit_min, Tsplit_max, population_growth), ncol = 1)
+			row_names_res = c("user's email address", "config_yaml", "infile", "region", "nspecies", species_names_row, "nameOutgroup", "Lmin", "nMin", "mu", "rho_over_theta", "N_min", "N_max", "Tchanges_min", "Tchanges_max", "population_growth")
+		}else{
+			res = matrix(c(mail_address, config_yaml, infile, region, nspecies, species_names, nameOutgroup, Lmin, nMin, mu, rho_over_theta, N_min, N_max, Tsplit_min, Tsplit_max, M_min, M_max, population_growth), ncol = 1)
+			row_names_res = c("user's email address", "config_yaml", "infile", "region", "nspecies", species_names_row, "nameOutgroup", "Lmin", "nMin", "mu", "rho_over_theta", "N_min", "N_max", "Tsplit_min", "Tsplit_max", "M_min", "M_max", "population_growth")
+		}
 		
-		res = matrix(c(mail_address, config_yaml, infile, region, nspecies, species_names, nameOutgroup, Lmin, nMin, mu, rho_over_theta, N_min, N_max, Tsplit_min, Tsplit_max, M_min, M_max, population_growth), ncol = 1)
-		
-		row.names(res) = c("user's email address", "config_yaml", "infile", "region", "nspecies", species_names_row, "nameOutgroup", "Lmin", "nMin", "mu", "rho_over_theta", "N_min", "N_max", "Tsplit_min", "Tsplit_max", "M_min", "M_max", "population_growth")
+		row.names(res) = row_names_res
 		colnames(res) = c("entries")
 		
 		res	
@@ -1284,7 +1295,7 @@ server <- function(input, output, session = session) {
 	
 	#tag$style(type = 'text/css', '.tab-panel{ background-color: red; color: white}')
 	## RESULT VISUALIZATION
-	### user informations
+	### user information
 	# all data contained in the archive
 	allData <- reactive({
 		
@@ -1370,7 +1381,8 @@ server <- function(input, output, session = session) {
 			tabsetPanel(
 				type = "tabs",
 				tabPanel("Observed summary statistics", uiOutput("user_dataset_tabset")),
-				tabPanel("Demographic inferences", uiOutput("user_inferences"))
+				tabPanel("Demographic inferences", uiOutput("user_inferences")),
+				tabPanel("Definitions of statistics and parameters", uiOutput("definitions"))
 			)
 		}else{
 			return()
@@ -1479,6 +1491,85 @@ server <- function(input, output, session = session) {
 		}
 	})
 
+	output$definitions <- renderUI({
+		if(is.null(input$results) == FALSE){
+				# if number of species == 2
+				tabsetPanel(id = "definitions",
+					type = "tabs",
+					tabPanel('Summary statistics', uiOutput('definitions_statistics')),
+					tabPanel('Model parameters', uiOutput('definitions_parameters'))
+				)
+		}
+	})
+	
+	output$definitions_parameters <- renderUI({
+		if(is.null(input$results)){
+			return(NULL)
+		}else{
+			fluidPage(
+				HTML('<h2><u>Population sizes</u></h2>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Na</b>: effective size of the ancestral population [# of diploid individuals]</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>N1</b>; <b>N2</b>: effective size of population 1 (resp. 2) [# of diploid individuals]</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>If <i>Ne</i> is genomically heterogeneous</u></h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>shape_N_a</b>; <b>shape_N_b</b>: shape parameter "a" (resp. "b") of the Beta distribution for <i>Ne</i> (shared by all populations)</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>If there is a demographic change</u></h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Tdem1</b>; <b>Tdem2</b>: time of the demographic change in population 1 (resp. 2) [# of generations]</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>founders1</b>; <b>founders2</b>: number of founder individuals in population 1 (resp. 2) at the time of the demographic change <i>T<sub>dem1</sub></i> (and <i>T<sub>dem2</sub></i>)</h3>'),
+
+				HTML('<h2><u>Times for two populations or more</u></h2>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Tsplit</b>: time of split at which the ancestral population subdivides in two populations [# of generations]</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>If there is both gene flow and isolation</u></h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Tsc</b>: time of secondary contact at which the two populations start exchanging genes [# of generations]</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Tam</b>: time of ancient migration at which the two populations stop exchanging genes [# of generations]</h3>'),
+
+				HTML('<h2><u>Migration and barriers</u></h2>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>M12</b>; <b>M21</b>: introgression rate from population 2 to 1 (resp. from 1 to 2) [# of migrants per generation]</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>If <i>N.m</i> is genomically heterogeneous (bimodal model)</u></h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>nBarriersM12</b>; <b>nBarriersM21</b>: number of loci inferred as interspecies barriers for introgression from population 2 to 1 (resp. from 1 to 2)</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>If <i>N.m</i> is genomically heterogeneous (beta model)</u></h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>shape_M12_a</b>; <b>shape_M12_b</b>: shape parameter "a" (resp. "b") of the Beta distribution for <i>N.m</i> (from population 2 to 1)</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>shape_M21_a</b>; <b>shape_M21_b</b>: shape parameter "a" (resp. "b") of the Beta distribution for <i>N.m</i> (from population 1 to 2)</h3>'),
+		)}
+	})
+
+	output$definitions_statistics <- renderUI({
+		if(is.null(input$results)){
+			return(NULL)
+		}else{
+			fluidPage(
+				HTML('<h2><u>Summary statistics</u></h2>'),
+				HTML('<h3><b>dataset</b>: name of the target locus</h3>'),
+				HTML('<h3><b><i>Summarized jSFS</i></b></h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>sf_avg</b>: fraction of sites with a fixed difference between the populations/species</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>sxA_avg</b>; <b>sxB_avg</b>: fraction of sites with a polymorphism specific to each population/species</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>ss_avg</b>: fraction of sites with a polymorphism shared between the population/species</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>successive_ss_avg</b>: maximal number of successive shared sites in the target locus</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>ss_sf</b>: if the target locus has at least one shared site (ss) and one fixed difference (sf), the value is set to 1; and 0 otherwise</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>ss_noSf</b>: if the target locus has at least one shared site (ss) but no fixed difference (sf), the value is set to 1; and 0 otherwise</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>noSs_sf</b>: if the target locus has no shared site (ss) but at least one fixed difference (sf), the value is set to 1; and 0 otherwise</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>noSs_noSf</b>: if the target locus has no shared site (ss) and no fixed difference (sf), the value is set to 1; and 0 otherwise</h3>'),
+				HTML('<h3><b><i>Polymorphism</i></b></h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>piA_avg</b>; <b>piB_avg</b>: pairwise nucleotide diversity (π) for each population/species (Tajima, 1983)</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>thetaA_avg</b>; <b>thetaB_avg</b>: Watterson’s theta for each population/species (Watterson, 1975)</h3>'),
+				HTML('<h3><b><i>Tajima&#39;s D</i></b></h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>DtajA_avg</b>; <b>DtajB_avg</b>: Tajima&#39;s <i>D</i> for each population/species (Tajima, 1989)</h3>'),
+				HTML('<h3><b><i>Differentiation and divergence</i></b></h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>divAB_avg</b>: raw divergence (<i>D<sub>xy</sub></i>) between the population/species (Nei, 1987)</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>netdivAB_avg</b>: net divergence (<i>D<sub>a</sub></i>) between the populations/species, measured by <i>D<sub>xy</sub></i> - (π<sub>A</sub> + π<sub>B</sub>)/2 (Nei & Li, 1979)</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>FST_avg</b>: <i>F<sub>ST</sub></i> measured by 1-π<sub>S</sub>/π<sub>T</sub>; where π<sub>S</sub> is the average nucleotide diversity in each population/species and π<sub>T</sub> is the total nucleotide diversity over the populations/species (Wright, 1943)</h3>'),
+				hr(),
+				HTML('<h2><u>References</u></h2>'),
+				HTML('<h3>Nei, M. (1987). Molecular Evolutionary Genetics. Columbia University Press, New York.'),
+				HTML('<h3>Nei, M. & Li, W‐H. (1979). Mathematical model for studying genetic variation in terms of restriction endonucleases. PNAS, 76: 5269–5273.'),
+				HTML('<h3>Tajima, F. (1989). The effect of change in population size on DNA polymorphism. Genetics, 123(3): 597-601.'),
+				HTML('<h3>Tajima, F. (1983). Evolutionary relationship of DNA sequences in finite populations. Genetics, 105(2): 437-460.'),
+				HTML('<h3>Watterson, G. A. (1975). On the number of segregating sites in genetical models without recombination. Theor. Popul. Biol., 7(2): 256-276.'),
+				HTML('<h3>Wright, S. (1943). Isolation by distance. Genetics, 28: 114–138.')
+
+			)
+		}
+	})
+	
 	# Display the model comparisons	
 	output$display_modComp <- renderUI({
 		if(is.null(allData()[['hierarchical']])){
@@ -1529,10 +1620,9 @@ server <- function(input, output, session = session) {
 				
 				h3("The mutation rate ", strong("(µ)"), "is", strong("the probability per generation and per nucleotide"), "that an allele will not be properly replicated."),
 				h3("If an external group ", strong("is not specified"), "then all genes/contigs/locus share the same µ."),
-				h3("If an external group ", strong("is specified"), "then the local µ, for a locus ", em("i"), " is corrected by ", strong("µ * div_i / div_avg"), " where ", strong("div_i"), " is the local divergence between the ingroup and the outgroup at that locus, and ", strong("div_avg"), " is the divergence averaged over loci"),
+				HTML("<h3>If an external group is specified then the local µ, for a locus <i>i</i> is corrected by µ * <i>div<sub>i</sub></i> / <i>div<sub>avg</sub></i> where <i>div<sub>i</sub></i> is the local divergence between the ingroup and the outgroup at that locus, and <i>div<sub>avg</sub></i> is the divergence averaged over all loci</h3>"),
 				br(),
-				h3("The r/µ ratio is the ratio of recombination (/bp /generation) over mutation (/bp /generation)."),
-				h3("If the ratio is (unnecessarily) setted to values above 10, simulations will take too long.")
+				h3("The r/µ ratio is the ratio of recombination (/bp /generation) over mutation (/bp /generation).")
 			)
 		)
 	})
@@ -1576,12 +1666,12 @@ server <- function(input, output, session = session) {
 					boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
 					enable_label = TRUE, label_text = "INFORMATION", label_status = "warning",
 					
-					h3("The speciation time", strong(em("Tsplit")), "is expressed", strong("in number of generations.")),
+					HTML("<h3>The speciation time <b>T<sub>split</sub></b> is expressed <b>in number of generations.</b></h3>"),
 					h3("For annual organisms: one generation = one year."),
 					h3("For perennial organisms: one generation = average age for an individual to transmit a descendant (which is different from the age of sexual maturity)."),
 					br(),
-					h3("The ", em("prior"), " distribution is uniform between", strong(em("Tsplit_min")), "and", strong(em("Tsplit_max."))),
-					h3("For each simulation in the ", strong("SC"), " and ", strong("AM"), " models, the time of secondary contact between lines", strong(em("(Tsc),")), " or old migration stop times", strong(em("(Tam)")), "are drawn uniformly between", strong(em("Tsplit_min")), "and", strong(em("Tsplit_sampled.")))
+					HTML("<h3>The prior distribution is uniform between <b>T<sub>split_min</sub></b> and <b>T<sub>split_max</sub></b>.</h3>"),
+					HTML("<h3>For each simulation in the <b>SC</b> and <b>AM</b> models, the time of secondary contact between lines (T<sub>SC</sub>) and and arrest of ancient migration (T<sub>AM</sub>) are drawn uniformly between <b>T<sub>split_min</sub></b> and the sampled T<sub>split</sub></h3>")
 				)
 			)
 		}else{
@@ -1624,7 +1714,7 @@ server <- function(input, output, session = session) {
 					title = "", width = NULL, icon = NULL, solidHeader = TRUE, gradientColor = NULL,
 					boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
 					enable_label = TRUE, label_text = "INFORMATION", label_status = "success",
-					h3("Migration rates are expressed in", strong(em("4.Ne.m,")), "where", strong(em("m")), "is the fraction of each subpopulation made up of new migrants each generation.")
+					HTML("<h3>Migration rates are expressed in <b>4.<i>Ne.m</i></b> where <b><i>m</i></b> is the fraction of each subpopulation made up of new migrants each generation.</h3>")
 				)
 			)
 		}
@@ -1893,7 +1983,7 @@ server <- function(input, output, session = session) {
 			theme_set(theme_classic())
 			figure = list()
 
-			# read informations
+			# read information
 			Nref = allData()[['Nref']]
 			res1 = allData()[['posterior']]
 			res2 = allData()[['optimized_posterior']]
@@ -2006,7 +2096,7 @@ server <- function(input, output, session = session) {
 			theme_set(theme_classic())
 			figure = list()
 
-			# read informations
+			# read information
 			res1 = allData()[['posterior']]
 			res4 = allData()[['optimized_posterior']]
 			
@@ -3406,7 +3496,7 @@ server <- function(input, output, session = session) {
 	### LOGOS
 	output$logos <-
 	renderText({
-		c('<img src=https://raw.githubusercontent.com/popgenomics/ABConline/master/webinterface/pictures_folder/logos.png align="middle" height="auto" width="100%" margin="0 auto">')
+		c('<img src=https://raw.githubusercontent.com/popgenomics/ABConline/master/webinterface/pictures_folder/logos.png align="middle" height="auto" width="150%" margin="0 auto">')
 	})
 }
 
