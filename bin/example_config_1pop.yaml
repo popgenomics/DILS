@@ -1,7 +1,7 @@
 mail_address: usertest_onePop@yopmail.com
-config_yaml: /shared/mfs/data/home/croux/scratch/test/ABConline/one_pop/test_onePop_v10.yaml
+config_yaml: /home/croux/Programmes/DILS/bin/example_config_1pop.yaml
 timeStamp: testOnePopV10 
-infile: /shared/home/croux/scratch/test/ABConline/reduced_fastaFile.fasta
+infile: /home/croux/Documents/ABConline/reduced_fastaFile.fasta
 region: coding
 nspecies: 1
 nameA: flo

@@ -1,11 +1,11 @@
 mail_address: camille.roux@univ-lille.fr
-infile: /shared/home/croux/scratch/test/ABConline/reduced_fastaFile.fasta
+infile: /home/croux/Documents/ABConline/reduced_fastaFile.fasta
 region: coding
 nspecies: 2
 nameA: txn
 nameB: ama
 nameOutgroup: NA
-config_yaml: /shared/mfs/data/home/croux/scratch/test/ABConline/outgroup/config_variable_beta_V3.yaml
+config_yaml: /home/croux/Programmes/DILS/bin/example_config_2pop.yaml 
 timeStamp: variableBeta3roundsV3
 population_growth: variable
 modeBarrier: beta 

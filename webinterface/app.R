@@ -1,6 +1,6 @@
 #!/usr/bin/Rscript
 
-
+print(getwd())
 #################################################################################################################################
 #################################################################################################################################
 #####                                                                                                                       #####
@@ -321,20 +321,18 @@ welcome_page <- fluidPage(
 #	box(title = h2("Model comparisons for 2 populations/species"), width = 12, solidHeader = TRUE, background = NULL, status = "primary",
 	boxPlus(title = h2("Model comparisons for 1 population"), width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
 		htmlOutput("model_comparisons_1pop"),
-		h3(strong("DILS"), "performs hierarchical model comparisons."),
-		h3(strong("1."), "comparison between all models with", strong("current isolation"), "({SI; AM} x {Ne_homo; Ne_hetero} x {M_homo; M_hetero}) versus", strong("ongoing migration"), "({IM; SC} x {Ne_homo; Ne_hetero} x {M_homo; M_hetero})"),
-		h3(strong("2. if current isolation ->"), "comparison between", strong("SI"), "({Ne_homo; Ne_hetero}) versus", strong("AM"), "({Ne_homo; Ne_hetero} x {M_homo; M_hetero})"),
-		h3(strong("2. if ongoing migration ->"), "comparison between", strong("IM"), "({Ne_homo; Ne_hetero} x {M_homo; M_hetero}) versus", strong("SC"), "({Ne_homo; Ne_hetero} x {M_homo; M_hetero})"),
-		h3(strong("3."), "the last step is to determine whether effective size", strong("(Ne)"), "and migration rates", strong("(N.m)"), "are homogeneously or heterogenously distributed in genomes.")
+		HTML('<h3><b>DILS</b> performs hierarchical model comparisons.</h3>'),
+		HTML('<h3><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.</b> comparison between all models with <b>Expansion</b> ({<i>Ne</i><sub>homo</sub>; <i>Ne</i><sub>hetero</sub>}) <i>versus</i> <b>Constant size</b> ({<i>Ne</i><sub>homo</sub>; <i>Ne</i><sub>hetero</sub>}) <i>versus</i> <b>Contraction</b> ({<i>Ne</i><sub>homo</sub>; <i>Ne</i><sub>hetero</sub>})</h3>'),
+		HTML('<h3><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.</b> the last step of the model comparison is to determine whether effective size (<b><i>Ne</i></b>) is homogeneously or heterogenously distributed in genomes.</h3>')
 	),
 	
 	boxPlus(title = h2("Model comparisons for 2 populations/species"), width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
 		htmlOutput("model_comparisons_2pop"),
-		h3(strong("DILS"), "performs hierarchical model comparisons."),
-		h3(strong("1."), "comparison between all models with", strong("current isolation"), "({SI; AM} x {Ne_homo; Ne_hetero} x {M_homo; M_hetero}) versus", strong("ongoing migration"), "({IM; SC} x {Ne_homo; Ne_hetero} x {M_homo; M_hetero})"),
-		h3(strong("2. if current isolation ->"), "comparison between", strong("SI"), "({Ne_homo; Ne_hetero}) versus", strong("AM"), "({Ne_homo; Ne_hetero} x {M_homo; M_hetero})"),
-		h3(strong("2. if ongoing migration ->"), "comparison between", strong("IM"), "({Ne_homo; Ne_hetero} x {M_homo; M_hetero}) versus", strong("SC"), "({Ne_homo; Ne_hetero} x {M_homo; M_hetero})"),
-		h3(strong("3."), "the last step is to determine whether effective size", strong("(Ne)"), "and migration rates", strong("(N.m)"), "are homogeneously or heterogenously distributed in genomes.")
+		HTML('<h3><b>DILS</b> performs hierarchical model comparisons.</h3>'),
+		HTML('<h3><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.</b> comparison between all models with <b>current isolation</b> ({SI; AM} x {<i>Ne</i><sub>homo</sub>; <i>Ne</i><sub>hetero</sub>} x {<i>M</i><sub>homo</sub>; <i>M</i><sub>hetero</sub>}) <i>versus</i> <b>ongoing migration</b> ({IM; SC} x {<i>Ne</i><sub>homo</sub>; <i>Ne</i><sub>hetero</sub>} x {<i>M</i><sub>homo</sub>; <i>M</i><sub>hetero</sub>})</h3>'),
+		HTML('<h3><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.a. if current isolation -></b> comparison between <b>SI</b> ({<i>Ne</i><sub>homo</sub>; <i>Ne</i><sub>hetero</sub>}) <i>versus</i> <b>AM</b> ({<i>Ne</i><sub>homo</sub>; <i>Ne</i><sub>hetero</sub>} x {<i>M</i><sub>homo</sub>; <i>M</i><sub>hetero</sub>})</h3>'),
+		HTML('<h3><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.b. if ongoing migration -></b> comparison between <b>IM</b> ({<i>Ne</i><sub>homo</sub>; <i>Ne</i><sub>hetero</sub>} x {<i>M</i><sub>homo</sub>; <i>M</i><sub>hetero</sub>}) <i>versus</i> <b>SC</b> ({<i>Ne</i><sub>homo</sub>; <i>Ne</i><sub>hetero</sub>} x {<i>M</i><sub>homo</sub>; <i>M</i><sub>hetero</sub>})</h3>'),
+		HTML('<h3><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.</b> the last step is to determine whether effective size (<b><i>Ne</i></b>; panel <b>B</b>) and migration rates (<b><i>N.m</i></b>; panel <b>C</b>) are homogeneously (<b>o</b>) or heterogenously (<b>e</b>) distributed in genomes.</h3>')
 	),
 
 	boxPlus(title = HTML('<h2>Architecture of DILS</h2>'), width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
@@ -344,7 +342,7 @@ welcome_page <- fluidPage(
 			h3(strong("2."), "...a workflow managed by", a(span(strong("Snakemake."), style = "color:teal"), href="https://snakemake.readthedocs.io/en/stable/", target="_blank")),
 			htmlOutput("welcome_picture"),
 			hr(),
-			h3("The code is fully open-source, freely distributed on", a(span(strong("GitHub"), style = "color:teal"), href="https://github.com/popgenomics/ABConline", target="_blank"), "and can be immediately redeployed on any cluster using", a(span(strong("SLURM"), style = "color:teal"), href="https://slurm.schedmd.com/documentation.html", target="_blank"), "thanks to a", a(span(strong("Singularity"), style = "color:teal"), href="https://sylabs.io/docs/#doc-3.2", target="_blank"), "image."),
+			h3("The code is fully open-source, freely distributed on", a(span(strong("GitHub"), style = "color:teal"), href="https://github.com/popgenomics/DILS", target="_blank"), "and can be immediately redeployed on any cluster using", a(span(strong("SLURM"), style = "color:teal"), href="https://slurm.schedmd.com/documentation.html", target="_blank"), "thanks to a", a(span(strong("Singularity"), style = "color:teal"), href="https://sylabs.io/docs/#doc-3.2", target="_blank"), "image."),
 			
 			h3("This redeployment allows the user to modify the models to be compared, to add summary statistics, etc..."),
 			h3("The workflow can be simply executed from the command line without going through the web interface."),
