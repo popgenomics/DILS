@@ -207,24 +207,24 @@ welcome_page <- fluidPage(
 			mainPanel(width=NULL, 
 				h3(strong("1 population/species")),
 				htmlOutput("models_picture_1pop"),
-				HTML('<h3><b>Constant</b> = single panmictic population of effective size <b><i>Ne</i></b> constant over time.</h3>'),
-				HTML('<h3><b>Expansion</b> = the size of the current population has suddenly become larger than in the past <b><i>T<sub>dem</sub></i></b> generations ago.</h3>'),
-				HTML('<h3><b>Contraction</b> = the current population experienced a decline in its size <b><i>T<sub>dem</sub></i></b> generations ago.</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Constant</b> = single panmictic population of effective size <b><i>Ne</i></b> constant over time.</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Expansion</b> = the size of the current population has suddenly become larger than in the past <b><i>T<sub>dem</sub></i></b> generations ago.</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Contraction</b> = the current population experienced a decline in its size <b><i>T<sub>dem</sub></i></b> generations ago.</h3>'),
 				hr(),
 				h3(strong("2 populations/species")),
 				htmlOutput("models_picture_2pop"),
-				HTML('<h3><b>SI</b> = strict isolation: subdivision of an ancestral diploid panmictic population (of size <i>N<sub>anc</sub></i>) in two diploid populations (of constant sizes <i>N<sub>pop1</sub></i> and <i>N<sub>pop2</sub></i>) at time <i>T<sub>split</sub></i>.</h3>'),
-				HTML('<h3><b>AM</b> = ancestral migration: the two newly formed populations continue to exchange alleles until time T<sub>AM</sub>.</h3>'),
-				HTML('<h3><b>IM</b> = isolation with migration: the two daughter populations continuously exchange alleles until present time.</h3>'),
-				HTML('<h3><b>SC</b> = secondary contact: the daughter populations first evolve in isolation (forward in time), then experience a secondary contact and start exchanging alleles at time T<sub>SC</sub>. Red phylogenies represent possible gene trees under each alternative model.</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>SI</b> = strict isolation: subdivision of an ancestral diploid panmictic population (of size <i>N<sub>anc</sub></i>) in two diploid populations (of constant sizes <i>N<sub>pop1</sub></i> and <i>N<sub>pop2</sub></i>) at time <i>T<sub>split</sub></i>.</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>AM</b> = ancestral migration: the two newly formed populations continue to exchange alleles until time T<sub>AM</sub>.</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>IM</b> = isolation with migration: the two daughter populations continuously exchange alleles until present time.</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>SC</b> = secondary contact: the daughter populations first evolve in isolation (forward in time), then experience a secondary contact and start exchanging alleles at time T<sub>SC</sub>. Red phylogenies represent possible gene trees under each alternative model.</h3>'),
 				hr(),
 				h3(strong("4 populations/species")),
 				htmlOutput("models_picture_4pop"),
-				h3("A single generalist model, declined in 64 sub-models according to if there is one:"),
-				h3("migration (bidirectional) or no migration between A and B, and/or between C and D."),
-				h3("bidirectional, unidirectional or no migration between A and C, and/or between B and D."),
-				HTML('<h3>In case of migration between A and B (and between C and D), the gene flow takes place since their separation T<sub>split_AB</sub> (and T<sub>split_CD</sub>).</h3>'),
-				HTML('<h3>In case of migration between A and C (and between B and D), the gene flow occurs during a secondary contact T<sub>SC_AC</sub> (and T<sub>SC_BD</sub>) lower than min(c(T<sub>split_AB</sub>, T<sub>split_CD</sub>)) </h3>')
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A single generalist model, declined in 64 sub-models according to if there is one:</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;migration (bidirectional) or no migration between A and B, and/or between C and D.</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bidirectional, unidirectional or no migration between A and C, and/or between B and D.</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In case of migration between A and B (and between C and D), the gene flow takes place since their separation T<sub>split_AB</sub> (and T<sub>split_CD</sub>).</h3>'),
+				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In case of migration between A and C (and between B and D), the gene flow occurs during a secondary contact T<sub>SC_AC</sub> (and T<sub>SC_BD</sub>) lower than min(c(T<sub>split_AB</sub>, T<sub>split_CD</sub>))</h3>')
 			)
 	),
 	
@@ -407,19 +407,6 @@ upload_data <- fluidPage(
 		)
 	),	
 	
-	fluidRow(align="left",
-		boxPlus(title = h2("Information extracted from the uploaded file"), width = 6, closable = FALSE, status = "success", solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
-			uiOutput("upload")
-		),
-		
-		boxPlus("", width = 6, solidHeader = TRUE, status = "info",
-			prettyCheckbox(inputId = "check_upload", shape = "round", value = FALSE,
-			label = strong("Please check/valid your choices"), icon = icon("check"),
-			animation = "tada", status = "success", bigger = TRUE)
-		)
-	),
-
-
 	fluidRow(
 		boxPlus(
 			title = h2("Input file format"), width = 12, icon = NULL, solidHeader = TRUE, background = NULL,
@@ -504,7 +491,21 @@ upload_data <- fluidPage(
 			h3("Only species whose names are specified in the ", strong("Populations/species"), " menu are considered, but the uploaded file can contain other species."),
 			h3("Two diploid individuals are sequenced for each species/population. For example for chi: chi.CJ560 and chi.CJ564. This number can obviously vary between species/populations, according to the sequencing strategy and its success.")
 		)
+	),
+	
+	fluidRow(align="left",
+		boxPlus(title = h2("Information extracted from the uploaded file"), width = 6, closable = FALSE, status = "success", solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
+			uiOutput("upload")
+		),
+		
+		boxPlus("", width = 6, solidHeader = TRUE, status = "info",
+			prettyCheckbox(inputId = "check_upload", shape = "round", value = FALSE,
+			label = strong("Please check/valid your choices"), icon = icon("check"),
+			animation = "tada", status = "success", bigger = TRUE)
+		)
 	)
+
+
 )
 
 
@@ -745,7 +746,7 @@ ui <- dashboardPage(
 	#skin = "black",
 	dashboardHeader(title = "menu DILS",
 #		tags$li(class = "dropdown", socialButton(url = "https://github.com/popgenomics/ABConline", type = "github"), tags$img(height = "auto"))
-		tags$li(class="dropdown", tags$a(href="https://github.com/popgenomics/ABConline", icon("github"), "Source Code", target="_blank")),
+		tags$li(class="dropdown", tags$a(href="https://github.com/popgenomics/DILS", icon("github"), "Source Code", target="_blank")),
 		tags$li(class="dropdown", tags$a(href="https://groups.google.com/forum/#!forum/dils---demographic-inferences-with-linked-selection", icon("envelope"), "Help/Discussion", target="_blank"))
 
 	),
@@ -1220,7 +1221,7 @@ server <- function(input, output, session = session) {
 		
 		yaml_name = paste(global$datapath, '/', time_stamp(), '.yaml', sep='')
 		write(paste("mail_address:", input$mail_address, sep=' '), file = yaml_name, append=F)
-		write(paste("infile:", input$infile$name, sep=' '), file = yaml_name, append=T)
+		write(paste("infile:", input$infile$datapath, sep=' '), file = yaml_name, append=T) # TO CHECK
 		write(paste("region:", input$region, sep=' '), file = yaml_name, append=T)
 		write(paste("nspecies:", input$nspecies, sep=' '), file = yaml_name, append=T)
 		write(paste("nameA:", input$nameA, sep=' '), file = yaml_name, append=T)
@@ -1321,7 +1322,6 @@ server <- function(input, output, session = session) {
 			ABCstatGlobal = read.table(paste(rootName, "/ABCstat_global.txt", sep=''), h=T)
 			priorfile = read.table(paste(rootName, '/best_model/priorfile.txt', sep=''), h=T)
 			posterior = read.table(paste(rootName, '/best_model/posterior_bestModel.txt', sep=''), h=T)
-			posterior_RF = read.table(paste(rootName, '/best_model/posterior_summary_RandomForest_bestModel.txt', sep=''), h=T)
 			distribution_PCA = read.table(paste(rootName, '/distribution_PCA.txt', sep=''), sep='\t', h=T)
 			contribution_PCA = read.table(paste(rootName, "/table_contrib_PCA_SS.txt", sep=''), h=T, sep='\t')
 			coord_PCA_SS = read.table(paste(rootName, "/table_coord_PCA_SS.txt", sep=''), h=T, sep='\t')
@@ -1332,7 +1332,7 @@ server <- function(input, output, session = session) {
 			gof2_sfs = read.table(paste(rootName, "/gof_2/gof_sfs.txt", sep=''), h=T)
 			
 			meta = read.table('metaanalysis.txt', sep='\t', h=T)
-			
+
 			# if 2 species
 			if(users_infos[1,2]==2){
 				yaml = read_yaml(paste(rootName, '/config.yaml', sep=''))
@@ -1344,6 +1344,9 @@ server <- function(input, output, session = session) {
 				optimized_posterior = read.table(paste(rootName, '/best_model_5/posterior_bestModel.txt', sep=''), h=T)
 				allData[['optimized_posterior']] = optimized_posterior 
 				
+				posterior_RF = read.table(paste(rootName, '/best_model/posterior_summary_RandomForest_bestModel.txt', sep=''), h=T)
+				allData[['posterior_RF']] = posterior_RF
+				
 				optimized_posterior_RF = read.table(paste(rootName, '/best_model_5/posterior_summary_RandomForest_bestModel.txt', sep=''), h=T)
 				allData[['optimized_posterior_RF']] = optimized_posterior_RF
 				
@@ -1354,6 +1357,12 @@ server <- function(input, output, session = session) {
 				allData[['locus_infos']] = locus_infos
 			}else{
 				if(users_infos[1,2]==1){
+					table_posterior = read.table(paste(rootName, '/best_model/report_', users_infos[2,2], '.txt', sep=''), h=T, skip=4)
+					allData[['table_posterior']] = table_posterior
+					
+					table_optimized_posterior = read.table(paste(rootName, '/best_model_7/report_', users_infos[2,2], '.txt', sep=''), h=T, skip=4)
+					allData[['table_optimized_posterior']] = table_optimized_posterior
+					
 					optimized_posterior = read.table(paste(rootName, '/best_model_7/posterior_bestModel.txt', sep=''), h=T)
 					allData[['optimized_posterior']] = optimized_posterior
 					
@@ -1372,7 +1381,6 @@ server <- function(input, output, session = session) {
 			allData[['ABCstatGlobal']] = ABCstatGlobal 
 			allData[['priorfile']] = priorfile 
 			allData[['posterior']] = posterior 
-			allData[['posterior_RF']] = posterior_RF
 			allData[['list_parameters']] = colnames(posterior) 
 			allData[['distribution_PCA']] = distribution_PCA 
 			allData[['contribution_PCA']] = contribution_PCA 
@@ -1998,228 +2006,216 @@ server <- function(input, output, session = session) {
 
 			# read information
 			Nref = allData()[['Nref']]
-			res1 = allData()[['posterior']]
-			res2 = allData()[['optimized_posterior']]
-			
-			# table
-			param_names = NULL
-			post1_Q1 = NULL
-			post1_median = NULL
-			post1_Q2 = NULL
-			post2_Q1 = NULL
-			post2_median = NULL
-			post2_Q2 = NULL
-
-			nparams = ncol(res1)
-			for(i in 1:nparams){
-				param_name = colnames(res1)[i]
-				
-				scale = 1
-				if( param_name == 'N1' || param_name == 'N2' || param_name == 'Na' ){
-					scale = Nref
-				}
-				
-				if( param_name == 'Tsplit' || param_name == 'Tam' || param_name == 'Tsc' || param_name == 'Tdem1' || param_name == 'Tdem2' ){
-					scale = 4*Nref
-				}
-				
-				if( param_name == 'M12' || param_name == 'M21'){
-					scale = 1/4
-				}
-					
-				posterior1 = res1[,i] * scale
-				posterior1 = data.frame(x = posterior1, label=rep('Posterior', length(posterior1)))
-
-				posterior2 = res2[,i] * scale
-				posterior2 = data.frame(x = posterior2, label=rep('First optimization', length(posterior2)))
-				
+			if(input$modeInference == 'neural network'){
+				res1 = allData()[['posterior']]
+				res2 = allData()[['optimized_posterior']]
+				title_plot = 'ABC - neural network'
 				# table
-				param_names = c(param_names, param_name)
-				if(param_name%in%c('N1', 'N2', 'Na', 'Tsplit', 'Tsc', 'Tam', 'Tmin', 'Tdem1', 'Tdem2', 'nBarriersM12', 'nBarriersM21')){
-					post1_Q1_tmp = formatC(round(quantile(posterior1$x, 0.025), 0), format='d', big.mark=' ')
-					post1_median_tmp = formatC(round(quantile(posterior1$x, 0.5), 0), format='d', big.mark=' ')
-					post1_Q2_tmp = formatC(round(quantile(posterior1$x, 0.975), 0), format='d', big.mark=' ')
+				param_names = NULL
+				post1_Q1 = NULL
+				post1_median = NULL
+				post1_Q2 = NULL
+				post2_Q1 = NULL
+				post2_median = NULL
+				post2_Q2 = NULL
 
-					post2_Q1_tmp = formatC(round(quantile(posterior2$x, 0.025), 0), format='d', big.mark=' ')
-					post2_median_tmp = formatC(round(quantile(posterior2$x, 0.5), 0), format='d', big.mark=' ')
-					post2_Q2_tmp = formatC(round(quantile(posterior2$x, 0.975), 0), format='d', big.mark=' ')
-				}else{
-					post1_Q1_tmp = formatC(round(quantile(posterior1$x, 0.025), 5), format="f", big.mark=" ", digits=5)
-					post1_median_tmp = formatC(round(quantile(posterior1$x, 0.5), 5), format="f", big.mark=" ", digits=5)
-					post1_Q2_tmp = formatC(round(quantile(posterior1$x, 0.975), 5), format="f", big.mark=" ", digits=5)
+				nparams = ncol(res1)
+				for(i in 1:nparams){
+					param_name = colnames(res1)[i]
 					
-					post2_Q1_tmp = formatC(round(quantile(posterior2$x, 0.025), 5), format="f", big.mark=" ", digits=5)
-					post2_median_tmp = formatC(round(quantile(posterior2$x, 0.5), 5), format="f", big.mark=" ", digits=5)
-					post2_Q2_tmp = formatC(round(quantile(posterior2$x, 0.975), 5), format="f", big.mark=" ", digits=5)
+					scale = 1
+					if( param_name == 'N1' || param_name == 'N2' || param_name == 'Na' ){
+						scale = Nref
+					}
 					
-				}
+					if( param_name == 'Tsplit' || param_name == 'Tam' || param_name == 'Tsc' || param_name == 'Tdem1' || param_name == 'Tdem2' ){
+						scale = 4*Nref
+					}
 					
-				post1_Q1 = c(post1_Q1, post1_Q1_tmp)
-				post1_median = c(post1_median, post1_median_tmp)
-				post1_Q2 = c(post1_Q2, post1_Q2_tmp)
-				
-				post2_Q1 = c(post2_Q1, post2_Q1_tmp)
-				post2_median = c(post2_median, post2_median_tmp)
-				post2_Q2 = c(post2_Q2, post2_Q2_tmp)
-			}
-
-			# print table
-			col_tmp = viridis_pal(option="D", alpha=1)(5)
-			col_post1_header = col_tmp[1]
-			col_post2_header = col_tmp[4]
-			col_tmp = viridis_pal(option="D", alpha=0.4)(5)
-			col_post1 = col_tmp[1]
-			col_post2 = col_tmp[4]
-			green = "#C7F464"
-			dark_grey = "#1e2b37"
-			light_grey = "#556270"
-
-			table_estimations = plot_ly( type = 'table',
-				header = list(
-					values = c("<b>Parameter</b>", "<b>HPD 0.025</b>", "<b>HPD median (posterior)</b>", "<b>HPD 0.975</b>", "<b>HPD 0.025</b>", "<b>HPD median (optimized posterior)</b>", "<b>HPD 0.975</b>"),
-					line = list(color = dark_grey),
-					fill = list(color = c(dark_grey, col_post1_header, col_post1_header, col_post1_header, col_post2_header, col_post2_header, col_post2_header)),
-					align = c('left','center'),
-					font = list(color = c(green, rep("white", 6), size = 30))
-				),
-				cells = list(
-					values = rbind(
-						paste('<b>', param_names, '</b>', sep=''),
-						post1_Q1,
-						paste('<b>', post1_median, '</b>', sep=''),
-						post1_Q2,
+					if( param_name == 'M12' || param_name == 'M21'){
+						scale = 1/4
+					}
 						
-						post2_Q1,
-						paste('<b>', post2_median, '</b>', sep=''),
-						post2_Q2
-					),
-					line = list(color = dark_grey),
-					fill = list(color = c(light_grey, col_post1, col_post1, col_post1, col_post2, col_post2, col_post2)),
-					align = c('left', 'center'),
-					font = list(color = c(green, dark_grey,  size = 30))
-				), 
-				width = 0.75*as.numeric(input$dimension[1]), height = 0.75*as.numeric(input$dimension[2])
-			) %>% layout(title = "ABC - Neural Network") %>%
-				layout(plot_bgcolor='rgb(1,1,1,0)') %>% 
-				layout(paper_bgcolor='rgb(1,1,1,0)') 
-			return(table_estimations)
-		}
-	})
-	
-	output$table_parameters_2pops_RF <- renderPlotly({
-		fileName = input$results
-		if (is.null(fileName)){
-			return(NULL)
-		}else{
-			rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
-		
-			# table
-			theme_set(theme_classic())
-			figure = list()
+					posterior1 = res1[,i] * scale
+					posterior1 = data.frame(x = posterior1, label=rep('Posterior', length(posterior1)))
 
-			# read information
-			Nref = allData()[['Nref']]
-			res1 = allData()[['posterior_RF']]
-			res2 = allData()[['optimized_posterior_RF']]
-			
-			# table
-			param_names = NULL
-			post1_Q1 = NULL
-			post1_median = NULL
-			post1_Q2 = NULL
-			post2_Q1 = NULL
-			post2_median = NULL
-			post2_Q2 = NULL
-
-			nparams = nrow(res1)
-			for(i in 1:nparams){
-				param_name = res1[i,1]
-				
-				scale = 1
-				if( param_name == 'N1' || param_name == 'N2' || param_name == 'Na' ){
-					scale = Nref
-				}
-				
-				if( param_name == 'Tsplit' || param_name == 'Tam' || param_name == 'Tsc' || param_name == 'Tdem1' || param_name == 'Tdem2' ){
-					scale = 4*Nref
-				}
-				
-				if( param_name == 'M12' || param_name == 'M21'){
-					scale = 1/4
-				}
+					posterior2 = res2[,i] * scale
+					posterior2 = data.frame(x = posterior2, label=rep('First optimization', length(posterior2)))
 					
-				posterior1 = as.numeric(res1[i,-1]) * scale
-				posterior2 = as.numeric(res2[i,-1]) * scale
-				
+					# table
+					param_names = c(param_names, param_name)
+					if(param_name%in%c('N1', 'N2', 'Na', 'Tsplit', 'Tsc', 'Tam', 'Tmin', 'Tdem1', 'Tdem2', 'nBarriersM12', 'nBarriersM21')){
+						post1_Q1_tmp = formatC(round(quantile(posterior1$x, 0.025), 0), format='d', big.mark=' ')
+						post1_median_tmp = formatC(round(quantile(posterior1$x, 0.5), 0), format='d', big.mark=' ')
+						post1_Q2_tmp = formatC(round(quantile(posterior1$x, 0.975), 0), format='d', big.mark=' ')
+
+						post2_Q1_tmp = formatC(round(quantile(posterior2$x, 0.025), 0), format='d', big.mark=' ')
+						post2_median_tmp = formatC(round(quantile(posterior2$x, 0.5), 0), format='d', big.mark=' ')
+						post2_Q2_tmp = formatC(round(quantile(posterior2$x, 0.975), 0), format='d', big.mark=' ')
+					}else{
+						post1_Q1_tmp = formatC(round(quantile(posterior1$x, 0.025), 5), format="f", big.mark=" ", digits=5)
+						post1_median_tmp = formatC(round(quantile(posterior1$x, 0.5), 5), format="f", big.mark=" ", digits=5)
+						post1_Q2_tmp = formatC(round(quantile(posterior1$x, 0.975), 5), format="f", big.mark=" ", digits=5)
+						
+						post2_Q1_tmp = formatC(round(quantile(posterior2$x, 0.025), 5), format="f", big.mark=" ", digits=5)
+						post2_median_tmp = formatC(round(quantile(posterior2$x, 0.5), 5), format="f", big.mark=" ", digits=5)
+						post2_Q2_tmp = formatC(round(quantile(posterior2$x, 0.975), 5), format="f", big.mark=" ", digits=5)
+						
+					}
+						
+					post1_Q1 = c(post1_Q1, post1_Q1_tmp)
+					post1_median = c(post1_median, post1_median_tmp)
+					post1_Q2 = c(post1_Q2, post1_Q2_tmp)
+					
+					post2_Q1 = c(post2_Q1, post2_Q1_tmp)
+					post2_median = c(post2_median, post2_median_tmp)
+					post2_Q2 = c(post2_Q2, post2_Q2_tmp)
+				}
+
+				# print table
+				col_tmp = viridis_pal(option="D", alpha=1)(5)
+				col_post1_header = col_tmp[1]
+				col_post2_header = col_tmp[4]
+				col_tmp = viridis_pal(option="D", alpha=0.4)(5)
+				col_post1 = col_tmp[1]
+				col_post2 = col_tmp[4]
+				green = "#C7F464"
+				dark_grey = "#1e2b37"
+				light_grey = "#556270"
+
+				table_estimations = plot_ly( type = 'table',
+					header = list(
+						values = c("<b>Parameter</b>", "<b>HPD 0.025</b>", "<b>HPD median (posterior)</b>", "<b>HPD 0.975</b>", "<b>HPD 0.025</b>", "<b>HPD median (optimized posterior)</b>", "<b>HPD 0.975</b>"),
+						line = list(color = dark_grey),
+						fill = list(color = c(dark_grey, col_post1_header, col_post1_header, col_post1_header, col_post2_header, col_post2_header, col_post2_header)),
+						align = c('left','center'),
+						font = list(color = c(green, rep("white", 6), size = 30))
+					),
+					cells = list(
+						values = rbind(
+							paste('<b>', param_names, '</b>', sep=''),
+							post1_Q1,
+							paste('<b>', post1_median, '</b>', sep=''),
+							post1_Q2,
+							
+							post2_Q1,
+							paste('<b>', post2_median, '</b>', sep=''),
+							post2_Q2
+						),
+						line = list(color = dark_grey),
+						fill = list(color = c(light_grey, col_post1, col_post1, col_post1, col_post2, col_post2, col_post2)),
+						align = c('left', 'center'),
+						font = list(color = c(green, dark_grey,  size = 30))
+					), 
+					width = 0.75*as.numeric(input$dimension[1]), height = 0.75*as.numeric(input$dimension[2])
+				) %>% layout(title = title_plot) %>%
+					layout(plot_bgcolor='rgb(1,1,1,0)') %>% 
+					layout(paper_bgcolor='rgb(1,1,1,0)') 
+				return(table_estimations)
+			}else{
+				res1 = allData()[['posterior_RF']]
+				res2 = allData()[['optimized_posterior_RF']]
+				title_plot = 'ABC - random forest'
 				# table
-				param_names = c(param_names, as.character(param_name))
-				if(param_name%in%c('N1', 'N2', 'Na', 'Tsplit', 'Tsc', 'Tam', 'Tmin', 'Tdem1', 'Tdem2', 'nBarriersM12', 'nBarriersM21')){
-					post1_Q1_tmp = formatC(round(posterior1[1], 0), format='d', big.mark=' ')
-					post1_median_tmp = formatC(round(posterior1[2], 0), format='d', big.mark=' ')
-					post1_Q2_tmp = formatC(round(posterior1[3], 0), format='d', big.mark=' ')
+				param_names = NULL
+				post1_Q1 = NULL
+				post1_median = NULL
+				post1_Q2 = NULL
+				post2_Q1 = NULL
+				post2_median = NULL
+				post2_Q2 = NULL
 
-					post2_Q1_tmp = formatC(round(posterior2[1], 0), format='d', big.mark=' ')
-					post2_median_tmp = formatC(round(posterior2[2], 0), format='d', big.mark=' ')
-					post2_Q2_tmp = formatC(round(posterior2[3], 0), format='d', big.mark=' ')
-				}else{
-					post1_Q1_tmp = formatC(round(posterior1[1], 5), format="f", big.mark=" ", digits=5)
-					post1_median_tmp = formatC(round(posterior1[2], 5), format="f", big.mark=" ", digits=5)
-					post1_Q2_tmp = formatC(round(posterior1[3], 5), format="f", big.mark=" ", digits=5)
+				nparams = nrow(res1)
+				for(i in 1:nparams){
+					param_name = res1[i,1]
 					
-					post2_Q1_tmp = formatC(round(posterior2[1], 5), format="f", big.mark=" ", digits=5)
-					post2_median_tmp = formatC(round(posterior2[2], 5), format="f", big.mark=" ", digits=5)
-					post2_Q2_tmp = formatC(round(posterior2[3], 5), format="f", big.mark=" ", digits=5)
-				}
+					scale = 1
+					if( param_name == 'N1' || param_name == 'N2' || param_name == 'Na' ){
+						scale = Nref
+					}
 					
-				post1_Q1 = c(post1_Q1, post1_Q1_tmp)
-				post1_median = c(post1_median, post1_median_tmp)
-				post1_Q2 = c(post1_Q2, post1_Q2_tmp)
-				
-				post2_Q1 = c(post2_Q1, post2_Q1_tmp)
-				post2_median = c(post2_median, post2_median_tmp)
-				post2_Q2 = c(post2_Q2, post2_Q2_tmp)
-			}
-
-			# print table
-			col_tmp = viridis_pal(option="D", alpha=1)(5)
-			col_post1_header = col_tmp[1]
-			col_post2_header = col_tmp[4]
-			col_tmp = viridis_pal(option="D", alpha=0.4)(5)
-			col_post1 = col_tmp[1]
-			col_post2 = col_tmp[4]
-			green = "#C7F464"
-			dark_grey = "#1e2b37"
-			light_grey = "#556270"
-
-			table_estimations = plot_ly( type = 'table',
-				header = list(
-					values = c("<b>Parameter</b>", "<b>HPD 0.025</b>", "<b>HPD median (posterior)</b>", "<b>HPD 0.975</b>", "<b>HPD 0.025</b>", "<b>HPD median (optimized posterior)</b>", "<b>HPD 0.975</b>"),
-					line = list(color = dark_grey),
-					fill = list(color = c(dark_grey, col_post1_header, col_post1_header, col_post1_header, col_post2_header, col_post2_header, col_post2_header)),
-					align = c('left','center'),
-					font = list(color = c(green, rep("white", 6), size = 30))
-				),
-				cells = list(
-					values = rbind(
-						paste('<b>', param_names, '</b>', sep=''),
-						post1_Q1,
-						paste('<b>', post1_median, '</b>', sep=''),
-						post1_Q2,
+					if( param_name == 'Tsplit' || param_name == 'Tam' || param_name == 'Tsc' || param_name == 'Tdem1' || param_name == 'Tdem2' ){
+						scale = 4*Nref
+					}
+					
+					if( param_name == 'M12' || param_name == 'M21'){
+						scale = 1/4
+					}
 						
-						post2_Q1,
-						paste('<b>', post2_median, '</b>', sep=''),
-						post2_Q2
+					posterior1 = as.numeric(res1[i,-1]) * scale
+					posterior2 = as.numeric(res2[i,-1]) * scale
+					
+					# table
+					param_names = c(param_names, as.character(param_name))
+					if(param_name%in%c('N1', 'N2', 'Na', 'Tsplit', 'Tsc', 'Tam', 'Tmin', 'Tdem1', 'Tdem2', 'nBarriersM12', 'nBarriersM21')){
+						post1_Q1_tmp = formatC(round(posterior1[1], 0), format='d', big.mark=' ')
+						post1_median_tmp = formatC(round(posterior1[2], 0), format='d', big.mark=' ')
+						post1_Q2_tmp = formatC(round(posterior1[3], 0), format='d', big.mark=' ')
+
+						post2_Q1_tmp = formatC(round(posterior2[1], 0), format='d', big.mark=' ')
+						post2_median_tmp = formatC(round(posterior2[2], 0), format='d', big.mark=' ')
+						post2_Q2_tmp = formatC(round(posterior2[3], 0), format='d', big.mark=' ')
+					}else{
+						post1_Q1_tmp = formatC(round(posterior1[1], 5), format="f", big.mark=" ", digits=5)
+						post1_median_tmp = formatC(round(posterior1[2], 5), format="f", big.mark=" ", digits=5)
+						post1_Q2_tmp = formatC(round(posterior1[3], 5), format="f", big.mark=" ", digits=5)
+						
+						post2_Q1_tmp = formatC(round(posterior2[1], 5), format="f", big.mark=" ", digits=5)
+						post2_median_tmp = formatC(round(posterior2[2], 5), format="f", big.mark=" ", digits=5)
+						post2_Q2_tmp = formatC(round(posterior2[3], 5), format="f", big.mark=" ", digits=5)
+					}
+						
+					post1_Q1 = c(post1_Q1, post1_Q1_tmp)
+					post1_median = c(post1_median, post1_median_tmp)
+					post1_Q2 = c(post1_Q2, post1_Q2_tmp)
+					
+					post2_Q1 = c(post2_Q1, post2_Q1_tmp)
+					post2_median = c(post2_median, post2_median_tmp)
+					post2_Q2 = c(post2_Q2, post2_Q2_tmp)
+				}
+
+				# print table
+				col_tmp = viridis_pal(option="D", alpha=1)(5)
+				col_post1_header = col_tmp[1]
+				col_post2_header = col_tmp[4]
+				col_tmp = viridis_pal(option="D", alpha=0.4)(5)
+				col_post1 = col_tmp[1]
+				col_post2 = col_tmp[4]
+				green = "#C7F464"
+				dark_grey = "#1e2b37"
+				light_grey = "#556270"
+
+				table_estimations = plot_ly( type = 'table',
+					header = list(
+						values = c("<b>Parameter</b>", "<b>HPD 0.025</b>", "<b>HPD median (posterior)</b>", "<b>HPD 0.975</b>", "<b>HPD 0.025</b>", "<b>HPD median (optimized posterior)</b>", "<b>HPD 0.975</b>"),
+						line = list(color = dark_grey),
+						fill = list(color = c(dark_grey, col_post1_header, col_post1_header, col_post1_header, col_post2_header, col_post2_header, col_post2_header)),
+						align = c('left','center'),
+						font = list(color = c(green, rep("white", 6), size = 30))
 					),
-					line = list(color = dark_grey),
-					fill = list(color = c(light_grey, col_post1, col_post1, col_post1, col_post2, col_post2, col_post2)),
-					align = c('left', 'center'),
-					font = list(color = c(green, dark_grey,  size = 30))
-				), 
-				width = 0.75*as.numeric(input$dimension[1]), height = 0.75*as.numeric(input$dimension[2])
-			) %>% layout(title = "ABC - Random Forest") %>% 
-				layout(plot_bgcolor='rgb(1,1,1,0)') %>% 
-				layout(paper_bgcolor='rgb(1,1,1,0)') 
-			return(table_estimations)
+					cells = list(
+						values = rbind(
+							paste('<b>', param_names, '</b>', sep=''),
+							post1_Q1,
+							paste('<b>', post1_median, '</b>', sep=''),
+							post1_Q2,
+							
+							post2_Q1,
+							paste('<b>', post2_median, '</b>', sep=''),
+							post2_Q2
+						),
+						line = list(color = dark_grey),
+						fill = list(color = c(light_grey, col_post1, col_post1, col_post1, col_post2, col_post2, col_post2)),
+						align = c('left', 'center'),
+						font = list(color = c(green, dark_grey,  size = 30))
+					), 
+					width = 0.75*as.numeric(input$dimension[1]), height = 0.75*as.numeric(input$dimension[2])
+				) %>% layout(title = "ABC - Random Forest") %>% 
+					layout(plot_bgcolor='rgb(1,1,1,0)') %>% 
+					layout(paper_bgcolor='rgb(1,1,1,0)') 
+				return(table_estimations)
+			}
+			
 		}
 	})
 	
@@ -2233,8 +2229,17 @@ server <- function(input, output, session = session) {
 			figure = list()
 
 			# read information
-			res1 = allData()[['posterior']]
-			res4 = allData()[['optimized_posterior']]
+			modeInference = input$modeInference # RF or nnet
+			if(modeInference == 'neural network'){
+				retained_values = seq(1, nrow(allData()[['table_optimized_posterior']]), 2)
+				title_plot = 'ABC - neural network'
+			}else{
+				retained_values = seq(2, nrow(allData()[['table_optimized_posterior']]), 2)
+				title_plot = 'ABC - random forest'
+			}
+			
+			res1 = allData()[['table_posterior']][retained_values,]
+			res4 = allData()[['table_optimized_posterior']][retained_values,]
 			
 			# table
 			param_names = NULL
@@ -2246,36 +2251,29 @@ server <- function(input, output, session = session) {
 			post4_median = NULL
 			post4_Q2 = NULL
 
-			nparams = ncol(res1)
-			for(i in 1:nparams){
-				param_name = colnames(res1)[i]
-				
-				posterior1 = res1[,i]
-				posterior1 = data.frame(x = posterior1, label=rep('Posterior', length(posterior1)))
+			nparams = nrow(res1)
 			
+			for(i in 1:nparams){
+				param_name = as.character(res1[i,1])
 				
-				posterior4 = res4[,i]
-				posterior4 = data.frame(x = posterior4, label=rep('Optimized posterior', length(posterior4)))
 				# table
 				param_names = c(param_names, param_name)
 				if(param_name%in%c('N', 'Npast', 'Tdem')){
-					post1_Q1_tmp = formatC(round(quantile(posterior1$x, 0.025), 0), format='d', big.mark=' ')
-					post1_median_tmp = formatC(round(quantile(posterior1$x, 0.5), 0), format='d', big.mark=' ')
-					post1_Q2_tmp = formatC(round(quantile(posterior1$x, 0.975), 0), format='d', big.mark=' ')
+					post1_Q1_tmp = formatC(round(res1[i,2], 0), format='d', big.mark=' ')
+					post1_median_tmp = formatC(round(res1[i,3], 0), format='d', big.mark=' ')
+					post1_Q2_tmp = formatC(round(res1[i,4], 0), format='d', big.mark=' ')
 					
-					
-					post4_Q1_tmp = formatC(round(quantile(posterior4$x, 0.025), 0), format='d', big.mark=' ')
-					post4_median_tmp = formatC(round(quantile(posterior4$x, 0.5), 0), format='d', big.mark=' ')
-					post4_Q2_tmp = formatC(round(quantile(posterior4$x, 0.975), 0), format='d', big.mark=' ')
+					post4_Q1_tmp = formatC(round(res4[i,2], 0), format='d', big.mark=' ')
+					post4_median_tmp = formatC(round(res4[i,3], 0), format='d', big.mark=' ')
+					post4_Q2_tmp = formatC(round(res4[i,4], 0), format='d', big.mark=' ')
 				}else{
-					post1_Q1_tmp = formatC(round(quantile(posterior1$x, 0.025), 5), format="f", big.mark=" ", digits=5)
-					post1_median_tmp = formatC(round(quantile(posterior1$x, 0.5), 5), format="f", big.mark=" ", digits=5)
-					post1_Q2_tmp = formatC(round(quantile(posterior1$x, 0.975), 5), format="f", big.mark=" ", digits=5)
+					post1_Q1_tmp = formatC(round(res1[i,2], 5), format='f', big.mark=' ')
+					post1_median_tmp = formatC(round(res1[i,3], 5), format='f', big.mark=' ')
+					post1_Q2_tmp = formatC(round(res1[i,4], 5), format='f', big.mark=' ')
 					
-					
-					post4_Q1_tmp = formatC(round(quantile(posterior4$x, 0.025), 5), format="f", big.mark=" ", digits=5)
-					post4_median_tmp = formatC(round(quantile(posterior4$x, 0.5), 5), format="f", big.mark=" ", digits=5)
-					post4_Q2_tmp = formatC(round(quantile(posterior4$x, 0.975), 5), format="f", big.mark=" ", digits=5)
+					post4_Q1_tmp = formatC(round(res4[i,2], 5), format='f', big.mark=' ')
+					post4_median_tmp = formatC(round(res4[i,3], 5), format='f', big.mark=' ')
+					post4_Q2_tmp = formatC(round(res4[i,4], 5), format='f', big.mark=' ')
 				}
 					
 				post1_Q1 = c(post1_Q1, post1_Q1_tmp)
@@ -2290,13 +2288,9 @@ server <- function(input, output, session = session) {
 			# print table
 			col_tmp = viridis_pal(option="D", alpha=1)(5)
 			col_post1_header = col_tmp[1]
-#			col_post2_header = col_tmp[2]
-#			col_post3_header = col_tmp[3]
 			col_post4_header = col_tmp[4]
 			col_tmp = viridis_pal(option="D", alpha=0.4)(5)
 			col_post1 = col_tmp[1]
-#			col_post2 = col_tmp[2]
-#			col_post3 = col_tmp[3]
 			col_post4 = col_tmp[4]
 			green = "#C7F464"
 			dark_grey = "#1e2b37"
@@ -2328,7 +2322,10 @@ server <- function(input, output, session = session) {
 					font = list(color = c(green, dark_grey,  size = 30))
 				), 
 				width = 0.75*as.numeric(input$dimension[1]), height = 0.75*as.numeric(input$dimension[2])
-			)
+			) %>% layout(title=title_plot) %>%
+				layout(plot_bgcolor='rgb(1,1,1,0)') %>% 
+				layout(paper_bgcolor='rgb(1,1,1,0)') 
+			
 			return(table_estimations)
 		}
 	})
@@ -2758,8 +2755,8 @@ server <- function(input, output, session = session) {
 					tabPanel('Posterior', uiOutput('output_posterior_2pops')),
 					tabPanel('Highest Posterior Density',
 						fluidPage(
-						plotlyOutput(outputId = 'table_parameters_2pops'),
-						plotlyOutput(outputId = 'table_parameters_2pops_RF')
+						selectInput('modeInference', label = 'prediction method', choices = list('neural network' = 'neural network', 'random forest' = 'random forest'), selected = 'neural network'),
+						plotlyOutput(outputId = 'table_parameters_2pops')
 						)
 					),
 					tabPanel("PCA", selectInput("PCA_parameters_choice", label = h4("PCA on parameters"), choices = list("Plot" = 1, "Table" = 2), selected = 1), hr(), uiOutput("display_PCA_parameter"))
@@ -2769,7 +2766,7 @@ server <- function(input, output, session = session) {
 					# if nSpecies == 2
 					tabsetPanel(
 						tabPanel("Posterior", uiOutput("output_posterior_1pop")),
-						tabPanel("Highest Posterior Density", plotlyOutput(outputId = "table_parameters_1pop")),
+						tabPanel("Highest Posterior Density", selectInput('modeInference', label = 'prediction method', choices = list('neural network' = 'neural network', 'random forest' = 'random forest'), selected = 'neural network'), plotlyOutput(outputId = "table_parameters_1pop")),
 						tabPanel("PCA", selectInput("PCA_parameters_choice", label = h4("PCA on parameters"), choices = list("Plot" = 1, "Table" = 2), selected = 1), hr(), uiOutput("display_PCA_parameter"))
 					)
 				}
