@@ -1,6 +1,5 @@
 #!/usr/bin/Rscript
 
-print(getwd())
 #################################################################################################################################
 #################################################################################################################################
 #####                                                                                                                       #####
@@ -383,7 +382,7 @@ upload_data <- fluidPage(
 		boxPlus(title = h2("Number of ABC analysis to run"), width = 6, closable = FALSE, status = "danger", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
 		shinyjs::useShinyjs(),
 		selectInput("number_of_ABC", label = h4("1 to 5 ABC analyses can be performed from the same input file"), choices = list("1" = 1, "2" = 2, "3" = 3, "4" = 4, "5" = 5), selected = 1),
-		HTML('<h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>DILS</b> runs freely on a computer server.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To avoid saturating it, we have limited the number of analyses carried out at a given time and for a given input file to <b>5</b>.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Beyond 5, you will have to upload it again whenever you want.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The selected number of analysis cannot be modified once the choices had been checked/validated</h4>')
+		HTML('<h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>DILS</b> runs freely on a computer server.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To avoid saturating it, we have limited the number of analyses carried out at a given time and for a given input file to <b>5</b>.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Beyond 5, you will have to upload it again whenever you want.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>The selected number of analysis cannot be modified</b> once the choices had been checked/validated</h4>')
 	),
 	
 	boxPlus(title = h2("Email address"), width = 6, closable = FALSE, status = "primary", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
@@ -512,7 +511,7 @@ upload_data <- fluidPage(
 filtering <- fluidPage(
 	fluidRow(
 		column(width = 4,
-			boxPlus(title = h2("Maximum proportion of missing data (N, gaps, ...)"), height = 225, width = NULL, closable = FALSE, status = "primary", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
+			boxPlus(title = h2("Maximum proportion of missing data (N, gaps, ...)"), height = 325, width = NULL, closable = FALSE, status = "primary", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
 				sliderInput("max_N_tolerated", label = NULL,	min = 0, max = 1, value = 0.1, step = 0.005)
 			),
 			boxPlus(
@@ -527,7 +526,7 @@ filtering <- fluidPage(
 		),
 		
 		column(width = 4,
-			boxPlus(title = h2("Minimum sequence length per gene"), height = 225, width = NULL, closable = FALSE, status = "success", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
+			boxPlus(title = h2("Minimum sequence length per gene"), height = 325, width = NULL, closable = FALSE, status = "success", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
 				numericInput("Lmin", label = NULL, value = 30, min = 1, max = 10000)
 			),
 
@@ -554,7 +553,7 @@ filtering <- fluidPage(
 		),
 		
 		column(width = 4,
-			boxPlus(title = h2("Minimum number of sequences per gene and per population/species"), height = 225, width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
+			boxPlus(title = h2("Minimum number of sequences per gene and per population/species"), height = 325, width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
 				numericInput("nMin", label = NULL, value = 12, min = 2)
 			),
 			
@@ -1013,7 +1012,6 @@ server <- function(input, output, session = session) {
 		if(is.null(input$infile)){return ()}
 		withProgress(message = 'Getting the species', detail = NULL, value = 0, {
 		incProgress(1/2)
-		print(input$infile$datapath)
 		return(system(paste("cat", input$infile$datapath, "| grep '>' | cut -d '|' -f2 | sort -u", sep=" "), intern = T))
 		incProgress(1/2)
 		})
@@ -1263,8 +1261,9 @@ server <- function(input, output, session = session) {
 	DILS_command <- reactiveVal(0)
 	#observeEvent( input$runABC, {DILS_command(paste('snakemake -p -j 999 --snakefile ../2pops/Snakefile --configfile config_', time_stamp(), '.yaml --cluster-config ../cluster.json --cluster "sbatch --nodes={cluster.node} --ntasks={cluster.n} --cpus-per-task={cluster.cpusPerTask} --time={cluster.time}"', sep=''))})
 	observeEvent( input$runABC, {DILS_command(paste('DILS_', input$nspecies, 'pop.sh ', time_stamp(), '.yaml &', sep=''))})
+	#observeEvent( input$runABC, {system('echo pouet')})
 	output$DILS_command <- renderText({DILS_command()})
-	
+		
 	## Check upload
 	output$check_upload_info <- renderUI({
 		if(input$check_upload == FALSE) {
@@ -1313,10 +1312,10 @@ server <- function(input, output, session = session) {
 			return (NULL)
 		}else{
 			allData = list()
-			
-			untar(fileName$datapath, exdir = getwd())
+
+			untar(fileName$datapath)
 			rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
-		
+				
 			users_infos = read.table(paste(rootName, "/general_infos.txt", sep=''), h=F, sep=',')
 			hierarchical = read.table(paste(rootName, "/modelComp/hierarchical_models.txt", sep=''), h=F, sep='\t')
 			ABCstatGlobal = read.table(paste(rootName, "/ABCstat_global.txt", sep=''), h=T)
@@ -1630,7 +1629,7 @@ server <- function(input, output, session = session) {
 			boxPlus(title = h2("Mutation and recombination"), height = NULL, width = NULL, closable = FALSE, status = "primary", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
 				fluidRow(
 					column(width=5, numericInput("mu", label = h5('Mutation rate'), value = 0.000000003, min = 0, max = 0.00001)),
-					column(width=5, numericInput("rho_over_theta", label = h5('Ratio r/µ'), value = 0.1, min = 0, max = 5))
+					column(width=5, numericInput("rho_over_theta", label = HTML('<h5>Ratio r/&mu;</h5>'), value = 0.1, min = 0, max = 5))
 				)
 			),
 			
@@ -2827,7 +2826,8 @@ server <- function(input, output, session = session) {
 					fluidRow( width = 12, plotlyOutput(outputId = "plotly_PCA_gof_2D"))
 				)
 			}else if(input$PCA_gof_choice == 2){
-				fluidRow( width = 12, plotlyOutput(outputId = "table_PCA_gof"))
+#				fluidRow( width = 12, plotlyOutput(outputId = "table_PCA_gof_plotly"))
+				fluidRow( width = 12, dataTableOutput("table_PCA_gof"))
 			}
 		}
 	})
@@ -2840,7 +2840,8 @@ server <- function(input, output, session = session) {
 			if(input$PCA_parameters_choice == 1){
 				fluidRow( width = 12, plotlyOutput(outputId = "plot_PCA_parameters"))
 			}else if(input$PCA_parameters_choice == 2){
-				fluidRow( width = 12, plotlyOutput(outputId = "table_PCA_parameters"))
+				#fluidRow( width = 12, plotlyOutput(outputId = "table_PCA_parameters_plotly"))
+				fluidRow( width = 12, dataTableOutput("table_PCA_parameters"))
 			}
 		}
 	})
@@ -2909,7 +2910,27 @@ server <- function(input, output, session = session) {
 	})
 
 
-	output$table_PCA_parameters <- renderPlotly({
+	output$table_PCA_parameters <- DT::renderDataTable(
+		if(is.null(input$results)) {return(loadingState())}
+		else{
+			x = allData()[['posterior']]#read.table(paste(rootName, "/best_model/posterior_bestModel.txt", sep=''), h=T)
+			y3 = allData()[['optimized_posterior']]#read.table(paste(rootName, "/best_model_5/posterior_bestModel.txt", sep=''), h=T)
+			
+			origin = c(rep("posterior", nrow(x)), rep("optimized posterior", nrow(y3)))
+
+			data = rbind(x, y3)
+			data = cbind(data, origin)
+
+			res.pca <- PCA(data[, -ncol(data)], graph = FALSE, ncp=3)
+
+			x = t(round(res.pca$var$contrib, 2))
+			
+			return(t(x))
+		}
+	)
+
+
+	output$table_PCA_parameters_plotly <- renderPlotly({
 		fileName = input$results
 		
 		if (is.null(fileName)){
@@ -2924,7 +2945,6 @@ server <- function(input, output, session = session) {
 			
 			origin = c(rep("posterior", nrow(x)), rep("optimized posterior", nrow(y3)))
 
-
 			data = rbind(x, y3)
 			data = cbind(data, origin)
 
@@ -2936,7 +2956,6 @@ server <- function(input, output, session = session) {
 				header = list(values = c('<b>Parameters</b>', '<b>Dim. 1</b>', '<b>Dim. 2</b>', '<b>Dim. 3</b>'), line = list(color = dark_grey), fill = list(color = dark_grey), align = c('left','center'), font = list(color = green, size = 15)),
 				cells = list( values=x, line = list(color = dark_grey), fill = list(color = c(light_grey, 'GhostWhite')), align = c('left','center'), font = list(color = c(green, dark_grey), size = 15)), width = (0.75*as.numeric(input$dimension[1])), height = 0.5*as.numeric(input$dimension[2])
 			)
-		
 			return( p1 )
 		}
 	})
@@ -3019,8 +3038,20 @@ server <- function(input, output, session = session) {
 
 					return(p)
 			}})
+	
 			
-			output$table_PCA_gof <- renderPlotly({
+			output$table_PCA_gof <- DT::renderDataTable(
+				if(is.null(input$results)) {return(loadingState())}
+				else{
+					data = allData()[['contribution_PCA']]#read.table( paste(rootName, "/table_contrib_PCA_SS.txt", sep=''), h=T, sep='\t')
+					data = data[ order(data[,1], decreasing=T), ]
+					x = round(data, 2)
+					return(x)
+				}
+			)
+
+			
+			output$table_PCA_gof_plotly <- renderPlotly({
 				fileName = input$results
 				
 				if (is.null(fileName)){
