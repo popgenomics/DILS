@@ -322,7 +322,7 @@ welcome_page <- fluidPage(
 		htmlOutput("model_comparisons_1pop"),
 		HTML('<h3><b>DILS</b> performs hierarchical model comparisons.</h3>'),
 		HTML('<h3><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.</b> comparison between all models with <b>Expansion</b> ({<i>Ne</i><sub>homo</sub>; <i>Ne</i><sub>hetero</sub>}) <i>versus</i> <b>Constant size</b> ({<i>Ne</i><sub>homo</sub>; <i>Ne</i><sub>hetero</sub>}) <i>versus</i> <b>Contraction</b> ({<i>Ne</i><sub>homo</sub>; <i>Ne</i><sub>hetero</sub>})</h3>'),
-		HTML('<h3><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.</b> the last step of the model comparison is to determine whether effective size (<b><i>Ne</i></b>) is homogeneously or heterogenously distributed in genomes.</h3>')
+		HTML('<h3><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.</b> the last step of the model comparison is to determine whether effective size (<b><i>Ne</i></b>) is homogeneously or heterogenously distributed in genomes for the best supported model in <b>step 1</b>.</h3>')
 	),
 	
 	boxPlus(title = h2("Model comparisons for 2 populations/species"), width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
@@ -689,7 +689,11 @@ upload_results <- fluidPage(
 
 
 user_dataset <- fluidPage(
-	uiOutput("visualization_data")
+#	if(is.null(input$results)){
+#		return(loadingState())
+#	}else{
+		uiOutput("visualization_data")
+#	}
 )
 
 
@@ -1407,7 +1411,10 @@ server <- function(input, output, session = session) {
 				tabPanel("Definitions of statistics and parameters", uiOutput("definitions"))
 			)
 		}else{
-			return()
+			fluidPage(
+				HTML('<h3>This page will display the DILS output once uploaded at <b><font color="#c7f464"><i class="fas fa-cloud-upload-alt"></i></font> Upload results</b></h3>'),
+				loadingState()
+			)
 		}
 	})
 
