@@ -1312,10 +1312,12 @@ server <- function(input, output, session = session) {
 			return (NULL)
 		}else{
 			allData = list()
-
-			untar(fileName$datapath)
-			rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
-				
+			projectName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
+			rootName1 = paste('/tmp/', projectName, sep='')
+			untar(fileName$datapath, exdir = rootName1)
+			
+			rootName = paste(rootName1, projectName, sep='/')
+			
 			users_infos = read.table(paste(rootName, "/general_infos.txt", sep=''), h=F, sep=',')
 			hierarchical = read.table(paste(rootName, "/modelComp/hierarchical_models.txt", sep=''), h=F, sep='\t')
 			ABCstatGlobal = read.table(paste(rootName, "/ABCstat_global.txt", sep=''), h=T)
@@ -1373,7 +1375,7 @@ server <- function(input, output, session = session) {
 				}
 			}
 		
-			system(paste('rm -rf ', rootName, sep=''))
+			system(paste('rm -rf ', rootName1, sep=''))
 			
 			allData[['users_infos']] = users_infos
 			allData[['hierarchical']] = hierarchical
