@@ -98,7 +98,7 @@ rule targets:
 		tar -zcvf {timeStamp}.tar.gz {input}
 		touch slurm_tmp.out
 		rm slurm*out
-		rm -rf {timeStamp}
+#		rm -rf {timeStamp}
 		"""
 
 rule fasta2ABC_1pop:
