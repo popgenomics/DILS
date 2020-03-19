@@ -32,6 +32,8 @@ for(tmp in commandArgs()){
 	if(tmp[[1]][1] == 'host'){ host = as.character(tmp[[1]][2]) }
 }
 
+nCPU_server = 400 # maximum number of simultaneously running jobs (400 on IFB's cluster)
+
 #options('shiny.port'=as.numeric(commandArgs()[2]), 'shiny.host'=commandArgs()[3])
 
 library(shiny)
@@ -1414,7 +1416,7 @@ server <- function(input, output, session = session) {
 	
 	## snakemake command
 	DILS_command <- reactiveVal(0)
-	#observeEvent( input$runABC, {DILS_command(paste('snakemake -p -j 999 --snakefile ../2pops/Snakefile --configfile config_', time_stamp(), '.yaml --cluster-config ../cluster.json --cluster "sbatch --nodes={cluster.node} --ntasks={cluster.n} --cpus-per-task={cluster.cpusPerTask} --time={cluster.time}"', sep=''))})
+	#observeEvent( input$runABC, {DILS_command(paste('snakemake -p -j ', nCPU_server, ' --snakefile ../2pops/Snakefile --configfile config_', time_stamp(), '.yaml --cluster-config ../cluster.json --cluster "sbatch --nodes={cluster.node} --ntasks={cluster.n} --cpus-per-task={cluster.cpusPerTask} --time={cluster.time}"', sep=''))})
 	observeEvent( input$runABC, {DILS_command(paste('DILS_', input$nspecies, 'pop.sh ', time_stamp(), '.yaml &', sep=''))})
 	output$DILS_command <- renderText({DILS_command()})
 		
