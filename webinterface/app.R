@@ -49,6 +49,7 @@ library(RColorBrewer)
 library(yaml)
 library(ggpubr)
 library(FactoMineR)
+library(shinycssloaders)
 
 pvalue = function(distribution, obs){
 	obs = as.numeric(obs)
@@ -251,7 +252,8 @@ welcome_page <- fluidPage(
 			# Main panel for displaying outputs
 			column(width=8,
 				# Output: density
-				plotOutput(outputId = "genomic_hetero")
+#				plotOutput(outputId = "genomic_hetero")
+				plotlyOutput(outputId = "genomic_hetero_plotly")
 			)
 		),
 	
@@ -287,7 +289,8 @@ welcome_page <- fluidPage(
 			# Main panel for displaying outputs
 			column(width=8,
 				# Output: density
-				plotOutput(outputId = "migration_hetero_beta")
+#				plotOutput(outputId = "migration_hetero_beta")
+				plotlyOutput(outputId = "migration_hetero_beta_plotly")
 			)
 		),
 
@@ -305,13 +308,14 @@ welcome_page <- fluidPage(
 				# Input: Slider for the number of bins
 				sliderInput(inputId = "Mexample", label = h3("Effective migration rates (number of migrants per generation):"), min = 0, max = 10, value = 5, step=0.1),
 				sliderInput(inputId = "nLociExample", label = h3("Number of studied loci:"), min = 20, max = 1000, value = 100, step=1),
-				sliderInput(inputId = "propBarrierExample", label = h3("Proportion of barriers (in %):"), min = 0, max = 100, value = 50, step=1)
+				sliderInput(inputId = "propBarrierExample", label = h3("Proportion of barriers (in %):"), min = 0, max = 100, value = 15, step=1)
 			),
 			
 			# Main panel for displaying outputs
 			column(width=8,
 				# Output: density
-				plotOutput(outputId = "migration_hetero_bimodal")
+#				plotOutput(outputId = "migration_hetero_bimodal")
+				plotlyOutput(outputId = "migration_hetero_bimodal_plotly")
 			)
 		)
 
@@ -585,7 +589,7 @@ filtering <- fluidPage(
 
 populations <- fluidPage(
 	fluidRow(
-		boxPlus(title = h2("Number of populations/species"), height = NULL, width = 4, closable = FALSE, status = "primary", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
+		boxPlus(title = h2("Number of populations/species"), height = NULL, width = 6, closable = FALSE, status = "primary", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
 		#	### FOR THE MOMENT : ONLY ONE POSSIBLE CHOICE --> 2 POPULATIONS SPECIES.
 		#	### UNCOMMENT THE NEXT TWO LINES WHEN THE ANALYSES FOR 1 OR 4 POPULATIONS WILL BE READY
 			#	prettyRadioButtons("nspecies", label = h3("Number of gene pools"), shape = "round", status = "primary", fill = TRUE, inline = FALSE, animation = "pulse", bigger = TRUE,
@@ -598,16 +602,20 @@ populations <- fluidPage(
 			uiOutput("input_names_ui")
 		),
 		
-		boxPlus(title = h2("Presence of an outgroup"), height = NULL, width = 4, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
+		boxPlus(title = h2("Presence of an outgroup"), height = NULL, width = 6, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
 			prettyRadioButtons("presence_outgroup", label = NULL, shape = "round", status = "warning", fill = TRUE, inline = FALSE, animation = "pulse", bigger = TRUE,
 			choices = list("no" = "no", "yes" = "yes"), selected = "no"),
 			uiOutput("input_names_outgroup_ui"),
-			HTML('<h4>If <b>set to yes</b>: the used joint site frequency spectrum (jSFS) is <b>unfolded</b>, and the mutation rate for each locus is corrected by its divergence with the outgroup.</h4>'),
-			HTML('<h4>If <b>set to no</b>: the used jSFS is <b>folded</b>, and the mutation rate is the same for all loci.</h4>')
-		),
-		uiOutput("size_change")
+			HTML('<h4>If <b>set to yes</b>: the <b>j</b>oint <b>S</b>ite <b>F</b>requency <b>S</b>pectrum (jSFS) is <b>unfolded</b> (<u>if chosen to be used</u>), and the mutation rate for each locus is corrected by its divergence with the outgroup.</h4>'),
+			HTML('<h4>If <b>set to no</b>: the jSFS (<u>if used</u>) is <b>folded</b>, and the mutation rate is the same for all loci.</h4>')
+		)
 	),
 
+	fluidRow(
+		uiOutput("use_SFS"),
+		uiOutput("size_change")
+	),
+	
 	fluidRow(
 		box("", width = 12, solidHeader = TRUE, status = "info",
 			prettyCheckbox(inputId = "check_populations", shape = "round", value = FALSE,
@@ -990,6 +998,48 @@ server <- function(input, output, session = session) {
 		abline(v=input$Ne, lwd=8, col=viridis_pal(option="D")(2)[1])
 	})
 	
+	output$genomic_hetero_plotly <- renderPlotly({
+		Ne=input$Ne
+		alpha=input$alpha
+		beta=input$beta
+
+		y_points = dbeta(0:100/100, alpha, beta)
+		x_points = 0:100/100 * Ne/( alpha / (alpha + beta) )
+
+				
+		x_points_polyg = c(0, x_points, max(x_points), 0)
+		y_points_polyg = c(0, y_points, 0, 0)
+
+		f <- list(
+			family = "Arial",
+			size = 20,
+			color = "#556270"
+		)
+		x <- list(
+			title = "Genomic distribution of <i>Ne</i>",
+			titlefont = f,
+			tickfont = list(size = 18)
+		)
+		y <- list(
+			title = "density",
+			titlefont = f,
+			tickfont = list(size = 18)
+		)
+
+		title <- list(
+			font = list(
+			size = 22, 
+			color = "#556270", 
+			family = "Arial"
+		    ), 
+		    text = "<br>Example of genomic distributions that DILS will try to infer"
+		  )
+
+		plot_ly() %>%
+			add_polygons(x=x_points_polyg, y=y_points_polyg, fillcolor='#c7f464', line=list(width=3,color='#556270')) %>%
+			layout(showlegend = FALSE, xaxis = x, yaxis = y, title = title)
+	})
+	
 	output$migration_hetero_beta <- renderPlot({
 		par(las=1)
 		y_points = dbeta(0:100/100, input$alphaM, input$betaM)
@@ -1008,6 +1058,88 @@ server <- function(input, output, session = session) {
 		distribution = c(rep(0, barriers), rep(input$Mexample, nLociExample-barriers))
 		hist(distribution, xlab = expression(paste("Genomic distribution of ", italic('N.m'), sep=" ")), ylab='Number of loci', main=expression(italic("Bimodal distribution of N.m")), col=viridis_pal(option="D")(2)[2], cex.main = 1.5, cex.axis = 1.5, cex.lab=1.5, xlim=1.2*range(distribution))
 	})
+	
+	output$migration_hetero_beta_plotly <- renderPlotly({
+		M=input$M
+		alpha=input$alphaM
+		beta=input$betaM
+
+		y_points = dbeta(0:100/100, alpha, beta)
+		x_points = 0:100/100 * M/( alpha / (alpha + beta) )
+
+				
+		x_points_polyg = c(0, x_points, max(x_points), 0)
+		y_points_polyg = c(0, y_points, 0, 0)
+
+		f <- list(
+			family = "Arial",
+			size = 20,
+			color = "#556270"
+		)
+		x <- list(
+			title = "Genomic distribution of <i>N.m</i>",
+			titlefont = f,
+			tickfont = list(size = 18)
+		)
+		y <- list(
+			title = "density",
+			titlefont = f,
+			tickfont = list(size = 18)
+		)
+
+		title <- list(
+			font = list(
+			size = 22, 
+			color = "#556270", 
+			family = "Arial"
+		    ), 
+		    text = "<br>Example of genomic distributions that DILS will try to infer"
+		  )
+
+		plot_ly() %>%
+			add_polygons(x=x_points_polyg, y=y_points_polyg, fillcolor='#c7f464', line=list(width=3,color='#556270')) %>%
+			layout(showlegend = FALSE, xaxis = x, yaxis = y, title = title)
+	})
+
+	output$migration_hetero_bimodal_plotly <- renderPlotly({
+		f <- list(
+			family = "Arial",
+			size = 20,
+			color = "#556270"
+		)
+		
+		x <- list(
+			title = "Genomic distribution of <i>N.m</i>",
+			titlefont = f,
+			tickfont = list(size = 18)
+		)
+		
+		y <- list(
+			title = "Number of loci",
+			titlefont = f,
+			tickfont = list(size = 18)
+		)
+
+		title <- list(
+			font = list(
+				size = 22, 
+				color = "#556270", 
+				family = "Arial"
+			), 
+			text = "<br>Bimodal distribution of <i>N.m</i>"
+		)
+		nLociExample = input$nLociExample
+		propBarrierExample = input$propBarrierExample
+		Mexample = input$Mexample
+	
+		nLociExample = nLociExample
+		barriers = as.integer(propBarrierExample/100 * nLociExample)
+		distribution = c(rep(0, barriers), rep(Mexample, nLociExample-barriers))
+		plot_ly(x = distribution,
+			type = "histogram",
+			marker=list(color='#c7f464')) %>%
+		layout(bargap=0.2, showlegend = FALSE, xaxis = x, yaxis = y, title = title)
+	})
 
 	#	UPLOAD DATA
 	## GET THE SUMMARY STATS ABOUT THE UPLOADED FILE
@@ -1016,6 +1148,7 @@ server <- function(input, output, session = session) {
 		if(is.null(input$infile)){return ()}
 		withProgress(message = 'Getting the species', detail = NULL, value = 0, {
 		incProgress(1/2)
+		#print(input$infile$datapath)
 		return(system(paste("cat", input$infile$datapath, "| grep '>' | cut -d '|' -f2 | sort -u", sep=" "), intern = T))
 		incProgress(1/2)
 		})
@@ -1095,21 +1228,35 @@ server <- function(input, output, session = session) {
 		# nameOutgroup = 'NA' # CONFIG_YAML
 		}else{
 			selectInput("nameOutgroup", label = "name of the outgroup species", choices = list_species())
-		# nameOutgroup = 'name specified by the selectInput # CONFIG_YAML
+		}
+	})
+	
+	output$use_SFS <- renderUI({
+		nspecies = as.integer(input$nspecies)
+		if(nspecies==2){
+		boxPlus(title = h2("Use the jSFS as an additional set of summary-statistics?"), height = NULL, width = 6, closable = FALSE, status = "success", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
+			prettyRadioButtons("use_SFS", label = NULL, shape = "round", status='success',  fill = TRUE, inline = FALSE, animation = "pulse", bigger = TRUE, choices = list("no" = 0, "yes" = 1), selected = 0),
+			HTML('<h4>Only optional for two-populations models. The SFS is always used for single-population models.</h4>'),
+			HTML('<h4>If <b>set to yes</b>: the <b>j</b>oint <b>S</b>ite <b>F</b>requency <b>S</b>pectrum (jSFS) is used as summary statistics, where each bin (except singletons) is considered as a summary-statistic to be adjusted during the <b>model comparison</b> and the <b>estimation of parameters</b>.</h4>'),
+			HTML('<h4>If <b>set to no</b>: the jSFS as such is not considered as a set of summary-statistics (but still used for the goodness-of-fit test).</h4>')
+			)
+		}else{
+			return()
 		}
 	})
 
 	output$size_change <- renderUI({
 		nspecies = as.integer(input$nspecies)
 		if(nspecies==2){
-		boxPlus(title = h2("Size change over time"), height = NULL, width = 4, closable = FALSE, status = "danger", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
-			prettyRadioButtons("population_growth", label = h3("Assuming constant or variable population sizes"), shape = "round", status = "danger", fill = TRUE, inline = FALSE, animation = "pulse", bigger = TRUE,
+		boxPlus(title = h2("Allow changes in population size for each sister population/species?"), height = NULL, width = 6, closable = FALSE, status = "danger", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
+			prettyRadioButtons("population_growth", label = NULL, shape = "round", status = "danger", fill = TRUE, inline = FALSE, animation = "pulse", bigger = TRUE,
 			choices = list("constant" = "constant", "variable" = "variable"), selected = "constant"),
-			HTML('<h4>If <b>set to constant</b>: the sizes of the daughter populations differ from that of the ancestral population from the split, and then they remain constant.<h4>'),
-			HTML('<h4>If <b>set to variable</b>: daughter populations each have two distinct sizes, one at the origin of the population and one present since T<sub>dem</sub> generations.</h4>')
+			HTML('<h4>Only optional for two-populations models since the goal of single-population analysis is to test for such size variations over time.</h4>'),
+			HTML('<h4>If <b>set to constant</b>: only three population sizes with the ancestral (<i>N<sub>anc</sub></i>), current populations <b>A</b> (<i>N<sub>popA</sub></i>) and <b>B</b> (<i>N<sub>popB</sub></i>).<h4>'),
+			HTML('<h4>If <b>set to variable</b>: each of the two daughter populations has two distinct sizes corresponding at two epochs: one at the origin of the population (between <i>T<sub>split</sub></i> and <i>T<sub>dem</sub></i> generations ago) and a current one for the last <i>T<sub>dem</sub></i> generations. This makes a total of five population sizes. The values of <i>T<sub>dem</sub></i> are independent between populations.</h4>')
 			)
 		}else{
-			boxPlus(title = h2("Size change over time"), height = NULL, width = 4, closable = FALSE, status = "danger", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
+			boxPlus(title = h2("Size change over time"), height = NULL, width = 6, closable = FALSE, status = "danger", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
 				prettyRadioButtons("population_growth", label = h3("The ABC analysis will test for variation in population size"), shape = "round", status = "danger", fill = TRUE, inline = FALSE, animation = "pulse", bigger = TRUE,
 				choices = list("variable" = "variable"), selected = "variable"),
 				em(strong(h4('The ABC analysis will compute the probabilities of models of constant population size (a single Ne as parameter), of population expansion and of population contraction (3 parameters: current Ne, ancestral Ne, time of demographic change).'))),
@@ -1232,6 +1379,10 @@ server <- function(input, output, session = session) {
 		}
 		
 		write(paste("nameOutgroup:", nameOutgroup, sep=' '), file = yaml_name, append=T)
+		if(input$nspecies == 2){
+			write(paste("useSFS:", input$use_SFS, sep=' '), file = yaml_name, append=T)
+		}
+		
 		write(paste("config_yaml:", yaml_name, sep=' '), file = yaml_name, append=T)
 		write(paste("timeStamp:", time_stamp(), sep=' '), file = yaml_name, append=T)
 		if(input$nspecies == 2){
@@ -1265,9 +1416,10 @@ server <- function(input, output, session = session) {
 	DILS_command <- reactiveVal(0)
 	#observeEvent( input$runABC, {DILS_command(paste('snakemake -p -j 999 --snakefile ../2pops/Snakefile --configfile config_', time_stamp(), '.yaml --cluster-config ../cluster.json --cluster "sbatch --nodes={cluster.node} --ntasks={cluster.n} --cpus-per-task={cluster.cpusPerTask} --time={cluster.time}"', sep=''))})
 	observeEvent( input$runABC, {DILS_command(paste('DILS_', input$nspecies, 'pop.sh ', time_stamp(), '.yaml &', sep=''))})
-	#observeEvent( input$runABC, {system('echo pouet')})
 	output$DILS_command <- renderText({DILS_command()})
 		
+		output$DILS_command <- renderText({DILS_command()})
+
 	## Check upload
 	output$check_upload_info <- renderUI({
 		if(input$check_upload == FALSE) {
@@ -1316,12 +1468,12 @@ server <- function(input, output, session = session) {
 			return (NULL)
 		}else{
 			allData = list()
-			projectName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
-			rootName1 = paste('/tmp/', projectName, sep='')
-			untar(fileName$datapath, exdir = rootName1)
-			
-			rootName = paste(rootName1, projectName, sep='/')
-			
+			outputDir = getwd()
+
+			untar(fileName$datapath, exdir = outputDir)
+			rootName = strsplit(paste(outputDir, "/", fileName$name, sep=""), '.', fixed=T)[[1]][1]
+			#rootName = strsplit(fileName$datapath, '.', fixed=T)[[1]][1]
+
 			users_infos = read.table(paste(rootName, "/general_infos.txt", sep=''), h=F, sep=',')
 			hierarchical = read.table(paste(rootName, "/modelComp/hierarchical_models.txt", sep=''), h=F, sep='\t')
 			ABCstatGlobal = read.table(paste(rootName, "/ABCstat_global.txt", sep=''), h=T)
@@ -1379,7 +1531,7 @@ server <- function(input, output, session = session) {
 				}
 			}
 		
-			system(paste('rm -rf ', rootName1, sep=''))
+			system(paste('rm -rf ', rootName, sep=''))
 			
 			allData[['users_infos']] = users_infos
 			allData[['hierarchical']] = hierarchical
@@ -1431,7 +1583,7 @@ server <- function(input, output, session = session) {
 							),
 						
 						column( width = 12, style="margin-top:-0.5em",
-							plotlyOutput("plot_obs_stats_sites")
+							withSpinner(plotlyOutput("plot_obs_stats_sites"), type=5, color='#c7f464', color.background='#556270')
 							)
 						)
 				),
@@ -1443,7 +1595,7 @@ server <- function(input, output, session = session) {
 							),
 						
 						column( width = 12, style="margin-top:-0.5em",
-							plotlyOutput("plot_obs_stats_diversity")
+							withSpinner(plotlyOutput("plot_obs_stats_diversity"), type=5, color='#c7f464', color.background='#556270')
 							)
 						)
 				),
@@ -1455,7 +1607,7 @@ server <- function(input, output, session = session) {
 							),
 						
 						column( width = 12, style="margin-top:-0.5em",
-							plotlyOutput("plot_obs_stats_tajima")
+							withSpinner(plotlyOutput("plot_obs_stats_tajima"), type=5, color='#c7f464', color.background='#556270')
 							)
 						)
 				),
@@ -1467,7 +1619,7 @@ server <- function(input, output, session = session) {
 							),
 						
 						column( width = 12, style="margin-top:-0.5em",
-							plotlyOutput("plot_obs_stats_divergence")
+							withSpinner(plotlyOutput("plot_obs_stats_divergence"), type=5, color='#c7f464', color.background='#556270')
 							)
 						)
 					)
@@ -1481,7 +1633,7 @@ server <- function(input, output, session = session) {
 							),
 						
 						column( width = 12, style="margin-top:-0.5em",
-							plotlyOutput("plot_obs_stats_1pop")
+							withSpinner(plotlyOutput("plot_obs_stats_1pop"), type=5, color='#c7f464', color.background='#556270')
 							)
 						)
 				}else{
@@ -1500,7 +1652,7 @@ server <- function(input, output, session = session) {
 				tabsetPanel(id = "inferences",
 				type = "tabs",
 				tabPanel("Multilocus model comparison", uiOutput("display_modComp")),
-				tabPanel("Locus specific model comparison", numericInput("threshold_locus_specific_model_comp", label = h3("Posterior probability threshold value below which an inference is considered ambiguous"), width = (0.25*as.numeric(input$dimension[1])), value = 0.9, min = 0, max = 1, step = 0.005), hr(), plotlyOutput("locus_specific_model_comparison", height = 'auto', width = 'auto')),
+				tabPanel("Locus specific model comparison", numericInput("threshold_locus_specific_model_comp", label = h3("Posterior probability threshold value below which an inference is considered ambiguous"), width = (0.25*as.numeric(input$dimension[1])), value = 0.9, min = 0, max = 1, step = 0.005), hr(), withSpinner(plotlyOutput("locus_specific_model_comparison", height = 'auto', width = 'auto'), type=5, color='#c7f464', color.background='#556270')),
 				tabPanel("Estimated parameters", uiOutput("parameters_estimates")),
 				tabPanel("Goodness-of-fit test", uiOutput("gof"))
 				)
@@ -1617,8 +1769,8 @@ server <- function(input, output, session = session) {
 					hr(),
 					infoBox("Migration versus isolation", paste('best model = ', as.matrix(allData()[['hierarchical']][2,])[1], sep=''), paste('post. proba = ', round(as.numeric(as.matrix(allData()[['hierarchical']][3,])), 5)[1], sep=''), icon = icon("check"), color='navy'),
 					infoBox("IM versus SC", paste('best model = ', as.matrix(allData()[['hierarchical']][2,])[2], sep=''), paste('post. proba = ', round(as.numeric(as.matrix(allData()[['hierarchical']][3,])), 5)[2], sep=''), icon = icon("check"), color='navy'),
-					infoBox("N-homo versus N-hetero", paste('best model = ', as.matrix(allData()[['hierarchical']][2,])[3], sep=''), paste('post. proba = ', round(as.numeric(as.matrix(allData()[['hierarchical']][3,])), 5)[3], sep=''), icon = icon("check"), color='navy'),
-					infoBox("M-homo versus M-hetero", paste('best model = ', as.matrix(allData()[['hierarchical']][2,])[4], sep=''), paste('post. proba = ', round(as.numeric(as.matrix(allData()[['hierarchical']][3,])), 5)[4], sep=''), icon = icon("check"), color='navy')
+					infoBox("N-homo versus N-hetero", paste('best model = ', as.matrix(allData()[['hierarchical']][2,])[4], sep=''), paste('post. proba = ', round(as.numeric(as.matrix(allData()[['hierarchical']][3,])), 5)[4], sep=''), icon = icon("check"), color='navy'),
+					infoBox("M-homo versus M-hetero", paste('best model = ', as.matrix(allData()[['hierarchical']][2,])[3], sep=''), paste('post. proba = ', round(as.numeric(as.matrix(allData()[['hierarchical']][3,])), 5)[3], sep=''), icon = icon("check"), color='navy')
 				)
 			}
 		}
@@ -1761,7 +1913,7 @@ server <- function(input, output, session = session) {
 				),
 				
 				fluidRow( width = 12,
-					plotlyOutput( outputId = 'posterior_parameters_2pops')
+					withSpinner(plotlyOutput( outputId = 'posterior_parameters_2pops'), type=5, color='#c7f464', color.background='#556270')
 				)
 			)
 		}
@@ -1778,7 +1930,7 @@ server <- function(input, output, session = session) {
 				),
 				
 				fluidRow( width = 12,
-					plotlyOutput( outputId = 'posterior_parameters_1pop')
+					withSpinner(plotlyOutput( outputId = 'posterior_parameters_1pop'), type=5, color='#c7f464', color.background='#556270')
 				)
 			)
 		}
@@ -3451,16 +3603,18 @@ server <- function(input, output, session = session) {
 				rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
 				fluidPage(style="margin-top:-3em",
 					if( rootName%in%allData()[['meta']][,1]==FALSE ){
-						fluidRow(
-							HTML('<H4>Clicking on this button <b>will save</b>:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>1)</b> the user&#39;s email address to contact him/her for future collaborative meta-analysis<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>2)</b> the names of the organisms and the position of the point on the graph<br><b>Everything else uploaded by the user <u>will be deleted</u> from the server</b>.<br><br>An unfortunate click <b>can be cancelled</b> by uploading the same archive a second time and then clicking on <b>REMOVE THE POINT</b> button</H4>'),
-							actionButton("update_greyzone", "UPDATE THE FIGURE WITH YOUR RESULTS")
-						)
-					}else{
-						fluidRow(
-							HTML('<H4><b>This analysis is already part of the figure</b>.<br>You can remove it by clicking on the <b>REMOVE THE POINT</b> button.</H4>'),
-							actionButton("downgrade_greyzone", "REMOVE THE POINT")
-						)
+						if(allData()[['users_infos']][1,2]==2){
+							fluidRow(
+								HTML('<H4>Clicking on this button <b>will save</b>:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>1)</b> the user&#39;s email address to contact him/her for future collaborative meta-analysis<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>2)</b> the names of the organisms and the position of the point on the graph<br><b>Everything else uploaded by the user <u>will be deleted</u> from the server</b>.<br><br>An unfortunate click <b>can be cancelled</b> by uploading the same archive a second time and then clicking on <b>REMOVE THE POINT</b> button</H4>'),
+								actionButton("update_greyzone", "UPDATE THE FIGURE WITH YOUR RESULTS")
+							)
+						}else{
+							fluidRow(
+								HTML('<H4><b>This analysis is already part of the figure</b>.<br>You can remove it by clicking on the <b>REMOVE THE POINT</b> button.</H4>'),
+								actionButton("downgrade_greyzone", "REMOVE THE POINT")
+							)
 
+						}
 					},
 					
 					fluidRow(
