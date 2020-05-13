@@ -166,13 +166,13 @@ convertMenuItem <- function(mi,tabName) {
 # welcome
 welcome_page <- fluidPage(
 	fluidRow(
-		boxPlus(title = h2("Overview"), width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = TRUE, collapsed = TRUE,
+		boxPlus(title = h2("Overview"), width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = TRUE, collapsed = FALSE,
 			h3(strong("DILS"), "= ", strong("D", .noWS='outside'),"emographic ", strong("I", .noWS='outside'), "nferences with ", strong("L", .noWS='outside'), "inked ", strong("S", .noWS='outside'), "election"),
 			h3(strong("DILS"), "is a DNA sequence analysis workflow to study the demographic history of sampled populations or species by using Approximate Bayesian Computations."),
 			h3("From a single uploaded input file containing sequenced genes or DNA fragments,", strong("DILS"), "will:"),
 			HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>1.</b> simulate different models/scenarios</h3>'),
 			HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>2.</b> select the best model using an ABC approach based on <a href="https://cran.r-project.org/web/packages/abcrf/index.html" target="_blank"><font color="#c7f464"><b>random forests</b></font></a></h3>'),
-			HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>3.</b> estimate the parameters of the best model using a <a href="https://cran.r-project.org/web/packages/abc/index.html" target="_blank"><font color="#c7f464"><b>neural network</b></font></a> approach</h3>'),
+			HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>3.</b> estimate the parameters of the best model using <a href="https://cran.r-project.org/web/packages/abc/index.html" target="_blank"><font color="#c7f464"><b>neural network</b></font></a> and random forest approaches</h3>'),
 			HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>4.</b>measure the robustness of the analyses <b>DILS</b> is transparent on the ability of its inferences to reproduce the observed data or not</h3>'),
 			hr(),
 			h3("The primary goal of", strong("DILS"), "is to distinguish between isolation versus migration models of divergence between sister gene pools."),
@@ -220,7 +220,7 @@ welcome_page <- fluidPage(
 				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>IM</b> = isolation with migration: the two daughter populations continuously exchange alleles until present time.</h3>'),
 				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>SC</b> = secondary contact: the daughter populations first evolve in isolation (forward in time), then experience a secondary contact and start exchanging alleles at time T<sub>SC</sub>. Red phylogenies represent possible gene trees under each alternative model.</h3>'),
 				hr(),
-				h3(strong("4 populations/species")),
+				HTML("<h3><b>4 populations/species <i>(available soon)</i></b></h3>"),
 				htmlOutput("models_picture_4pop"),
 				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A single generalist model, declined in 64 sub-models according to if there is one:</h3>'),
 				HTML('<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;migration (bidirectional) or no migration between A and B, and/or between C and D.</h3>'),
@@ -238,7 +238,7 @@ welcome_page <- fluidPage(
 			column(width=12,
 				h3("All demographic models exist under AT LEAST two alternative genomic models concerning the effective size:"),
 				HTML('<h3><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1) genomic homogeneity</b>, where the effective size <b><i>Ne</i></b> is genomically homogeneous (purple bar), <i>i.e.</i>, all locus are simulated by sharing the same <b>Ne</b> value. In this model <b>DILS</b> will try to estimate the value of <i>Ne</i> best explaining the observed data. <i>Ne</i> being independently estimated in all populations (current, past).'),
-				HTML('<h3><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2) genomic heterogeneity</b> where <i>Ne</i> is genomically heterogeneous (yellow distribution), <i>i.e.</i>, all locus are simulated with a value of <i>Ne</i> drawn in a Beta(&alpha;, &beta;) distribution. In this model <b>DILS</b> will try to estimate the value of <i>Ne</i> as well as the two shape parameters <b>shape1</b> and <b>shape2</b> (&alpha; and &beta;) that best explain the observations. Here, <b>DILS</b> assumes that all populations (current and past) share the same Beta(&alpha;, &beta;) distribution but are independently rescaled by different <i>Ne</i> values.')
+				HTML('<h3><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2) genomic heterogeneity</b> where <i>Ne</i> is genomically heterogeneous (green distribution), <i>i.e.</i>, all locus are simulated with a value of <i>Ne</i> drawn in a Beta(&alpha;, &beta;) distribution. In this model <b>DILS</b> will try to estimate the value of <i>Ne</i> as well as the two shape parameters <b>shape1</b> and <b>shape2</b> (&alpha; and &beta;) that best explain the observations. Here, <b>DILS</b> assumes that all populations (current and past) share the same Beta(&alpha;, &beta;) distribution but are independently rescaled by different <i>Ne</i> values.')
 			),
 			
 			# Sidebar panel for inputs
@@ -598,7 +598,7 @@ populations <- fluidPage(
 			#	choices = list("One gene pool" = 1, "Two gene pools" = 2, "Four gene pools" = 4), selected = 2),
 
 			prettyRadioButtons("nspecies", label = NULL, shape = "round", status = "primary", fill = TRUE, inline = FALSE, animation = "pulse", bigger = TRUE,
-			choices = list("One gene pool" = 1, "Two gene pools" = 2), selected = 2),
+			choices = list("One gene pool" = 1, "Two gene pools" = 2), selected = 1),
 			HTML('<h4>If <b>set to one</b>: a model for a single panmictic population is evaluated.<br>If <b>set to two</b>: a model of divergence between two populations/species is evaluated.<br></h4>'),
 			em(strong(h4('Analysis for 4 populations/species will be soon available'))),
 			uiOutput("input_names_ui")
@@ -735,15 +735,17 @@ information <- fluidPage(
 			#box(title = h2("Citations"), width = 12, solidHeader = TRUE, background = NULL, status = "primary",
 			boxPlus(title = h2("Citations"), width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
 				h3("Please, in case of publication of a study using DILS, do not forget to quote the following references:"),
-				h3(code('Csilléry, Katalin, Olivier François, and Michael GB Blum. "abc: an R package for approximate Bayesian computation (ABC)." Methods in ecology and evolution 3.3 (2012): 475-479.')),
-				h3(code('Pudlo, Pierre, Jean-Michel Marin, Arnaud Estoup, Jean-Marie Cornuet, Mathieu Gautier, and Christian P. Robert. "Reliable ABC model choice via random forests." Bioinformatics 32, no. 6 (2015): 859-866.')),
-				h3(code('Roux, Camille, Christelle Fraisse, Jonathan Romiguier, Yoann Anciaux, Nicolas Galtier, and Nicolas Bierne. "Shedding light on the grey zone of speciation along a continuum of genomic divergence." PLoS biology 14, no. 12 (2016): e2000234.'))
+				HTML('<h3><font color="#1e2b37"><i>Csill&eacute;ry Katalin, Olivier Fran&ccedil;ois, and Michael GB Blum. "abc: an R package for approximate Bayesian computation (ABC)." Methods in ecology and evolution 3.3 (2012): 475-479.</i></font></h3>'),
+				HTML('<h3><font color="#1e2b37"><i>Pudlo Pierre, Jean-Michel Marin, Arnaud Estoup, Jean-Marie Cornuet, Mathieu Gautier, and Christian P. Robert. "Reliable ABC model choice via random forests." Bioinformatics 32, no. 6 (2015): 859-866.</i></h3>'),
+				HTML('<h3><font color="#1e2b37"><i>Roux Camille, Christelle Fra&iuml;sse, Jonathan Romiguier, Yoann Anciaux, Nicolas Galtier, and Nicolas Bierne. "Shedding light on the grey zone of speciation along a continuum of genomic divergence." PLoS biology 14, no. 12 (2016): e2000234.</i></font></h3>')
 			),
 			
 			#box(title = h2("Acknowledgment"), width = 12, solidHeader = TRUE, background = NULL, status = "primary",
 			boxPlus(title = h2("Acknowledgment"), width = NULL, closable = FALSE, status = "warning", solidHeader = FALSE, collapsible = FALSE, collapsed = FALSE,
-				h3("Please, if you use this online version of DILS, do not forget to recognize and acknowledge the free provision of calculation cores by France Bioinformatique"),
-				h3(code("The demographic inferences were conducted on the IFB Core Cluster which is part of the National Network of Compute Resources (NNCR) of the", a(span(strong("Institut Français de Bioinformatique (IFB)."), style = "color:teal"), href="https://www.france-bioinformatique.fr/fr", target="_blank")))
+				HTML("<h3>Please, if you use this online version of DILS, do not forget to recognize and acknowledge the free provision of calculation cores by the Laboratoire de Biométrie et Biologie Évolutive UMR-CNRS 5558, by using for instance:</h3>"),
+				HTML('<h3><i>The demographic inferences were conducted on the core cluster of the LBBE laboratory (UMRCNRS 5558)</i></h3>')
+
+
 			),
 			
 			#box(title = h2("Partners"), width = 12, solidHeader = TRUE, background = NULL, status = "primary",
@@ -3603,6 +3605,7 @@ server <- function(input, output, session = session) {
 				htmltools::div(style = "display:inline-block", plotlyOutput("plot_greyzone", width = "auto"))
 			}else{
 				rootName = strsplit(fileName$name, '.', fixed=T)[[1]][1]
+
 				fluidPage(style="margin-top:-3em",
 					if( rootName%in%allData()[['meta']][,1]==FALSE ){
 						if(allData()[['users_infos']][1,2]==2){
@@ -3610,13 +3613,11 @@ server <- function(input, output, session = session) {
 								HTML('<H4>Clicking on this button <b>will save</b>:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>1)</b> the user&#39;s email address to contact him/her for future collaborative meta-analysis<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>2)</b> the names of the organisms and the position of the point on the graph<br><b>Everything else uploaded by the user <u>will be deleted</u> from the server</b>.<br><br>An unfortunate click <b>can be cancelled</b> by uploading the same archive a second time and then clicking on <b>REMOVE THE POINT</b> button</H4>'),
 								actionButton("update_greyzone", "UPDATE THE FIGURE WITH YOUR RESULTS")
 							)
-						}else{
-							fluidRow(
-								HTML('<H4><b>This analysis is already part of the figure</b>.<br>You can remove it by clicking on the <b>REMOVE THE POINT</b> button.</H4>'),
-								actionButton("downgrade_greyzone", "REMOVE THE POINT")
-							)
-
+						}else{	
 						}
+					}else{
+fluidRow( HTML('<H4><b>This analysis is already part of the figure</b>.<br>You can remove it by clicking on the <b>REMOVE THE POINT</b> button.</H4>'), actionButton("downgrade_greyzone", "REMOVE THE POINT") )
+
 					},
 					
 					fluidRow(
