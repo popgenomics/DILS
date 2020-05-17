@@ -1,0 +1,5 @@
+# uncompress the archive
+tar -xJf mytilus_renamed.tar.xz
+
+# run DILS
+DILS_2pop.sh DarlingLighthouseSFS.yaml
