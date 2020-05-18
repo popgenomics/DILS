@@ -3,3 +3,5 @@ tar -xJf mytilus_renamed.tar.xz
 
 # run DILS
 DILS_2pop.sh DarlingLighthouseSFS.yaml
+
+# This run will output byWQxjtdnp.tar.gz that can be directly read by the DILS's interface
