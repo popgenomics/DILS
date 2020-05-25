@@ -9,6 +9,7 @@
 3. [Scripts in R](#3---r)  
 	1. [scripts](#scripts)  
 	2. [dependencies](#dependencies)  
+	3. [webinterface](#webinterface)  
 4. [Codes in C](#4---c)  
 	1. [msnsam (by Jeffrey Ross-Ibarra)](#msnsam)  
 	2. [RNAseqFGT (by Laurent Duret)](#RNAseqFGT)  
@@ -108,6 +109,29 @@ library(nnet)
 library(plotly)  
 library(tidyverse)  
 library(viridis)  
+
+## webinterface  
+library(shiny)  
+library(shinythemes)  
+library(shinydashboard)  
+library(shinydashboardPlus)  
+library(DT)  
+library(shinyWidgets)  
+library(dashboardthemes) # library(devtools); install_github("nik01010/dashboardthemes")  
+library(shinyhelper)  
+library(plotly)  
+library(viridis)  
+library(tidyr)  
+library(RColorBrewer)  
+library(yaml)  
+library(ggpubr)  
+library(FactoMineR)  
+library(shinycssloaders)  
+
+Can be launched as follows from the webinterface subdirectory:  
+```
+Rscript app.R host=127.0.0.9 port=8162  
+```
    
 # 4 - C
 ## msnsam  
@@ -134,55 +158,73 @@ This file contains informations for **Slurm** about the submited jobs, in partic
         "n" : 1,
 	"cpusPerTask" : 1,
 	"memPerCpu" : 3000,
-	"time" : "04:00:00"
+	"time" : "02:00:00"
     },
     "fasta2ABC_2pops" :
     {
-	"cpusPerTask" : 10,
+	"cpusPerTask" : 8,
+	"time" : "02:00:00",
+	"memPerCpu" : 2000
+    },
+    "RNAseqFGT" :
+    {
+	"cpusPerTask" : 1,
 	"time" : "01:00:00",
-	"memPerCpu" : 3000
+	"memPerCpu" : 10000
     },
     "modelComparison" :
     {
 	"cpusPerTask" : 8,
-	"time" : "03:00:00",
-	"memPerCpu" : 5000
+	"time" : "01:30:00",
+	"memPerCpu" : 4000
     },
     "estimation" :
     {
 	"cpusPerTask" : 8,
-	"time" : "03:00:00",
-	"memPerCpu" : 2500
+	"time" : "01:30:00",
+	"memPerCpu" : 3000
     },
     "estimation_best_model" :
     {
 	"cpusPerTask" : 8,
-	"time" : "24:00:00",
-	"memPerCpu" : 5000
+	"time" : "01:30:00",
+	"memPerCpu" : 3000
     },
     "estimation_best_model_2" :
     {
 	"cpusPerTask" : 8,
-	"time" : "03:00:00",
-	"memPerCpu" : 2500
+	"time" : "01:30:00",
+	"memPerCpu" : 3000
     },
     "estimation_best_model_3" :
     {
 	"cpusPerTask" : 8,
-	"time" : "03:00:00",
-	"memPerCpu" : 2500
+	"time" : "01:30:00",
+	"memPerCpu" : 3000
+    },
+    "estimation_best_model_4" :
+    {
+	"cpusPerTask" : 8,
+	"time" : "01:30:00",
+	"memPerCpu" : 3000
+    },
+    "estimation_best_model_5" :
+    {
+	"cpusPerTask" : 8,
+	"time" : "01:30:00",
+	"memPerCpu" : 3000
     },
     "locus_modelComp" :
     {
 	"cpusPerTask" : 8,
-	"time" : "03:00:00",
-	"memPerCpu" : 2500
+	"time" : "01:30:00",
+	"memPerCpu" : 3000
     },
     "PCA_SS" :
     {
-	"cpusPerTask" : 2,
-	"time" : "03:00:00",
-	"memPerCpu" : 7000
+	"cpusPerTask" : 1,
+	"time" : "01:00:00",
+	"memPerCpu" : 5000
     }
 }
 ``` 
@@ -196,6 +238,7 @@ region: coding
 nspecies: 2  
 nameA: Spring  
 nameB: Sydney  
+useSFS: 0
 nameOutgroup: NA  
 config_yaml: /shared/home/croux/scratch/moules/config.yaml  
 timeStamp: SpringSydney  
