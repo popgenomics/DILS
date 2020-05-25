@@ -5,10 +5,10 @@
 	3. [dependencies](#dependencies)  
 2. [Scripts in python](#2---python)  
 	1. [scripts](#scripts)  
-	2. [dependencies](#dependencies)  
+	2. [python dependencies](#pythondependencies)  
 3. [Scripts in R](#3---r)  
 	1. [scripts](#scripts)  
-	2. [dependencies](#dependencies)  
+	2. [R dependencies](#Rdependencies)  
 	3. [webinterface](#webinterface)  
 4. [Codes in C](#4---c)  
 	1. [msnsam (by Jeffrey Ross-Ibarra)](#msnsam)  
@@ -62,7 +62,7 @@ bin/submit_simulations_gof_1pop.py
 bin/submit_simulations_gof_2pop_popGrowth.py  
 bin/submit_simulations_gof_2pop.py  
 
-## dependencies  
+## python dependencies  
 **some scripts uses pypy as python interpreter**    
 from math import ceil  
 from numpy import log  
@@ -98,7 +98,7 @@ bin/model_comp_2pop_locus.R
 bin/model_comp_2pop.R  
 bin/PCA.R  
    
-## dependencies  
+## R dependencies  
 library(abcrf)  
 library(data.table)  
 library(FactoMineR)  
