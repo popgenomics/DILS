@@ -13,11 +13,10 @@
 4. [Codes in C](#4---c)  
 	1. [msnsam (by Jeffrey Ross-Ibarra)](#msnsam)  
 	2. [RNAseqFGT (by Laurent Duret)](#RNAseqFGT)  
-5. [External codes](#5---external)  
-6. [Config files](#6---config-files)  
+5. [Config files](#6---config-files)  
 	1. [cluster.json](#clusterjson)  
 	2. [config.yaml](#configyaml)  
-7. [Workflow](#7---workflow)  
+6. [Workflow](#7---workflow)  
 	1. [Two populations](#two-populations)  
 
 # 1 - snakemake  
@@ -142,11 +141,7 @@ C code, compiled by executing the command ```./clms``` (calling gcc) in the msns
 ### info  
 C code compiled by: ```gcc -Wall -o RNAseqFGT RNAseqFGT.c RNAseqFGT_seq_reading.c RNAseqFGT_analysis.c -I RNAseqFGT.h```  
   
-# 5 - external  
-**pandoc** (https://pandoc.org/index.html)  
-The Pandoc call requires in this workflow that **pdflatex** is pre-installed.  
-  
-# 6 - config files  
+# 5 - config files  
 ## cluster.json  
 This file contains informations for **Slurm** about the submited jobs, in particular, the required resources (CPU, memory, duration).  
 ```
@@ -257,11 +252,11 @@ M_min: 1
 M_max: 40  
 ```  
    
-# 7 - workflow  
+# 6 - workflow  
 ## two populations  
 ![DAG (directed acyclic graph)](https://raw.githubusercontent.com/popgenomics/ABConline/master/webinterface/pictures_folder/dag_2pops.pdf.png)  
   
-# 8 - example
+# 7 - example
 ![grey zone](https://raw.githubusercontent.com/popgenomics/ABConline/master/figure_greyzone.html)  
   
 
