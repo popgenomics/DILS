@@ -127,7 +127,7 @@ library(ggpubr)
 library(FactoMineR)  
 library(shinycssloaders)  
 
-Can be launched as follows from the webinterface subdirectory:  
+Can be launched as follows from the ```webinterface``` subdirectory:  
 ```
 Rscript app.R host=127.0.0.9 port=8162  
 ```
