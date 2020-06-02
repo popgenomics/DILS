@@ -111,7 +111,7 @@ library(viridis)
 
 ## webinterface  
 Install R libraries for the user interface:  
-'''  
+```  
 list_libraries = c('shiny', 'shinythemes', 'shinydashboard', 'shinydashboardPlus', 'DT', 'shinyWidgets', 'dashboardthemes', 'devtools', 'shinyhelper', 'plotly', 'viridis', 'tidyr', 'RColorBrewer', 'yaml', 'ggpubr', 'FactoMineR', 'shinycssloaders')  
 
 for(lib_tmp in list_libraries){  
@@ -120,7 +120,7 @@ for(lib_tmp in list_libraries){
 
 library(devtools)  
 install_github("nik01010/dashboardthemes")  
-'''  
+```  
 
 library(shiny)  
 library(shinythemes)  
