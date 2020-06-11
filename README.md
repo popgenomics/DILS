@@ -5,18 +5,18 @@
 	3. [dependencies](#dependencies)  
 2. [Scripts in python](#2---python)  
 	1. [scripts](#scripts)  
-	2. [dependencies](#dependencies)  
+	2. [python dependencies](#python-dependencies)  
 3. [Scripts in R](#3---r)  
 	1. [scripts](#scripts)  
-	2. [dependencies](#dependencies)  
+	2. [R dependencies](#r-dependencies)  
+	3. [webinterface](#webinterface)  
 4. [Codes in C](#4---c)  
 	1. [msnsam (by Jeffrey Ross-Ibarra)](#msnsam)  
 	2. [RNAseqFGT (by Laurent Duret)](#RNAseqFGT)  
-5. [External codes](#5---external)  
-6. [Config files](#6---config-files)  
+5. [Config files](#6---config-files)  
 	1. [cluster.json](#clusterjson)  
 	2. [config.yaml](#configyaml)  
-7. [Workflow](#7---workflow)  
+6. [Workflow](#7---workflow)  
 	1. [Two populations](#two-populations)  
 
 # 1 - snakemake  
@@ -62,7 +62,7 @@ bin/submit_simulations_gof_1pop.py
 bin/submit_simulations_gof_2pop_popGrowth.py  
 bin/submit_simulations_gof_2pop.py  
 
-## dependencies  
+## python dependencies  
 **some scripts uses pypy as python interpreter**    
 from math import ceil  
 from numpy import log  
@@ -98,7 +98,7 @@ bin/model_comp_2pop_locus.R
 bin/model_comp_2pop.R  
 bin/PCA.R  
    
-## dependencies  
+## R dependencies  
 library(abcrf)  
 library(data.table)  
 library(FactoMineR)  
@@ -108,6 +108,41 @@ library(nnet)
 library(plotly)  
 library(tidyverse)  
 library(viridis)  
+
+## webinterface  
+Install R libraries for the user interface:  
+```  
+list_libraries = c('shiny', 'shinythemes', 'shinydashboard', 'shinydashboardPlus', 'DT', 'shinyWidgets', 'dashboardthemes', 'devtools', 'shinyhelper', 'plotly', 'viridis', 'tidyr', 'RColorBrewer', 'yaml', 'ggpubr', 'FactoMineR', 'shinycssloaders')  
+
+for(lib_tmp in list_libraries){  
+	install.packages(lib_tmp, dep=T)  
+}  
+
+library(devtools)  
+install_github("nik01010/dashboardthemes")  
+```  
+
+library(shiny)  
+library(shinythemes)  
+library(shinydashboard)  
+library(shinydashboardPlus)  
+library(DT)  
+library(shinyWidgets)  
+library(dashboardthemes) # library(devtools); install_github("nik01010/dashboardthemes")  
+library(shinyhelper)  
+library(plotly)  
+library(viridis)  
+library(tidyr)  
+library(RColorBrewer)  
+library(yaml)  
+library(ggpubr)  
+library(FactoMineR)  
+library(shinycssloaders)  
+
+Can be launched as follows from the ```webinterface``` subdirectory:  
+```
+Rscript app.R host=127.0.0.9 port=8162  
+```
    
 # 4 - C
 ## msnsam  
@@ -118,11 +153,7 @@ C code, compiled by executing the command ```./clms``` (calling gcc) in the msns
 ### info  
 C code compiled by: ```gcc -Wall -o RNAseqFGT RNAseqFGT.c RNAseqFGT_seq_reading.c RNAseqFGT_analysis.c -I RNAseqFGT.h```  
   
-# 5 - external  
-**pandoc** (https://pandoc.org/index.html)  
-The Pandoc call requires in this workflow that **pdflatex** is pre-installed.  
-  
-# 6 - config files  
+# 5 - config files  
 ## cluster.json  
 This file contains informations for **Slurm** about the submited jobs, in particular, the required resources (CPU, memory, duration).  
 ```
@@ -134,55 +165,73 @@ This file contains informations for **Slurm** about the submited jobs, in partic
         "n" : 1,
 	"cpusPerTask" : 1,
 	"memPerCpu" : 3000,
-	"time" : "04:00:00"
+	"time" : "02:00:00"
     },
     "fasta2ABC_2pops" :
     {
-	"cpusPerTask" : 10,
+	"cpusPerTask" : 8,
+	"time" : "02:00:00",
+	"memPerCpu" : 2000
+    },
+    "RNAseqFGT" :
+    {
+	"cpusPerTask" : 1,
 	"time" : "01:00:00",
-	"memPerCpu" : 3000
+	"memPerCpu" : 10000
     },
     "modelComparison" :
     {
 	"cpusPerTask" : 8,
-	"time" : "03:00:00",
-	"memPerCpu" : 5000
+	"time" : "01:30:00",
+	"memPerCpu" : 4000
     },
     "estimation" :
     {
 	"cpusPerTask" : 8,
-	"time" : "03:00:00",
-	"memPerCpu" : 2500
+	"time" : "01:30:00",
+	"memPerCpu" : 3000
     },
     "estimation_best_model" :
     {
 	"cpusPerTask" : 8,
-	"time" : "24:00:00",
-	"memPerCpu" : 5000
+	"time" : "01:30:00",
+	"memPerCpu" : 3000
     },
     "estimation_best_model_2" :
     {
 	"cpusPerTask" : 8,
-	"time" : "03:00:00",
-	"memPerCpu" : 2500
+	"time" : "01:30:00",
+	"memPerCpu" : 3000
     },
     "estimation_best_model_3" :
     {
 	"cpusPerTask" : 8,
-	"time" : "03:00:00",
-	"memPerCpu" : 2500
+	"time" : "01:30:00",
+	"memPerCpu" : 3000
+    },
+    "estimation_best_model_4" :
+    {
+	"cpusPerTask" : 8,
+	"time" : "01:30:00",
+	"memPerCpu" : 3000
+    },
+    "estimation_best_model_5" :
+    {
+	"cpusPerTask" : 8,
+	"time" : "01:30:00",
+	"memPerCpu" : 3000
     },
     "locus_modelComp" :
     {
 	"cpusPerTask" : 8,
-	"time" : "03:00:00",
-	"memPerCpu" : 2500
+	"time" : "01:30:00",
+	"memPerCpu" : 3000
     },
     "PCA_SS" :
     {
-	"cpusPerTask" : 2,
-	"time" : "03:00:00",
-	"memPerCpu" : 7000
+	"cpusPerTask" : 1,
+	"time" : "01:00:00",
+	"memPerCpu" : 5000
     }
 }
 ``` 
@@ -196,6 +245,7 @@ region: coding
 nspecies: 2  
 nameA: Spring  
 nameB: Sydney  
+useSFS: 0
 nameOutgroup: NA  
 config_yaml: /shared/home/croux/scratch/moules/config.yaml  
 timeStamp: SpringSydney  
@@ -214,11 +264,11 @@ M_min: 1
 M_max: 40  
 ```  
    
-# 7 - workflow  
+# 6 - workflow  
 ## two populations  
 ![DAG (directed acyclic graph)](https://raw.githubusercontent.com/popgenomics/ABConline/master/webinterface/pictures_folder/dag_2pops.pdf.png)  
   
-# 8 - example
+# 7 - example
 ![grey zone](https://raw.githubusercontent.com/popgenomics/ABConline/master/figure_greyzone.html)  
   
 
