@@ -14,9 +14,10 @@ binpath=$8
 x=$(cat ${input_infos}  | grep -v locusName | awk '{print $2}' | sort -n | tail -n1)
 if (($x<99990)); then
 	${binpath}/RNAseqFGT ${input_fasta} ${output_tmp}
-	head -n1 ${output_tmp} > ${output_results}
-	cat ${output_tmp} | grep ${params_nameA} >> ${output_results}
-	cat ${output_tmp} | grep ${params_nameB} >> ${output_results}
+#	head -n1 ${output_tmp} > ${output_results}
+#	cat ${output_tmp} | grep ${params_nameA} >> ${output_results}
+#	cat ${output_tmp} | grep ${params_nameB} >> ${output_results}
+	mv ${output_tmp} ${output_results}
 	
 else
 
