@@ -1342,8 +1342,9 @@ server <- function(input, output, session = session) {
 					enable_label = TRUE, label_text = "Are you ready?", label_status = "danger",
 					h3('Laptop or bigger?'),
 				#	switchInput(inputId = 'lightExecution', value=TRUE, label = 'light mode', status = 'default', inline=T),
-					HTML('<H4>ABC inferences can be greedy.<br>If you can use a server with 100 cores, the analysis takes about 2.5 hours in Normal mode, and ten times less in Light mode.<br>On a laptop: use Light mode.</H4>'),
+					HTML('<H4>ABC inferences can be greedy.<br>For instance, in 2-populations analysis, Normal mode will execute 874 jobs while the Light mode will execute 184 jobs<br>On a laptop: use Light mode.<br>Just be aware that a light mode will be handy for exploring priors, will have very little impact on model comparisons but parameter estimates will not be great.</H4>'),
 					switchInput(inputId = 'lightMode', offLabel = 'Normal mode', onLabel = 'Light mode', onStatus = 'success', offStatus = 'primary', value = F, labelWidth = '100px', size = 'large'),
+					hr(),
 					
 					h3('Submission of the ABC workflow'),
 					actionButton('runABC', label = 'Run ABC inferences', size = 'md', width = '150px', fullwidth = TRUE),
