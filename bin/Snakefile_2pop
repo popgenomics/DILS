@@ -37,7 +37,7 @@ lightMode = config['lightMode']
 nmultilocus = 1000 # number of multilocus simulations per iteration (500)
 
 # model comparison
-if lightMode=='FALSE':
+if lightMode==False:
 	nCPU_R = 8 # number of CPUs for the model comp for the model forest R functions (8)
 	ntree = 1000 # number of tree for the random forest (RF) model comparison (1000)
 	nIterations_model_comp = 10 # number of subdirectories for the simulations used in the RF model comparison

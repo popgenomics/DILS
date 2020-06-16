@@ -17,7 +17,7 @@ if (($x<99990)); then
 #	head -n1 ${output_tmp} > ${output_results}
 #	cat ${output_tmp} | grep ${params_nameA} >> ${output_results}
 #	cat ${output_tmp} | grep ${params_nameB} >> ${output_results}
-	mv ${output_tmp} ${output_results}
+	cp ${output_tmp} ${output_results}
 	
 else
 
