@@ -10,15 +10,15 @@
     },
     "fasta2ABC_2pops" :
     {
-	"cpusPerTask" : 8,
+	"cpusPerTask" : 1,
 	"time" : "02:00:00",
-	"memPerCpu" : 2000
+	"memPerCpu" : 20000
     },
     "RNAseqFGT" :
     {
 	"cpusPerTask" : 1,
 	"time" : "01:00:00",
-	"memPerCpu" : 10000
+	"memPerCpu" : 20000
     },
     "modelComparison" :
     {
