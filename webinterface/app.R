@@ -26,13 +26,17 @@
 #################################################################################################################################
 #################################################################################################################################
 
+# Rscript webinterface/app.R host=127.0.0.9 port=8912
+
+options(encoding="UTF-8")
+nCPU_server = 6 # maximum number of simultaneously running jobs (400 on IFB's cluster)
+
 for(tmp in commandArgs()){
 	tmp = strsplit(tmp, '=')
 	if(tmp[[1]][1] == 'port'){ port = as.numeric(tmp[[1]][2]) }
 	if(tmp[[1]][1] == 'host'){ host = as.character(tmp[[1]][2]) }
+	if(tmp[[1]][1] == 'nCPU'){ nCPU_server = as.integer(tmp[[1]][2]) }
 }
-
-nCPU_server = 400 # maximum number of simultaneously running jobs (400 on IFB's cluster)
 
 #options('shiny.port'=as.numeric(commandArgs()[2]), 'shiny.host'=commandArgs()[3])
 
@@ -1336,16 +1340,23 @@ server <- function(input, output, session = session) {
 					title = h2("Run ABC"), width = NULL, icon = "fa fa-heart", solidHeader = TRUE, gradientColor = "teal",
 					boxToolSize = "lg", footer_padding = TRUE, collapsible = TRUE, collapsed = TRUE, closable = FALSE,
 					enable_label = TRUE, label_text = "Are you ready?", label_status = "danger",
-					h3("Submission of the ABC workflow"),
-					actionButton("runABC", label = "Run the ABC", size = 'md', width = '100%', fullwidth = TRUE),
-					h3("Number of submitted analysis (you can change the studied populations/species and the priors between 2 analysis):"),
+					h3('Laptop or bigger?'),
+				#	switchInput(inputId = 'lightExecution', value=TRUE, label = 'light mode', status = 'default', inline=T),
+					HTML('<H4>ABC inferences can be greedy.<br>If you can use a server with 100 cores, the analysis takes about 2.5 hours in Normal mode, and ten times less in Light mode.<br>On a laptop: use Light mode.</H4>'),
+					switchInput(inputId = 'lightMode', offLabel = 'Normal mode', onLabel = 'Light mode', onStatus = 'success', offStatus = 'primary', value = F, labelWidth = '100px', size = 'large'),
+					
+					h3('Submission of the ABC workflow'),
+					actionButton('runABC', label = 'Run ABC inferences', size = 'md', width = '150px', fullwidth = TRUE),
+
+					h3('Number of submitted analysis (you can change the studied populations/species and the priors between 2 analysis):'),
 					verbatimTextOutput('nClicks'),
+
 					hr(),
-					h3("Timestamp of the last submitted analysis:"),
+					h3('Timestamp of the last submitted analysis:'),
 					verbatimTextOutput('time_stamp'),
 					hr(),
-					h3("DILS command line:"),
-					verbatimTextOutput("DILS_command")
+					h3('DILS command line:'),
+					verbatimTextOutput('DILS_command')
 				)
 			)
 		}else{return()}
@@ -1386,7 +1397,7 @@ server <- function(input, output, session = session) {
 		if(input$nspecies == 2){
 			write(paste("useSFS:", input$use_SFS, sep=' '), file = yaml_name, append=T)
 		}
-		
+		write(paste("lightMode:", input$lightMode, sep=' '), file = yaml_name, append=T)
 		write(paste("config_yaml:", yaml_name, sep=' '), file = yaml_name, append=T)
 		write(paste("timeStamp:", time_stamp(), sep=' '), file = yaml_name, append=T)
 		if(input$nspecies == 2){
