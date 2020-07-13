@@ -26,7 +26,8 @@
 
 python = 'pypy'
 
-binpath = "/shared/mfs/data/home/croux/softwares/DILS/bin"
+#binpath = "/shared/mfs/data/home/croux/softwares/DILS/bin"
+binpath = "/home/croux/Programmes/DILS/bin"
 #binpath = "/tools/bin"
 
 # light or normal mode
@@ -141,7 +142,7 @@ rule fasta2ABC_1pop:
 	threads: 8
 	shell:
 		"""
-		x=$(date)
+		x=$(date +%c)
 		{python} {binpath}/fasta2ABC_1pop.py {infile} {timeStamp} {params.nameA} {params.nameOutgroup} {params.region} {params.Lmin} {params.max_N_tolerated} {params.nMin} {params.mu} {params.rho_over_theta} {binpath}
 		cat {timeStamp}/{params.nameA}.ms | {python} {binpath}/mscalc_1pop_observedDataset_SFS.py {timeStamp} {outgroup}
 #		pypy {binpath}/fasta2ABC_1pop.py {infile} {timeStamp} {params.nameA} {params.nameOutgroup} {params.region} {params.Lmin} {params.max_N_tolerated} {params.nMin} {params.mu} {params.rho_over_theta} {binpath}

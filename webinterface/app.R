@@ -27,9 +27,12 @@
 #################################################################################################################################
 
 # Rscript webinterface/app.R host=127.0.0.9 port=8912
+datapath = "/home/croux/Documents/DILSprojects" # directory containing the uploaded fasta file, the yaml file and the whole analysis to perform
+binpath = "/home/croux/Programmes/DILS/bin" # directory containing all of the used codes
+nCPU_server = 6 # maximum number of simultaneously running jobs (400 on IFB's cluster)
 
 options(encoding="UTF-8")
-nCPU_server = 6 # maximum number of simultaneously running jobs (400 on IFB's cluster)
+
 
 for(tmp in commandArgs()){
 	tmp = strsplit(tmp, '=')
@@ -1405,18 +1408,30 @@ server <- function(input, output, session = session) {
 	## write the yaml file
 	output$global <- renderText({global$datapath})
 
-#	observeEvent(input$runABC, {	
-	observeEvent(input$myconfirmation, {
+
+	## snakemake command
+	DILS_command <- reactiveVal(0)
+
+	observeEvent( input$myconfirmation, {
+
+
+#		if(isTRUE(input$myconfirmation)){commande = paste('mkdir ', datapath, '/', time_stamp(), '; ', 'cp ', input$infile$datapath, ' ', datapath, '/', time_stamp(), '/', '; snakemake --snakefile ', binpath, '/Snakefile_', input$nspecies, 'pop -p -j ', nCPU_server , ' --configfile ', time_stamp(), '.yaml', ' --cluster-config ', binpath, '/cluster_', input$nspecies, 'pop.json --cluster "sbatch --nodes={cluster.node} --ntasks={cluster.n} --cpus-per-task={cluster.cpusPerTask} --time={cluster.time} --mem-per-cpu={cluster.memPerCpu}" --latency-wait 10 &', sep='')
 		if(isTRUE(input$myconfirmation)){
+			commande_mkdir = paste('mkdir ', datapath, '/', time_stamp(), sep='')
+			system(commande_mkdir)
+
+			commande = paste('cd ', datapath, '/', time_stamp(), '; cp ', input$infile$datapath, ' ', datapath, '/', time_stamp(), '/', input$infile$name, '; snakemake --snakefile ', binpath, '/Snakefile_', input$nspecies, 'pop -p -j ', nCPU_server , ' --configfile ', time_stamp(), '.yaml --latency-wait 10 &', sep='')
+
+
 			if(input$presence_outgroup == 'yes'){
 				nameOutgroup = input$nameOutgroup
 			}else{
 				nameOutgroup = "NA"
 			}
 			
-			yaml_name = paste(global$datapath, '/', time_stamp(), '.yaml', sep='')
+			yaml_name = paste(datapath, '/', time_stamp(), '/', time_stamp(), '.yaml', sep='')
 			write(paste("mail_address:", input$mail_address, sep=' '), file = yaml_name, append=F)
-			write(paste("infile:", input$infile$datapath, sep=' '), file = yaml_name, append=T) # TO CHECK
+			write(paste("infile: ", datapath, '/', time_stamp(), '/', input$infile$name, sep=''), file = yaml_name, append=T) # TO CHECK
 			write(paste("region:", input$region, sep=' '), file = yaml_name, append=T)
 			write(paste("nspecies:", input$nspecies, sep=' '), file = yaml_name, append=T)
 			write(paste("nameA:", input$nameA, sep=' '), file = yaml_name, append=T)
@@ -1454,16 +1469,9 @@ server <- function(input, output, session = session) {
 				write(paste("M_min:", input$M_min, sep=' '), file = yaml_name, append=T)
 				write(paste("M_max:", input$M_max, sep=' '), file = yaml_name, append=T)
 			}
-		}
-	})
-		
-#	write.table(parameters(), yaml_name, col.names=F, row.names=F, quote=F)
-	
-	## snakemake command
-	DILS_command <- reactiveVal(0)
-	#observeEvent( input$runABC, {DILS_command(paste('snakemake -p -j ', nCPU_server, ' --snakefile ../2pops/Snakefile --configfile config_', time_stamp(), '.yaml --cluster-config ../cluster.json --cluster "sbatch --nodes={cluster.node} --ntasks={cluster.n} --cpus-per-task={cluster.cpusPerTask} --time={cluster.time}"', sep=''))})
-#	observeEvent( input$runABC, {DILS_command(paste('DILS_', input$nspecies, 'pop.sh ', time_stamp(), '.yaml &', sep=''))})
-	observeEvent( input$myconfirmation, {if(isTRUE(input$myconfirmation)){DILS_command(paste('DILS_', input$nspecies, 'pop.sh ', time_stamp(), '.yaml &', sep=''))}})
+
+			DILS_command(system(commande))
+	}})
 	
 	output$DILS_command <- renderText({DILS_command()})
 		
@@ -1534,6 +1542,7 @@ server <- function(input, output, session = session) {
 			gof2_table = read.table(paste(rootName, "/gof_2/goodness_of_fit_test.txt", sep=''), h=T)
 			gof_sfs = read.table(paste(rootName, "/gof/gof_sfs.txt", sep=''), h=T)
 			gof2_sfs = read.table(paste(rootName, "/gof_2/gof_sfs.txt", sep=''), h=T)
+			users_infos = read.table(paste(rootName, "/general_infos.txt", sep=''), h=F, sep=',')
 			
 			meta = read.table('metaanalysis.txt', sep='\t', h=T)
 

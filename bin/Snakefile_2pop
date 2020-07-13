@@ -28,7 +28,8 @@
 python = 'python2'
 
 # links to the codes
-binpath = "/shared/mfs/data/home/croux/softwares/DILS/bin"
+#binpath = "/shared/mfs/data/home/croux/softwares/DILS/bin"
+binpath = "/home/croux/Programmes/DILS/bin"
 
 # light or normal mode
 lightMode = config['lightMode']
@@ -189,7 +190,7 @@ rule fasta2ABC_2pops:
 #		source activate R_env;
 #		module load pandoc/2.7.2;
 #		module load pypy
-		x=$(date)
+		x=$(date +%c)
 		pypy {binpath}/fasta2ABC_2pops.py {infile} {timeStamp} {params.nameA} {params.nameB} {params.nameOutgroup} {params.region} {params.Lmin} {params.max_N_tolerated} {params.nMin} {params.Nref} {params.mu} {params.rho_over_theta} {binpath}
 		cat {timeStamp}/{params.nameA}_{params.nameB}.ms | pypy {binpath}/mscalc_2pop_observedDataset_SFS.py {timeStamp} {outgroup}
 		echo "nSpecies,"{nspecies}>{timeStamp}/general_infos.txt
