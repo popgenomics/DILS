@@ -27,9 +27,9 @@
 #################################################################################################################################
 
 # Rscript webinterface/app.R host=127.0.0.9 port=8912
-datapath = "/home/croux/Documents/DILSprojects" # directory containing the uploaded fasta file, the yaml file and the whole analysis to perform
+datapath = "/home/croux/Documents/DILSprojects" # directory containing the uploaded fasta file, the yaml file and the whole analysis to perform 
 binpath = "/home/croux/Programmes/DILS/bin" # directory containing all of the used codes
-nCPU_server = 6 # maximum number of simultaneously running jobs (400 on IFB's cluster)
+nCPU_server = 6 # maximum number of simultaneously running jobs (140 on IFB's cluster)
 
 options(encoding="UTF-8")
 
@@ -1420,8 +1420,8 @@ server <- function(input, output, session = session) {
 			commande_mkdir = paste('mkdir ', datapath, '/', time_stamp(), sep='')
 			system(commande_mkdir)
 
-			commande = paste('cd ', datapath, '/', time_stamp(), '; cp ', input$infile$datapath, ' ', datapath, '/', time_stamp(), '/', input$infile$name, '; snakemake --snakefile ', binpath, '/Snakefile_', input$nspecies, 'pop -p -j ', nCPU_server , ' --configfile ', time_stamp(), '.yaml --latency-wait 10 &', sep='')
-
+#			commande = paste('cd ', datapath, '/', time_stamp(), '; cp ', input$infile$datapath, ' ', datapath, '/', time_stamp(), '/', input$infile$name, '; snakemake --snakefile ', binpath, '/Snakefile_', input$nspecies, 'pop -p -j ', nCPU_server , ' --configfile ', time_stamp(), '.yaml --latency-wait 10 &', sep='') # for laptop
+			commande = paste('cd ', datapath, '/', time_stamp(), '; cp ', input$infile$datapath, ' ', datapath, '/', time_stamp(), '/', input$infile$name, '; snakemake --snakefile ', binpath, '/Snakefile_', input$nspecies, 'pop -p -j ', nCPU_server , ' --configfile ', time_stamp(), '.yaml  --cluster-config ', binpath, '/cluster_', input$nspecies , 'pop.json --cluster "sbatch --partition={cluster.partition} --qos={cluster.qos} --nodes={cluster.node} --ntasks={cluster.n} --cpus-per-task={cluster.cpusPerTask} --time={cluster.time} --mem-per-cpu={cluster.memPerCpu}" --latency-wait 10 &', sep='') # for cluster
 
 			if(input$presence_outgroup == 'yes'){
 				nameOutgroup = input$nameOutgroup
@@ -1470,7 +1470,8 @@ server <- function(input, output, session = session) {
 				write(paste("M_max:", input$M_max, sep=' '), file = yaml_name, append=T)
 			}
 
-			DILS_command(system(commande))
+			system(commande)
+			DILS_command(commande)
 	}})
 	
 	output$DILS_command <- renderText({DILS_command()})
