@@ -1420,8 +1420,8 @@ server <- function(input, output, session = session) {
 			commande_mkdir = paste('mkdir ', datapath, '/', time_stamp(), sep='')
 			system(commande_mkdir)
 
-#			commande = paste('cd ', datapath, '/', time_stamp(), '; cp ', input$infile$datapath, ' ', datapath, '/', time_stamp(), '/', input$infile$name, '; snakemake --snakefile ', binpath, '/Snakefile_', input$nspecies, 'pop -p -j ', nCPU_server , ' --configfile ', time_stamp(), '.yaml --latency-wait 10 &', sep='') # for laptop
-			commande = paste('cd ', datapath, '/', time_stamp(), '; cp ', input$infile$datapath, ' ', datapath, '/', time_stamp(), '/', input$infile$name, '; snakemake --snakefile ', binpath, '/Snakefile_', input$nspecies, 'pop -p -j ', nCPU_server , ' --configfile ', time_stamp(), '.yaml  --cluster-config ', binpath, '/cluster_', input$nspecies , 'pop.json --cluster "sbatch --partition={cluster.partition} --qos={cluster.qos} --nodes={cluster.node} --ntasks={cluster.n} --cpus-per-task={cluster.cpusPerTask} --time={cluster.time} --mem-per-cpu={cluster.memPerCpu}" --latency-wait 10 &', sep='') # for cluster
+			commande = paste('cd ', datapath, '/', time_stamp(), '; cp ', input$infile$datapath, ' ', datapath, '/', time_stamp(), '/', input$infile$name, '; snakemake --snakefile ', binpath, '/Snakefile_', input$nspecies, 'pop -p -j ', nCPU_server , ' --configfile ', time_stamp(), '.yaml --latency-wait 10 &', sep='') # for laptop
+#			commande = paste('cd ', datapath, '/', time_stamp(), '; cp ', input$infile$datapath, ' ', datapath, '/', time_stamp(), '/', input$infile$name, '; snakemake --snakefile ', binpath, '/Snakefile_', input$nspecies, 'pop -p -j ', nCPU_server , ' --configfile ', time_stamp(), '.yaml  --cluster-config ', binpath, '/cluster_', input$nspecies , 'pop.json --cluster "sbatch --partition={cluster.partition} --qos={cluster.qos} --nodes={cluster.node} --ntasks={cluster.n} --cpus-per-task={cluster.cpusPerTask} --time={cluster.time} --mem-per-cpu={cluster.memPerCpu}" --latency-wait 10 &', sep='') # for cluster
 
 			if(input$presence_outgroup == 'yes'){
 				nameOutgroup = input$nameOutgroup
