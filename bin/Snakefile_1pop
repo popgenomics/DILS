@@ -26,9 +26,10 @@
 
 python = 'pypy'
 
-#binpath = "/shared/mfs/data/home/croux/softwares/DILS/bin"
-binpath = "/home/croux/Programmes/DILS/bin"
+binpath = "/shared/mfs/data/home/croux/softwares/DILS/bin"
+#binpath = "/home/croux/Programmes/DILS/bin"
 #binpath = "/tools/bin"
+send_mail = True # True: send mail; False: do not send mail
 
 # light or normal mode
 lightMode = config['lightMode']
@@ -115,6 +116,7 @@ rule targets:
 		touch slurm_tmp.out
 		rm slurm*out
 		rm -rf {timeStamp}
+		{python} {binpath}/mail.py {timeStamp} {mail_address} {binpath} {send_mail}
 		"""
 
 rule fasta2ABC_1pop:
