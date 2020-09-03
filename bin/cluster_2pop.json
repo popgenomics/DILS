@@ -10,7 +10,7 @@
     },
     "fasta2ABC_2pops" :
     {
-	"cpusPerTask" : 1,
+	"cpusPerTask" : 2,
 	"time" : "02:00:00",
 	"memPerCpu" : 20000
     },

@@ -789,7 +789,7 @@ else: # if there is an outgroup
 					bpfile_L6.append(4*Nref*mu*nSites*rho_over_theta*scalar[locus_i])
 						
 					# informations about locus
-					res = "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\n".format(geneName, L, nSites, nSegSite, nA, nB, scalar[locus_i])
+					res = "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\n".format(geneName, L, nSites, nSynSegSite, nA, nB, scalar[locus_i])
 					outfile_info.write(res)
 					
 				#	res = ""

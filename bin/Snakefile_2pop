@@ -30,7 +30,7 @@ python = 'python2'
 # links to the codes
 binpath = "/shared/mfs/data/home/croux/softwares/DILS/bin"
 #binpath = "/home/croux/Programmes/DILS/bin"
-send_mail = True # True: send mail; False: do not send mail
+send_mail = 'True' # True: send mail; False: do not send mail
 
 # light or normal mode
 lightMode = config['lightMode']
@@ -151,9 +151,10 @@ rule targets:
 		"""
 		tar -zcvf {timeStamp}.tar.gz {input.generalInfos} {input.lociInfos} {input.yaml} {input.Nref} {input.ABCloci} {input.ABCglobal} {input.ABCjsfs} {input.recombination} {input.hierarchicalModel} {input.reportModelComp} {input.locusSpecificModelComp} {input.priorfile} {input.posteriorBest} {input.posteriorBestRF}  {input.posteriorBest3} {input.posteriorBestRF3} {input.reportBest3} {input.gof} {input.gof2} {input.gofSFS} {input.gofSFS2} {input.allGOF} {input.PCAcoordSS} {input.PCAcontribSS} {input.PCAeigenSS}
 		touch slurm_tmp.out
+		{python} {binpath}/mail.py {timeStamp} {mail_address} {binpath} {send_mail} end
 		rm slurm*out
 		rm -rf {timeStamp}
-		{python} {binpath}/mail.py {timeStamp} {mail_address} {binpath} {send_mail}
+		sleep 30
 		"""
 
 
@@ -183,7 +184,7 @@ rule fasta2ABC_2pops:
 		expand("{timeStamp}/{nameA}_{nameB}.ms", timeStamp=timeStamp, nameA=nameA, nameB=nameB),
 		expand("{timeStamp}/Nref.txt", timeStamp=timeStamp),
 		expand("{timeStamp}/config.yaml", timeStamp=timeStamp)
-	threads: 1
+	threads: 2
 	shell:
 		"""
 #		module load conda;
@@ -192,6 +193,7 @@ rule fasta2ABC_2pops:
 #		source activate R_env;
 #		module load pandoc/2.7.2;
 #		module load pypy
+		{python} {binpath}/mail.py {timeStamp} {mail_address} {binpath} {send_mail} start
 		x=$(date +%c)
 		pypy {binpath}/fasta2ABC_2pops.py {infile} {timeStamp} {params.nameA} {params.nameB} {params.nameOutgroup} {params.region} {params.Lmin} {params.max_N_tolerated} {params.nMin} {params.Nref} {params.mu} {params.rho_over_theta} {binpath}
 		cat {timeStamp}/{params.nameA}_{params.nameB}.ms | pypy {binpath}/mscalc_2pop_observedDataset_SFS.py {timeStamp} {outgroup}
@@ -204,6 +206,7 @@ rule fasta2ABC_2pops:
 		echo "date,"${{x}}>>{timeStamp}/general_infos.txt
 		echo {params.Nref}>>{timeStamp}/Nref.txt
 		cp {config_yaml} {timeStamp}/config.yaml
+		sleep 30
 		"""
 
 
@@ -263,7 +266,8 @@ rule modelComparison:
 		"""
 #		module load conda
 #		source activate R_env
-		Rscript {binpath}/model_comp_2pop_allModels.R nameA={nameA} nameB={nameB} timeStamp={timeStamp} nMin={nMin} sub_dir_sim=modelComp nSubdir={nIterations_model_comp} ntree={ntree} ncores={nCPU_R} useSFS={useSFS} population_growth={population_growth} modeBarrier={modeBarrier} binpath={binpath}
+#		Rscript {binpath}/model_comp_2pop_allModels.R nameA={nameA} nameB={nameB} timeStamp={timeStamp} nMin={nMin} sub_dir_sim=modelComp nSubdir={nIterations_model_comp} ntree={ntree} ncores={nCPU_R} useSFS={useSFS} population_growth={population_growth} modeBarrier={modeBarrier} binpath={binpath}
+		Rscript {binpath}/model_comp_2pop_allModels_solenopsis.R nameA={nameA} nameB={nameB} timeStamp={timeStamp} nMin={nMin} sub_dir_sim=modelComp nSubdir={nIterations_model_comp} ntree={ntree} ncores={nCPU_R} useSFS={useSFS} population_growth={population_growth} modeBarrier={modeBarrier} binpath={binpath}
 		"""
 
 # First round of estimation of the parameters of the best model (exploration of starting values)
