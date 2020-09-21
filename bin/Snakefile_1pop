@@ -116,7 +116,7 @@ rule targets:
 		touch slurm_tmp.out
 		rm slurm*out
 		rm -rf {timeStamp}
-		{python} {binpath}/mail.py {timeStamp} {mail_address} {binpath} {send_mail}
+		{python} {binpath}/mail.py {timeStamp} {mail_address} {binpath} {send_mail} end
 		"""
 
 rule fasta2ABC_1pop:
@@ -144,6 +144,7 @@ rule fasta2ABC_1pop:
 	threads: 8
 	shell:
 		"""
+		{python} {binpath}/mail.py {timeStamp} {mail_address} {binpath} {send_mail} start
 		x=$(date +%c)
 		{python} {binpath}/fasta2ABC_1pop.py {infile} {timeStamp} {params.nameA} {params.nameOutgroup} {params.region} {params.Lmin} {params.max_N_tolerated} {params.nMin} {params.mu} {params.rho_over_theta} {binpath}
 		cat {timeStamp}/{params.nameA}.ms | {python} {binpath}/mscalc_1pop_observedDataset_SFS.py {timeStamp} {outgroup}
@@ -165,16 +166,12 @@ rule RNAseqFGT:
 		fasta=expand("{infile}", infile=infile),
 		nLoci=expand("{timeStamp}/nLoci.txt", timeStamp=timeStamp),
 	output:
-		expand("{timeStamp}/results_recombination.txt", timeStamp=timeStamp)
+		tmp = expand("{timeStamp}/tmp_recombination.txt", timeStamp=timeStamp),
+		results = expand("{timeStamp}/results_recombination.txt", timeStamp=timeStamp)
 	threads: 1
 	shell:	
 		"""
-		x=$(cat {input.infos}  | grep -v locusName | awk '{{print $2}}' | sort -n | tail -n1)
-		if (($x<99990)); then
-			{binpath}/RNAseqFGT {input.fasta} {output}
-		else
-			echo "{input.fasta} not in correct FASTA format (line length > 100000)" > {output}
-		fi
+		sh {binpath}/RNAseqFGT_1pop.sh {params.nameA} {input.infos} {input.fasta} {input.nLoci} {output.tmp} {output.results} {binpath} || true
 		"""
 
 rule simulationsModelComp:
