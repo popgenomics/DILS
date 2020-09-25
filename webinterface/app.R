@@ -27,8 +27,10 @@
 #################################################################################################################################
 
 # Rscript webinterface/app.R host=127.0.0.9 port=8912
-datapath = "/home/croux/Documents/DILSprojects" # directory containing the uploaded fasta file, the yaml file and the whole analysis to perform 
-binpath = "/home/croux/Programmes/DILS/bin" # directory containing all of the used codes
+datapath = '/home/croux/Documents/DILSprojects' # directory containing the uploaded fasta file, the yaml file and the whole analysis to perform 
+binpath = '/home/croux/Programmes/DILS/bin' # directory containing all of the used codes
+results_path = '/home/croux/Documents/DILS_results'
+
 nCPU_server = 6 # maximum number of simultaneously running jobs (140 on IFB's cluster)
 
 options(encoding="UTF-8")
@@ -1524,7 +1526,8 @@ server <- function(input, output, session = session) {
 			return (NULL)
 		}else{
 			allData = list()
-			outputDir = getwd()
+#			outputDir = getwd()
+			outputDir = results_path
 
 			untar(fileName$datapath, exdir = outputDir)
 			rootName = strsplit(paste(outputDir, "/", fileName$name, sep=""), '.', fixed=T)[[1]][1]
