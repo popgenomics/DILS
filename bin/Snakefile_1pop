@@ -115,7 +115,6 @@ rule targets:
 		touch slurm_tmp.out
 		rm slurm*out
 		rm -rf {timeStamp}
-		{python} {binpath}/mail.py {timeStamp} {mail_address} {binpath} {send_mail} end
 		"""
 
 rule fasta2ABC_1pop:
@@ -143,7 +142,6 @@ rule fasta2ABC_1pop:
 	threads: 8
 	shell:
 		"""
-		{python} {binpath}/mail.py {timeStamp} {mail_address} {binpath} {send_mail} start
 		x=$(date +%c)
 		{python} {binpath}/fasta2ABC_1pop.py {infile} {timeStamp} {params.nameA} {params.nameOutgroup} {params.region} {params.Lmin} {params.max_N_tolerated} {params.nMin} {params.mu} {params.rho_over_theta} {binpath}
 		cat {timeStamp}/{params.nameA}.ms | {python} {binpath}/mscalc_1pop_observedDataset_SFS.py {timeStamp} {outgroup}

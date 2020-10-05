@@ -30,6 +30,7 @@
 datapath = '/home/croux/Documents/DILSprojects' # directory containing the uploaded fasta file, the yaml file and the whole analysis to perform 
 binpath = '/home/croux/Programmes/DILS/bin' # directory containing all of the used codes
 results_path = '/home/croux/Documents/DILS_results'
+send_mail = TRUE # TRUE : send mail via mailx; FALSE : do not send mail via mailx
 
 nCPU_server = 6 # maximum number of simultaneously running jobs (140 on IFB's cluster)
 
@@ -1421,13 +1422,21 @@ server <- function(input, output, session = session) {
 		if(isTRUE(input$myconfirmation)){
 			commande_mkdir = paste('mkdir ', datapath, '/', time_stamp(), sep='')
 			system(commande_mkdir)
+			# for cluster + mail
 			commande = paste('cd ', datapath, '/', time_stamp(), sep='')
 			commande = paste(commande, ' ; cp ', input$infile$datapath, ' ', datapath, '/', time_stamp(), '/', input$infile$name, sep='')
-			commande = paste(commande, '; python ', binpath, '/mail.py ', time_stamp(), ' ',  input$mail_address, ' ', binpath, ' ', datapath, ' True start', sep='')
-			commande = paste(commande, '; snakemake --snakefile ', binpath, '/Snakefile_', input$nspecies, 'pop -p -j ', nCPU_server , ' --configfile ', time_stamp(), '.yaml --latency-wait 10', sep='') 
-			commande = paste(commande, '; python ', binpath, '/mail.py ', time_stamp(), ' ',  input$mail_address, ' ', binpath, ' ', datapath, ' True end', sep='')
-
+			if (send_mail==TRUE){
+				commande = paste(commande, '; python ', binpath, '/mail.py ', time_stamp(), ' ',  input$mail_address, ' ', binpath, ' ', datapath, ' True start', sep='')
+			}
+			commande = paste(commande, '; snakemake --snakefile ', binpath, '/Snakefile_', input$nspecies, 'pop -p -j ', nCPU_server , ' --configfile ', time_stamp(), '.yaml --cluster-config ', binpath, '/cluster_', input$nspecies , 'pop.json --cluster "sbatch --partition={cluster.partition} --qos={cluster.qos} --nodes={cluster.node} --ntasks={cluster.n} --cpus-per-task={cluster.cpusPerTask} --time={cluster.time} --mem-per-cpu={cluster.memPerCpu}" --latency-wait 10', sep='') 
+			if (send_mail==TRUE){
+				commande = paste(commande, '; python ', binpath, '/mail.py ', time_stamp(), ' ',  input$mail_address, ' ', binpath, ' ', datapath, ' True end', sep='')
+			}
+			
+			# for laptop (without mail)
 #			commande = paste('cd ', datapath, '/', time_stamp(), '; cp ', input$infile$datapath, ' ', datapath, '/', time_stamp(), '/', input$infile$name, '; snakemake --snakefile ', binpath, '/Snakefile_', input$nspecies, 'pop -p -j ', nCPU_server , ' --configfile ', time_stamp(), '.yaml --latency-wait 10 &', sep='') # works for laptop
+			
+			# for cluster (without mail)
 #			commande = paste('cd ', datapath, '/', time_stamp(), '; cp ', input$infile$datapath, ' ', datapath, '/', time_stamp(), '/', input$infile$name, '; snakemake --snakefile ', binpath, '/Snakefile_', input$nspecies, 'pop -p -j ', nCPU_server , ' --configfile ', time_stamp(), '.yaml  --cluster-config ', binpath, '/cluster_', input$nspecies , 'pop.json --cluster "sbatch --partition={cluster.partition} --qos={cluster.qos} --nodes={cluster.node} --ntasks={cluster.n} --cpus-per-task={cluster.cpusPerTask} --time={cluster.time} --mem-per-cpu={cluster.memPerCpu}" --latency-wait 10 &', sep='') # works for cluster
 
 			if(input$presence_outgroup == 'yes'){
