@@ -1,0 +1,8 @@
+Dear user,
+Unfortunately, the analysis did not produce the final file containing all the results.
+A problem must have occurred somewhere, either related to the DILS code, or related to the uploaded file, or related to the Data filtering parameter values you entered.
+Do not hesitate to contact us by e-mail (camille.roux@univ-lille.fr or christelle.fraisse.rios@gmail.com) or via the Google group (https://cutt.ly/da05Tnw ; preferred option) in case of any problem or suggestions for improvement.
+Wishing you all the best for your projects,
+
+The DILS team
+

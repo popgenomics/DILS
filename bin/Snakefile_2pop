@@ -30,7 +30,6 @@ python = 'python2'
 # links to the codes
 binpath = "/shared/mfs/data/home/croux/softwares/DILS/bin"
 #binpath = "/home/croux/Programmes/DILS/bin"
-send_mail = 'True' # True: send mail; False: do not send mail
 
 # light or normal mode
 lightMode = config['lightMode']
@@ -151,7 +150,6 @@ rule targets:
 		"""
 		tar -zcvf {timeStamp}.tar.gz {input.generalInfos} {input.lociInfos} {input.yaml} {input.Nref} {input.ABCloci} {input.ABCglobal} {input.ABCjsfs} {input.recombination} {input.hierarchicalModel} {input.reportModelComp} {input.locusSpecificModelComp} {input.priorfile} {input.posteriorBest} {input.posteriorBestRF}  {input.posteriorBest3} {input.posteriorBestRF3} {input.reportBest3} {input.gof} {input.gof2} {input.gofSFS} {input.gofSFS2} {input.allGOF} {input.PCAcoordSS} {input.PCAcontribSS} {input.PCAeigenSS}
 		touch slurm_tmp.out
-		{python} {binpath}/mail.py {timeStamp} {mail_address} {binpath} {send_mail} end
 		rm slurm*out
 		rm -rf {timeStamp}
 		sleep 30
@@ -193,7 +191,6 @@ rule fasta2ABC_2pops:
 #		source activate R_env;
 #		module load pandoc/2.7.2;
 #		module load pypy
-		{python} {binpath}/mail.py {timeStamp} {mail_address} {binpath} {send_mail} start
 		x=$(date +%c)
 		pypy {binpath}/fasta2ABC_2pops.py {infile} {timeStamp} {params.nameA} {params.nameB} {params.nameOutgroup} {params.region} {params.Lmin} {params.max_N_tolerated} {params.nMin} {params.Nref} {params.mu} {params.rho_over_theta} {binpath}
 		cat {timeStamp}/{params.nameA}_{params.nameB}.ms | pypy {binpath}/mscalc_2pop_observedDataset_SFS.py {timeStamp} {outgroup}

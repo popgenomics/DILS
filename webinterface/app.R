@@ -1421,9 +1421,14 @@ server <- function(input, output, session = session) {
 		if(isTRUE(input$myconfirmation)){
 			commande_mkdir = paste('mkdir ', datapath, '/', time_stamp(), sep='')
 			system(commande_mkdir)
+			commande = paste('cd ', datapath, '/', time_stamp(), sep='')
+			commande = paste(commande, ' ; cp ', input$infile$datapath, ' ', datapath, '/', time_stamp(), '/', input$infile$name, sep='')
+			commande = paste(commande, '; python ', binpath, '/mail.py ', time_stamp(), ' ',  input$mail_address, ' ', binpath, ' ', datapath, ' True start', sep='')
+			commande = paste(commande, '; snakemake --snakefile ', binpath, '/Snakefile_', input$nspecies, 'pop -p -j ', nCPU_server , ' --configfile ', time_stamp(), '.yaml --latency-wait 10', sep='') 
+			commande = paste(commande, '; python ', binpath, '/mail.py ', time_stamp(), ' ',  input$mail_address, ' ', binpath, ' ', datapath, ' True end', sep='')
 
-			commande = paste('cd ', datapath, '/', time_stamp(), '; cp ', input$infile$datapath, ' ', datapath, '/', time_stamp(), '/', input$infile$name, '; snakemake --snakefile ', binpath, '/Snakefile_', input$nspecies, 'pop -p -j ', nCPU_server , ' --configfile ', time_stamp(), '.yaml --latency-wait 10 &', sep='') # for laptop
-#			commande = paste('cd ', datapath, '/', time_stamp(), '; cp ', input$infile$datapath, ' ', datapath, '/', time_stamp(), '/', input$infile$name, '; snakemake --snakefile ', binpath, '/Snakefile_', input$nspecies, 'pop -p -j ', nCPU_server , ' --configfile ', time_stamp(), '.yaml  --cluster-config ', binpath, '/cluster_', input$nspecies , 'pop.json --cluster "sbatch --partition={cluster.partition} --qos={cluster.qos} --nodes={cluster.node} --ntasks={cluster.n} --cpus-per-task={cluster.cpusPerTask} --time={cluster.time} --mem-per-cpu={cluster.memPerCpu}" --latency-wait 10 &', sep='') # for cluster
+#			commande = paste('cd ', datapath, '/', time_stamp(), '; cp ', input$infile$datapath, ' ', datapath, '/', time_stamp(), '/', input$infile$name, '; snakemake --snakefile ', binpath, '/Snakefile_', input$nspecies, 'pop -p -j ', nCPU_server , ' --configfile ', time_stamp(), '.yaml --latency-wait 10 &', sep='') # works for laptop
+#			commande = paste('cd ', datapath, '/', time_stamp(), '; cp ', input$infile$datapath, ' ', datapath, '/', time_stamp(), '/', input$infile$name, '; snakemake --snakefile ', binpath, '/Snakefile_', input$nspecies, 'pop -p -j ', nCPU_server , ' --configfile ', time_stamp(), '.yaml  --cluster-config ', binpath, '/cluster_', input$nspecies , 'pop.json --cluster "sbatch --partition={cluster.partition} --qos={cluster.qos} --nodes={cluster.node} --ntasks={cluster.n} --cpus-per-task={cluster.cpusPerTask} --time={cluster.time} --mem-per-cpu={cluster.memPerCpu}" --latency-wait 10 &', sep='') # works for cluster
 
 			if(input$presence_outgroup == 'yes'){
 				nameOutgroup = input$nameOutgroup
