@@ -142,7 +142,7 @@ rule fasta2ABC_1pop:
 	threads: 8
 	shell:
 		"""
-		x=$(date +%c)
+		date_tmp=$(date +%c)
 		{python} {binpath}/fasta2ABC_1pop.py {infile} {timeStamp} {params.nameA} {params.nameOutgroup} {params.region} {params.Lmin} {params.max_N_tolerated} {params.nMin} {params.mu} {params.rho_over_theta} {binpath}
 		cat {timeStamp}/{params.nameA}.ms | {python} {binpath}/mscalc_1pop_observedDataset_SFS.py {timeStamp} {outgroup}
 #		pypy {binpath}/fasta2ABC_1pop.py {infile} {timeStamp} {params.nameA} {params.nameOutgroup} {params.region} {params.Lmin} {params.max_N_tolerated} {params.nMin} {params.mu} {params.rho_over_theta} {binpath}
@@ -151,7 +151,7 @@ rule fasta2ABC_1pop:
 		y=$( cat {timeStamp}/nLoci.txt )
 		echo "nLoci,"${{y}}>>{timeStamp}/general_infos.txt
 		echo "mail,"{mail_address}>>{timeStamp}/general_infos.txt
-		echo "date,"${{x}}>>{timeStamp}/general_infos.txt
+		echo "date,"${{date_tmp}}>>{timeStamp}/general_infos.txt
 		cp {config_yaml} {timeStamp}/config.yaml
 		"""
 

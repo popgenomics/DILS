@@ -191,7 +191,7 @@ rule fasta2ABC_2pops:
 #		source activate R_env;
 #		module load pandoc/2.7.2;
 #		module load pypy
-		x=$(date +%c)
+		date_tmp=$(date +%c)
 		pypy {binpath}/fasta2ABC_2pops.py {infile} {timeStamp} {params.nameA} {params.nameB} {params.nameOutgroup} {params.region} {params.Lmin} {params.max_N_tolerated} {params.nMin} {params.Nref} {params.mu} {params.rho_over_theta} {binpath}
 		cat {timeStamp}/{params.nameA}_{params.nameB}.ms | pypy {binpath}/mscalc_2pop_observedDataset_SFS.py {timeStamp} {outgroup}
 		echo "nSpecies,"{nspecies}>{timeStamp}/general_infos.txt
@@ -200,7 +200,7 @@ rule fasta2ABC_2pops:
 		y=$( cat {timeStamp}/nLoci.txt )
 		echo "nLoci,"${{y}}>>{timeStamp}/general_infos.txt
 		echo "mail,"{mail_address}>>{timeStamp}/general_infos.txt
-		echo "date,"${{x}}>>{timeStamp}/general_infos.txt
+		echo "date,"${{date_tmp}}>>{timeStamp}/general_infos.txt
 		echo {params.Nref}>>{timeStamp}/Nref.txt
 		cp {config_yaml} {timeStamp}/config.yaml
 		sleep 30
