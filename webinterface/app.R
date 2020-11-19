@@ -1324,11 +1324,13 @@ server <- function(input, output, session = session) {
 		N_max = input$N_max
 		Tsplit_min = input$Tsplit_min
 		Tsplit_max = input$Tsplit_max
-		population_growth = input$population_growth
+		if(nspecies != 1){
+			population_growth = input$population_growth
+		}
 	
 		if(nspecies == 1){
-			res = matrix(c(mail_address, config_yaml, infile, region, nspecies, species_names, nameOutgroup, Lmin, nMin, mu, rho_over_theta, N_min, N_max, Tsplit_min, Tsplit_max, population_growth), ncol = 1)
-			row_names_res = c("user's email address", "config_yaml", "infile", "region", "nspecies", species_names_row, "nameOutgroup", "Lmin", "nMin", "mu", "rho_over_theta", "N_min", "N_max", "Tchanges_min", "Tchanges_max", "population_growth")
+			res = matrix(c(mail_address, config_yaml, infile, region, nspecies, species_names, nameOutgroup, Lmin, nMin, mu, rho_over_theta, N_min, N_max, Tsplit_min, Tsplit_max), ncol = 1)
+			row_names_res = c("user's email address", "config_yaml", "infile", "region", "nspecies", species_names_row, "nameOutgroup", "Lmin", "nMin", "mu", "rho_over_theta", "N_min", "N_max", "Tchanges_min", "Tchanges_max")
 		}else{
 			res = matrix(c(mail_address, config_yaml, infile, region, nspecies, species_names, nameOutgroup, useSFS, Lmin, nMin, mu, rho_over_theta, N_min, N_max, Tsplit_min, Tsplit_max, M_min, M_max, population_growth), ncol = 1)
 			row_names_res = c("user's email address", "config_yaml", "infile", "region", "nspecies", species_names_row, "nameOutgroup", "useSFS", "Lmin", "nMin", "mu", "rho_over_theta", "N_min", "N_max", "Tsplit_min", "Tsplit_max", "M_min", "M_max", "population_growth")
@@ -1418,17 +1420,18 @@ server <- function(input, output, session = session) {
 	observeEvent( input$myconfirmation, {
 
 
-#		if(isTRUE(input$myconfirmation)){commande = paste('mkdir ', datapath, '/', time_stamp(), '; ', 'cp ', input$infile$datapath, ' ', datapath, '/', time_stamp(), '/', '; snakemake --snakefile ', binpath, '/Snakefile_', input$nspecies, 'pop -p -j ', nCPU_server , ' --configfile ', time_stamp(), '.yaml', ' --cluster-config ', binpath, '/cluster_', input$nspecies, 'pop.json --cluster "sbatch --nodes={cluster.node} --ntasks={cluster.n} --cpus-per-task={cluster.cpusPerTask} --time={cluster.time} --mem-per-cpu={cluster.memPerCpu}" --latency-wait 10 &', sep='')
 		if(isTRUE(input$myconfirmation)){
 			commande_mkdir = paste('mkdir ', datapath, '/', time_stamp(), sep='')
 			system(commande_mkdir)
+
 			# for cluster + mail
 			commande = paste('cd ', datapath, '/', time_stamp(), sep='')
 			commande = paste(commande, ' ; cp ', input$infile$datapath, ' ', datapath, '/', time_stamp(), '/', input$infile$name, sep='')
 			if (send_mail==TRUE){
 				commande = paste(commande, '; python ', binpath, '/mail.py ', time_stamp(), ' ',  input$mail_address, ' ', binpath, ' ', datapath, ' True start', sep='')
 			}
-			commande = paste(commande, '; snakemake --snakefile ', binpath, '/Snakefile_', input$nspecies, 'pop -p -j ', nCPU_server , ' --configfile ', time_stamp(), '.yaml --cluster-config ', binpath, '/cluster_', input$nspecies , 'pop.json --cluster "sbatch --partition={cluster.partition} --qos={cluster.qos} --nodes={cluster.node} --ntasks={cluster.n} --cpus-per-task={cluster.cpusPerTask} --time={cluster.time} --mem-per-cpu={cluster.memPerCpu}" --latency-wait 10', sep='') 
+
+			commande = paste(commande, '; snakemake --snakefile ', binpath, '/Snakefile_', input$nspecies, 'pop -p -j ', nCPU_server , ' --configfile ', time_stamp(), '.yaml --cluster-config ', binpath, '/cluster_', input$nspecies , 'pop.json --cluster "sbatch --nodes={cluster.node} --ntasks={cluster.n} --cpus-per-task={cluster.cpusPerTask} --time={cluster.time} --mem-per-cpu={cluster.memPerCpu}" --latency-wait 10', sep='') 
 			if (send_mail==TRUE){
 				commande = paste(commande, '; python ', binpath, '/mail.py ', time_stamp(), ' ',  input$mail_address, ' ', binpath, ' ', datapath, ' True end', sep='')
 			}
@@ -1488,6 +1491,7 @@ server <- function(input, output, session = session) {
 
 			system(commande)
 			DILS_command(commande)
+
 	}})
 	
 	output$DILS_command <- renderText({DILS_command()})

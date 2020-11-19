@@ -1,2 +1,3 @@
 yaml	mail_address	speciesA	speciesB	bestModel	probaMigration	probaMigHetero	status	piA	piB	netDivergence
 DarlingLighthouseSFS	christelle.fraisse@ist.ac.at	Darling	Lighthouse	migration	0.956883333333333	0.90995	semi-isolated species	0.03496	0.0432	0.06082
+BatemansCrique	christelle.fraisse@ist.ac.at	Batemans	Crique	migration	0.73475	0.8343	semi-isolated species	0.03112	0.02873	0.00182
