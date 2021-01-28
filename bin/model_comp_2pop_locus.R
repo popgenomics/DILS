@@ -70,11 +70,21 @@ if(model_demographic == 'migration'){
 		
 		# remove unused statistics
 		toRemove = c(1)
+		for(model in unique(modIndexes)){
+			tmp = which(modIndexes==model)
+			for(i in 1:ncol(data_ss)){
+				if( anyNA(data_ss[,i], recursive=T) || sd(data_ss[-1,i][tmp], na.rm=T)<1e-4 || colnames(data_ss)[i]%in%rejected_statistics  ){
+					toRemove=c(toRemove, i)
+				}
+			}
+		}
+
 		for(i in 1:ncol(data_ss)){
-			if( anyNA(data_ss[,i], recursive=T) || sd(data_ss[-1,i], na.rm=T)<1e-5 || colnames(data_ss)[i]%in%rejected_statistics  ){
+			if( anyNA(data_ss[,i], recursive=T) || sd(data_ss[-1,i], na.rm=T)<1e-4 || colnames(data_ss)[i]%in%rejected_statistics  ){
 				toRemove=c(toRemove, i)
 			}
 		}
+
 		std_stats = grep('std', colnames(data_ss))
 		if( length(std_stats)>0 ){
 			toRemove = c(toRemove, std_stats)

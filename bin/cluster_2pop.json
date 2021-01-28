@@ -17,61 +17,61 @@
     "RNAseqFGT" :
     {
 	"cpusPerTask" : 1,
-	"time" : "01:00:00",
+	"time" : "02:00:00",
 	"memPerCpu" : 20000
     },
     "modelComparison" :
     {
 	"cpusPerTask" : 8,
-	"time" : "01:30:00",
+	"time" : "03:30:00",
 	"memPerCpu" : 4000
     },
     "estimation" :
     {
 	"cpusPerTask" : 8,
-	"time" : "01:30:00",
+	"time" : "03:30:00",
 	"memPerCpu" : 3000
     },
     "estimation_best_model" :
     {
 	"cpusPerTask" : 8,
-	"time" : "01:30:00",
+	"time" : "03:30:00",
 	"memPerCpu" : 3000
     },
     "estimation_best_model_2" :
     {
 	"cpusPerTask" : 8,
-	"time" : "01:30:00",
+	"time" : "03:30:00",
 	"memPerCpu" : 3000
     },
     "estimation_best_model_3" :
     {
 	"cpusPerTask" : 8,
-	"time" : "01:30:00",
+	"time" : "03:30:00",
 	"memPerCpu" : 3000
     },
     "estimation_best_model_4" :
     {
 	"cpusPerTask" : 8,
-	"time" : "01:30:00",
+	"time" : "03:30:00",
 	"memPerCpu" : 3000
     },
     "estimation_best_model_5" :
     {
 	"cpusPerTask" : 8,
-	"time" : "01:30:00",
+	"time" : "03:30:00",
 	"memPerCpu" : 3000
     },
     "locus_modelComp" :
     {
 	"cpusPerTask" : 8,
-	"time" : "01:30:00",
+	"time" : "03:30:00",
 	"memPerCpu" : 3000
     },
     "PCA_SS" :
     {
 	"cpusPerTask" : 1,
-	"time" : "01:00:00",
+	"time" : "03:00:00",
 	"memPerCpu" : 5000
     }
 }

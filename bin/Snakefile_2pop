@@ -28,7 +28,8 @@
 python = 'python2'
 
 # links to the codes
-binpath = "/shared/mfs/data/home/croux/softwares/DILS/bin"
+binpath = "/shared/home/croux/softwares/DILS/bin"
+#binpath = "/shared/mfs/data/home/croux/softwares/DILS/bin"
 #binpath = "/home/croux/Programmes/DILS/bin"
 
 # light or normal mode
