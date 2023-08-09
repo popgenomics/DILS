@@ -137,6 +137,7 @@ for(i in 1:length(models)){
 	modIndexes = c(modIndexes, rep(growth[i], nrow(ss_sim[[models[i]]])))
 }
 
+modIndexes = as.factor(modIndexes)
 mod_cons_grow = abcrf(modIndexes~., data = data.frame(modIndexes, all_models_sim[, -ss_2_remove]), ntree = ntree, paral = T, ncores = ncores)
 predicted_model_cons_grow = predict(mod_cons_grow, data.frame(ss_obs[, -ss_2_remove]), training=data.frame(modIndexes, all_models_sim[, -ss_2_remove]), ntree = ntree, paral = T, ncores = ncores)
 
@@ -180,6 +181,7 @@ for(i in heteroN){
 	modIndexes = c(modIndexes, rep('heteroN', nrow(ss_sim[[i]])))
 }
 
+modIndexes = as.factor(modIndexes)
 mod = abcrf(modIndexes~., data = data.frame(modIndexes, all_models[, -ss_2_remove]), ntree = ntree, paral = T, ncores = ncores)
 predicted_model = predict(mod, data.frame(ss_obs[, -ss_2_remove]), training=data.frame(modIndexes, all_models[, -ss_2_remove]), ntree = ntree, paral = T, ncores = ncores)
 

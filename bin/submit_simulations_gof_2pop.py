@@ -40,7 +40,7 @@ if len(sys.argv) != 14:
 	print("\n\tex: submit_simulations_gof_2pop.py 1 1000 2 SI_1N flo mal sim_SI_1N SI_1N posterior_IM_1M_2N.txt Ng4PymB1dy [beta]\n\tto simulate 1000 multilocus simulations at the second iteration, in the folder sim_SI_1N") 
 	sys.exit(0)
 
-python = 'python2'
+python = 'python3'
 
 outgroup = int(sys.argv[1])
 nmultilocus = int(sys.argv[2]) # 10000

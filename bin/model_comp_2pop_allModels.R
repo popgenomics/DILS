@@ -136,6 +136,8 @@ for(i in 1:length(models)){
 	modIndexes = c(modIndexes, rep(migration[i], nrow(ss_sim[[models[i]]])))
 }
 
+modIndexes = as.factor(modIndexes)
+
 mod_iso_mig = abcrf(modIndexes~., data = data.frame(modIndexes, all_models_sim[, -ss_2_remove]), ntree = ntree, paral = T, ncores = ncores)
 predicted_model_iso_mig = predict(mod_iso_mig, data.frame(ss_obs[, -ss_2_remove]), training=data.frame(modIndexes, all_models_sim[, -ss_2_remove]), ntree = ntree, paral = T, ncores = ncores)
 
@@ -179,6 +181,8 @@ if(predicted_model_iso_mig$allocation=='migration'){
 	ss_2_remove = unique(ss_2_remove)
 
 	#model comparison	
+	modIndexes = as.factor(modIndexes)
+
 	mod = abcrf(modIndexes~., data = data.frame(modIndexes, all_models[, -ss_2_remove]), ntree = ntree, paral = T, ncores = ncores)
 	predicted_model = predict(mod, data.frame(ss_obs[, -ss_2_remove]), training=data.frame(modIndexes, all_models[, -ss_2_remove]), ntree = ntree, paral = T, ncores = ncores)
 	
@@ -220,6 +224,7 @@ if(predicted_model_iso_mig$allocation=='migration'){
 
 	#model comparison
 	modIndexes = c(rep('Mhomo', nrow(Mhomo)), rep('Mhetero', nrow(Mhetero)))
+	modIndexes = as.factor(modIndexes)
 	mod_Mhomo_Mhetero = abcrf(modIndexes~., data = data.frame(modIndexes, rbind(Mhomo, Mhetero)[, -ss_2_remove]), ntree = ntree, paral = T, ncores = ncores)
 	predicted_model_Mhomo_Mhetero = predict(mod_Mhomo_Mhetero, data.frame(ss_obs[, -ss_2_remove]), training=data.frame(modIndexes, rbind(Mhomo, Mhetero)[, -ss_2_remove]), ntree = ntree, paral = T, ncores = ncores)
 
@@ -264,6 +269,7 @@ if(predicted_model_iso_mig$allocation=='migration'){
 
 	#model comparison
 	modIndexes = c(rep('Nhomo', nrow(Nhomo)), rep('Nhetero', nrow(Nhetero)))
+	modIndexes = as.factor(modIndexes)
 	mod_Nhomo_Nhetero = abcrf(modIndexes~., data = data.frame(modIndexes, rbind(Nhomo, Nhetero)[, -ss_2_remove]), ntree = ntree, paral = T, ncores = ncores)
 	predicted_model_Nhomo_Nhetero = predict(mod_Nhomo_Nhetero, data.frame(ss_obs[, -ss_2_remove]), training=data.frame(modIndexes, rbind(Nhomo, Nhetero)[, -ss_2_remove]), ntree = ntree, paral = T, ncores = ncores)
 	
@@ -317,6 +323,7 @@ if(predicted_model_iso_mig$allocation=='isolation'){
 	ss_2_remove = unique(ss_2_remove)
 
 	#model comparison
+	modIndexes = as.factor(modIndexes)
 	mod = abcrf(modIndexes~., data = data.frame(modIndexes, all_models[, -ss_2_remove]), ntree = ntree, paral = T, ncores = ncores)
 	predicted_model = predict(mod, data.frame(ss_obs[, -ss_2_remove]), training=data.frame(modIndexes, all_models[, -ss_2_remove]), ntree = ntree, paral = T, ncores = ncores)
 	
@@ -355,6 +362,7 @@ if(predicted_model_iso_mig$allocation=='isolation'){
 
 	#model comparison
 	modIndexes = c(rep('Nhomo', nrow(Nhomo)), rep('Nhetero', nrow(Nhetero)))
+	modIndexes = as.factor(modIndexes)
 	mod_Nhomo_Nhetero = abcrf(modIndexes~., data = data.frame(modIndexes, rbind(Nhomo, Nhetero)[, -ss_2_remove]), ntree = ntree, paral = T, ncores = ncores)
 	predicted_model_Nhomo_Nhetero = predict(mod_Nhomo_Nhetero, data.frame(ss_obs[, -ss_2_remove]), training=data.frame(modIndexes, rbind(Nhomo, Nhetero)[, -ss_2_remove]), ntree = ntree, paral = T, ncores = ncores)
 	
@@ -389,6 +397,7 @@ if(predicted_model_iso_mig$allocation=='isolation'){
 
 		#model comparison
 		modIndexes = c(rep('SI_1N', nrow(SI_1N)), rep('SI_2N', nrow(SI_2N)))
+		modIndexes = as.factor(modIndexes)
 		mod_best = abcrf(modIndexes~., data = data.frame(modIndexes, rbind(SI_1N, SI_2N)[, -ss_2_remove]), ntree = ntree, paral = T, ncores = ncores)
 		predicted_best = predict(mod_best, data.frame(ss_obs[, -ss_2_remove]), training=data.frame(modIndexes, rbind(SI_1N, SI_2N)[, -ss_2_remove]), ntree = ntree, paral = T, ncores = ncores)
 		}else if( predicted_model$allocation == 'AM' ){
@@ -409,6 +418,7 @@ if(predicted_model_iso_mig$allocation=='isolation'){
 
 		#model comparison
 		modIndexes = c(rep('AM_1M_1N', nrow(AM_1M_1N)), rep('AM_1M_2N', nrow(AM_1M_2N)), rep('AM_2M_1N', nrow(AM_2M_1N)), rep('AM_2M_2N', nrow(AM_2M_2N)))
+		modIndexes = as.factor(modIndexes)
 		mod_best = abcrf(modIndexes~., data = data.frame(modIndexes, rbind(AM_1M_1N, AM_1M_2N, AM_2M_1N, AM_2M_2N)[, -ss_2_remove]), ntree = ntree, paral = T, ncores = ncores)
 		predicted_best = predict(mod_best, data.frame(ss_obs[, -ss_2_remove]), training=data.frame(modIndexes, rbind(AM_1M_1N, AM_1M_2N, AM_2M_1N, AM_2M_2N)[, -ss_2_remove]), ntree = ntree, paral = T, ncores = ncores)
 		}

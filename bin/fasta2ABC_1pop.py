@@ -649,72 +649,54 @@ else: # if there is an outgroup
 					interspe.append(align['align'][nameA][locus_i]['seq'][i])
 					interspeName.append(align['align'][nameA][locus_i]['id'][i])
 
-				nSites = 0 # total number of synonymous sites within the sequence, computed using codonTable
-				nSynSegSite = 0 # number of synonymous segregating sites among the nSites
-				positions = [] # list of synonymous polymorphic positions: doesn't correspond to the SNP position, but to the first codon position
+				nSites = 0 # total number of sites within the sequence
+				nSegSite = 0 # number of segregating sites among the nSites
+				positions = [] # list of polymorphic positions: corresponds to the SNP position
 				msStyle = [] # contains the msStyle format
 				for ind in range(nA):
 					msStyle.append([])
 
-				# loop over codons:
+				# loop over sites:
 				for pos in range(L):
-					alignmentOfCodons = [] # set of codons in the alignment, starting at the position 'pos1'
-					codon_outgroup = consensus[locus_i][pos:(pos+3)]
+					alignmentOfPos = [] # set of pos in the alignment
+					pos_outgroup = consensus[locus_i][pos]
 					# loop over individuals:
-					# get all codons in the alignment
+					# get all allelesin the alignment
 					for ind in range(nA):
-						pos1 = interspe[ind][pos]
-						pos2 = interspe[ind][pos + 1]
-						pos3 = interspe[ind][pos + 2]
-						base = pos1 + pos2 + pos3 
-						alignmentOfCodons.append(base)
+						base = interspe[ind][pos]
+						alignmentOfPos.append(base)
 					
-					polyMcodons = list(set(alignmentOfCodons)) # list of codons found in the alignment
+					polyMpos = list(set(alignmentOfPos)) # list of alles found in the alignment
 					
-					nCodons = 0
-					nCodons = len(polyMcodons)
-					testN = False # False if no codon with 'N'; True if a 'N' is found in at least one codon for one individual
-					testStopCodon = False # False if no stop codon was found; True if a stop codon was found
-					for i in polyMcodons: # loop to test for some 'N'
+					nPos = 0
+					nPos = len(polyMpos)
+					testN = False # False if no individual carries a 'N'; True if a 'N' is found in at least one individual
+					for i in polyMpos: # loop to test for some 'N'
 						if 'N' in i:
 							testN = True
-						if i not in codonTable:
-							testStopCodon = True
 					
-					# if: 1) a maximum of 2 polymorphic codons, and, 2) no codon with 'N', and, 3) all codons effectively code for an amino acid
-					if nCodons <= 2 and codon_outgroup in polyMcodons and testN==False and testStopCodon==False: 
-						nSites_pos = 0.0
-						for i in alignmentOfCodons:
-							nSites_pos += codonTable[i]['nS']
-						nSites += nSites_pos/len(alignmentOfCodons)
+					# if: 1) a maximum of 2 polymorphic alleles, and, 2) no allele is 'N', and, 3) the outgroup is different from 'N' 
+					if nPos <= 2 and pos_outgroup in polyMpos and testN==False: 
+						nSites += 1
 						
-						# if two codons --> there is a polymorphism
-						if nCodons == 2:
-							alignmentOfAminoAcids = []
-							for i in alignmentOfCodons:
-								alignmentOfAminoAcids.append(codonTable[i]['aa'])
-							setOfAminoAcids = list(set(alignmentOfAminoAcids))
-							
-							# if two codons but one amino acids --> synonymous polymorphism
-							if len(setOfAminoAcids) == 1:
-								nSynSegSite += 1
-								positions.append(pos) # positions: list of first codon position of polymorphic synonymous codons
-								#ancestralAllele = polyMcodons[0] # in absence of outgroup --> the ancestral allele is the first in the alignement
-								#derivedAllele = polyMcodons[1] # without outgroup --> the derived allele is the one who is not the first...
-								ancestralAllele = codon_outgroup # in absence of outgroup --> the ancestral allele is the first in the alignement
-								derivedAllele = polyMcodons[abs(1-polyMcodons.index(codon_outgroup))] # without outgroup --> the derived allele is the one who is not the first...
-								for i in range(nA):
-									if alignmentOfCodons[i] == ancestralAllele:
-										msStyle[i].append('0')
-									if alignmentOfCodons[i] == derivedAllele:
-										msStyle[i].append('1')
+						# if two pos --> there is a polymorphism
+						if nPos == 2:
+							nSegSite += 1
+							positions.append(pos) # positions: list of first codon position of polymorphic synonymous pos
+							ancestralAllele = pos_outgroup # in absence of outgroup --> the ancestral allele is the first in the alignement
+							derivedAllele = polyMpos[abs(1-polyMpos.index(pos_outgroup))] # without outgroup --> the derived allele is the one who is not the first...
+							for i in range(nA):
+								if alignmentOfPos[i] == ancestralAllele:
+									msStyle[i].append('0')
+								if alignmentOfPos[i] == derivedAllele:
+									msStyle[i].append('1')
 
 				if nSites >= Lmin: # if the locus is big enough to be considered
 					# ms_like output files
 					locus_ms = ''
 					locus_ms = locus_ms + "//{0}\n".format(geneName)
-					locus_ms = locus_ms + "segsites: {0}\n".format(int(nSynSegSite))
-					if nSynSegSite != 0:
+					locus_ms = locus_ms + "segsites: {0}\n".format(int(nSegSite))
+					if nSegSite != 0:
 						locus_ms += "positions: {0}\n".format( " ".join([ str(round((1.0*i)/L, 4)) for i in positions ]))
 						for i in msStyle:
 							locus_ms = locus_ms + "".join( [ str(j) for j in i ] ) + "\n"

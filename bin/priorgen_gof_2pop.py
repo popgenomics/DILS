@@ -65,7 +65,7 @@ def randomBeta(posterior, nMultilocus):
 def produceBarriers(nLoci, nBarriers):
 	# produces a vector of 0 (non barrier) or 1 (barrier), of size equal to the number of loci
  	barriers = [0]*nBarriers + [1]*(nLoci-nBarriers)
-	shuffle(barriers)
+ 	shuffle(barriers)
  	return(barriers)
 
 

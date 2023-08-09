@@ -100,7 +100,8 @@ if(model_demographic == 'migration'){
 		for(stat in colnames(data_ss)[-toRemove]){
 			obs_stat = c(obs_stat, which(colnames(obs_loci)==stat))
 		}
-
+		
+		modIndexes = as.factor(modIndexes)
 		mod_iso_mig = abcrf(modIndexes~., data = data.frame(modIndexes, data_ss[-1, -toRemove]), ntree = ntree, paral = T, ncores = ncores)
 		#predicted_model_iso_mig = predict(mod_iso_mig, data.frame(data_ss[1, -toRemove]), training=data.frame(modIndexes, data_ss[-1, -toRemove]), ntree = ntree, paral = T, ncores = ncores)
 		predicted_model_iso_mig = predict(mod_iso_mig, data.frame(obs_loci[, obs_stat]), training=data.frame(modIndexes, data_ss[-1, -toRemove]), ntree = ntree, paral = T, ncores = ncores)

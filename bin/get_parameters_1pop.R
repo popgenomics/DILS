@@ -50,7 +50,7 @@ abc_nnet_multivar <- function(target,x,sumstat,tol,gwt,rejmethod=F,noweight=F,tr
 	# $wt - the regression weight (i.e. the Epanechnikov weight)
 	# $ss - the sumstats corresponding to these points
 	# $predmean - estimate of the posterior mean
-	if(class(x)=="numeric")
+	if(class(x[1,])=="numeric")
 	{
 		bb<-cbind(bb)
 		x<-cbind(x)
