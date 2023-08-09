@@ -47,6 +47,7 @@ if len(sys.argv) != 4:
 	print(help)
 	sys.exit()
 
+
 # Configuration of the prior distribution
 nMultilocus = int(sys.argv[2])
 

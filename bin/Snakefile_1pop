@@ -26,8 +26,8 @@
 
 python = 'pypy'
 
-binpath = "/shared/home/croux/softwares/DILS/bin"
-#binpath = "/home/croux/Programmes/DILS/bin"
+#binpath = "/home/croux/Programmes/DILS_debug/DILS/bin"
+binpath = "/home/croux/Programmes/DILS/bin"
 #binpath = "/tools/bin"
 
 # light or normal mode

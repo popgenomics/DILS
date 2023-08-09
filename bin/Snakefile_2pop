@@ -25,12 +25,11 @@
 #################################################################################################################################
 
 # python
-python = 'python2'
+python = 'python3'
 
 # links to the codes
 binpath = "/shared/home/croux/softwares/DILS/bin"
-#binpath = "/shared/mfs/data/home/croux/softwares/DILS/bin"
-#binpath = "/home/croux/Programmes/DILS/bin"
+#binpath = "/home/croux/Programmes/DILS_debug/DILS/bin"
 
 # light or normal mode
 lightMode = config['lightMode']

@@ -250,7 +250,7 @@ babar<-function(a,b,space=2,breaks="auto",AL=0.5,nameA="A",nameB="B",xl="",yl=""
 }
 
 
-## get the arguments
+### get the arguments
 #for(i in commandArgs()){
 #	tmp = strsplit(i, '=')
 #	if(tmp[[1]][1] == 'nameA'){ nameA = tmp[[1]][2] }
