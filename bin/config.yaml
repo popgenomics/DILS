@@ -5,6 +5,7 @@ nspecies: 2
 nameA: NAMEA
 nameB: NAMEB
 nameOutgroup: NA
+lightMode: TRUE
 config_yaml: /shared/home/croux/scratch/myProject/example_config_2pop.yaml
 timeStamp: anyRandomName
 population_growth: constant

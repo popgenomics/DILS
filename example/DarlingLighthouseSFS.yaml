@@ -6,6 +6,7 @@ nameA: Darling
 nameB: Lighthouse
 nameOutgroup: NA
 useSFS: 1
+lightMode: TRUE
 config_yaml: /shared/mfs/data/home/croux/softwares/DILS/example/DarlingLighthouseSFS.yaml
 timeStamp: byWQxjtdnp 
 population_growth: constant 
