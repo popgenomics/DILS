@@ -43,6 +43,76 @@ cp streamlit/settings.example.yaml streamlit/settings.yaml
 
 `streamlit/settings.yaml` is local configuration and is ignored by Git. Cluster deployment is documented in [`docs/cluster_deployment.md`](docs/cluster_deployment.md).
 
+## Example Installation: Streamlit Interface
+
+Clone the repository:
+
+```bash
+git clone https://github.com/popgenomics/DILS.git
+cd DILS
+```
+
+Create and activate a Python environment, then install the Streamlit requirements:
+
+```bash
+python3 -m venv .venv_streamlit
+source .venv_streamlit/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r streamlit/requirements.txt
+```
+
+Create a local Streamlit settings file:
+
+```bash
+cp streamlit/settings.example.yaml streamlit/settings.yaml
+```
+
+For local testing, set the runs directory to `streamlit_runs`:
+
+```bash
+sed -i 's|runs_root: /path/to/dils_runs|runs_root: streamlit_runs|' streamlit/settings.yaml
+```
+
+Check the configured DILS paths:
+
+```bash
+grep -n "dils_bin_dir\|snakefile_1pop\|snakefile_2pop" streamlit/settings.yaml
+```
+
+Expected output:
+
+```text
+dils_bin_dir: bin
+snakefile_1pop: bin/Snakefile_1pop
+snakefile_2pop: bin/Snakefile_2pop
+```
+
+Check the Streamlit upload limit:
+
+```bash
+cat .streamlit/config.toml
+```
+
+Expected output:
+
+```toml
+[server]
+maxUploadSize = 10240
+```
+
+Launch the interface:
+
+```bash
+streamlit run streamlit/app.py
+```
+
+Notes:
+
+* `streamlit/settings.yaml` is local and ignored by Git.
+* `runs_root: streamlit_runs` is for local testing only.
+* For cluster deployment, use `docs/cluster_deployment.md`.
+* If no bundled example archive is found under `example/`, use “Upload .tar.gz” in the Results viewer.
+
 ## Command-Line Snakemake Workflow
 
 DILS can also be run directly with Snakemake and a YAML configuration file.
