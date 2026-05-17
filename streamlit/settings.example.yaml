@@ -1,0 +1,50 @@
+# Example Streamlit DILS app settings.
+# Copy this file to `streamlit/settings.yaml` and edit it for deployment.
+# The app never writes this file automatically.
+
+# Central directory where future app-managed run directories will be created.
+# In cluster deployment, set this to a shared scratch/project path.
+# Can also be overridden with the DILS_RUNS_ROOT environment variable.
+runs_root: /path/to/dils_runs
+
+# DILS binaries and workflow files.
+# Relative paths are resolved from the repository root; absolute paths are used as-is.
+dils_bin_dir: DILS/bin
+snakefile_1pop: DILS/bin/Snakefile_1pop
+snakefile_2pop: DILS/bin/Snakefile_2pop
+
+# Executables used by the Slurm/Snakemake run launcher.
+sbatch_executable: sbatch
+sacct_executable: sacct
+snakemake_executable: snakemake
+
+# Default resources for Slurm submissions. default_cpus is also used for
+# Snakemake -j. Users do not choose CPU/RAM in the web interface.
+default_cpus: 10
+default_memory_gb: 10
+
+# Prefix used when generating server-side run IDs / DILS timeStamp values.
+run_id_prefix: dils
+
+# Keep true for local development/admin use. This enables dev-only top-level
+# tools such as YAML builder, command/path previews, and global existing-run
+# browsing under runs_root. Deployment configs should set this false to hide
+# global run discovery until authenticated run ownership is implemented.
+local_dev_mode: true
+
+# Delete the Streamlit-managed uploaded FASTA copy after a run has completed
+# successfully and the final .tar.gz archive is present. The default is false
+# for local/development safety; deployment admins may set this true to save
+# disk space and avoid retaining user FASTA files longer than necessary.
+delete_uploaded_fasta_after_completion: false
+
+# Optional notification scaffolding. The default is disabled so the app runs
+# without sendmail, SMTP, or mail configuration. The current backend writes
+# RFC-style .eml files under each run's metadata/notifications/ directory.
+notifications_enabled: false
+notification_backend: file
+notification_from_email: "dils <dils@univ-lyon1.fr>"
+notification_signature: "The DILS team"
+app_public_url: ""
+manual_url: ""
+support_contact_text: "If you encounter any problem or have suggestions for improvement, please contact the DILS team."

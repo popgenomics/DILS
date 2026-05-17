@@ -1,0 +1,32 @@
+
+# Snakemake runtime files
+.snakemake/
+**/.snakemake/
+
+# Local Streamlit runs
+streamlit_runs/
+
+# Local Python environments
+.venv*/
+venv/
+env/
+
+# Local examples and generated test data
+example/
+
+# Local Streamlit runs
+streamlit_runs/
+
+# Snakemake runtime files
+.snakemake/
+**/.snakemake/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Local Streamlit deployment settings
+streamlit/settings.yaml
+
+# Legacy source material not meant for commit
+docs/_legacy/
