@@ -37,7 +37,7 @@ class AppSettings:
 
 
 def _default_settings_dict() -> dict[str, Any]:
-    dils_bin_dir = REPO_ROOT / "DILS" / "bin"
+    dils_bin_dir = REPO_ROOT / "bin"
     return {
         "runs_root": REPO_ROOT / "streamlit_runs",
         "dils_bin_dir": dils_bin_dir,

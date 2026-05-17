@@ -32,7 +32,7 @@ The Streamlit interface lets users:
 Local launch example:
 
 ```bash
-python -m streamlit run streamlit/app.py
+streamlit run streamlit/app.py
 ```
 
 For configuration, copy and edit:

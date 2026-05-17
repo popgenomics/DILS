@@ -9,9 +9,9 @@ runs_root: /path/to/dils_runs
 
 # DILS binaries and workflow files.
 # Relative paths are resolved from the repository root; absolute paths are used as-is.
-dils_bin_dir: DILS/bin
-snakefile_1pop: DILS/bin/Snakefile_1pop
-snakefile_2pop: DILS/bin/Snakefile_2pop
+dils_bin_dir: bin
+snakefile_1pop: bin/Snakefile_1pop
+snakefile_2pop: bin/Snakefile_2pop
 
 # Executables used by the Slurm/Snakemake run launcher.
 sbatch_executable: sbatch

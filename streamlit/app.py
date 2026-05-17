@@ -2,7 +2,7 @@
 DILS Streamlit results viewer (v0).
 
 Run from repository root:
-    python -m streamlit run streamlit/app.py
+    streamlit run streamlit/app.py
 """
 
 from __future__ import annotations

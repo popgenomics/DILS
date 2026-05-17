@@ -28,8 +28,7 @@
 python = 'python3'
 
 # links to the codes
-binpath = "/shared/home/croux/softwares/DILS/bin"
-#binpath = "/home/croux/Programmes/DILS_debug/DILS/bin"
+binpath = workflow.basedir
 
 # light or normal mode
 lightMode = config['lightMode']

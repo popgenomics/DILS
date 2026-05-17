@@ -26,9 +26,7 @@
 
 python = 'pypy'
 
-#binpath = "/home/croux/Programmes/DILS_debug/DILS/bin"
-binpath = "/home/croux/Programmes/DILS/bin"
-#binpath = "/tools/bin"
+binpath = workflow.basedir
 
 # light or normal mode
 lightMode = config['lightMode']

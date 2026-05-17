@@ -22,9 +22,9 @@ The Streamlit app manages web inputs, run directories, metadata, and Slurm submi
 | Component | Role |
 | --- | --- |
 | Streamlit app | User-facing web interface. Handles uploads, population selection, YAML generation, Slurm submission, status refresh, and archive download. |
-| `DILS/bin` | Contains the DILS scripts and workflow files used by Snakemake. |
-| `Snakefile_1pop` | Snakemake workflow used for one-population/species analyses. |
-| `Snakefile_2pop` | Snakemake workflow used for two-population/species analyses. |
+| `bin/` | Contains the DILS scripts and workflow files used by Snakemake. |
+| `bin/Snakefile_1pop` | Snakemake workflow used for one-population/species analyses. |
+| `bin/Snakefile_2pop` | Snakemake workflow used for two-population/species analyses. |
 | Snakemake | Executes the DILS workflow inside the Slurm allocation. |
 | Slurm / `sbatch` | Queues the Snakemake command as a batch job. |
 | Slurm / `sacct` | Reports job state and exit code during status refresh. |
@@ -37,11 +37,10 @@ The Streamlit app manages web inputs, run directories, metadata, and Slurm submi
 Relevant paths:
 
 ```text
-DILS/
-  bin/
-    Snakefile_1pop
-    Snakefile_2pop
-    ...
+bin/
+  Snakefile_1pop
+  Snakefile_2pop
+  ...
 streamlit/
   app.py
   settings.py
@@ -83,7 +82,7 @@ The Slurm job environment must provide the tools required by the DILS Snakemake 
 - `pypy`, if required by legacy DILS scripts;
 - R;
 - R packages used by DILS scripts, including at least `tidyverse`, `abcrf`, `randomForest`, `ggplot2`, and `viridisLite`;
-- DILS helper scripts/binaries under `DILS/bin`, including `msnsam` if used by the current workflow;
+- DILS helper scripts/binaries under `bin/`, including `msnsam` if used by the current workflow;
 - access to the same filesystem paths as the Streamlit server, especially the repository and `runs_root`.
 
 If the cluster uses modules or Conda, provide wrapper scripts for `snakemake_executable` or configure the Slurm environment so the required tools are loaded before Snakemake starts.
@@ -103,7 +102,7 @@ Deployment-relevant settings:
 | Setting | Meaning |
 | --- | --- |
 | `runs_root` | Directory where app-managed run directories are created. Use a shared scratch/project path, not the repository default. |
-| `dils_bin_dir` | Path to `DILS/bin`. Relative paths are resolved from the repository root. |
+| `dils_bin_dir` | Path to `bin/`. Relative paths are resolved from the repository root. |
 | `snakefile_1pop` | Path to the one-population Snakefile. |
 | `snakefile_2pop` | Path to the two-population Snakefile. |
 | `sbatch_executable` | Command or wrapper used to submit Slurm jobs. |
@@ -126,9 +125,9 @@ Example deployment settings:
 
 ```yaml
 runs_root: /shared/project/dils_streamlit_runs
-dils_bin_dir: DILS/bin
-snakefile_1pop: DILS/bin/Snakefile_1pop
-snakefile_2pop: DILS/bin/Snakefile_2pop
+dils_bin_dir: bin
+snakefile_1pop: bin/Snakefile_1pop
+snakefile_2pop: bin/Snakefile_2pop
 sbatch_executable: sbatch
 sacct_executable: sacct
 snakemake_executable: snakemake
@@ -302,7 +301,7 @@ Avoid using the repository-local `streamlit_runs/` default for production. Use a
 The app entry point is:
 
 ```bash
-python -m streamlit run streamlit/app.py
+streamlit run streamlit/app.py
 ```
 
 Cluster deployments typically run this behind an institutional reverse proxy or app gateway.
@@ -331,7 +330,7 @@ The value is in megabytes. Also check any reverse proxy, gateway, or institution
 ## 15. What administrators should not modify
 
 - Do not hard-code deployment paths inside Snakefiles.
-- Do not edit `DILS/bin/Snakefile_1pop` or `DILS/bin/Snakefile_2pop` just to change run locations.
+- Do not edit `bin/Snakefile_1pop` or `bin/Snakefile_2pop` just to change run locations.
 - Use `streamlit/settings.yaml` for deployment paths and executables.
 - Keep the repository code separate from app-managed run data.
 - Do not use `local_dev_mode: true` for external users.

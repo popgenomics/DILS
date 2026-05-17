@@ -12,8 +12,8 @@ from fasta_headers import FastaHeaderSummary, parse_fasta_headers
 from settings import load_settings
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-CONFIG_1POP = REPO_ROOT / "DILS" / "bin" / "example_config_1pop.yaml"
-CONFIG_2POP = REPO_ROOT / "DILS" / "bin" / "example_config_2pop.yaml"
+CONFIG_1POP = REPO_ROOT / "bin" / "example_config_1pop.yaml"
+CONFIG_2POP = REPO_ROOT / "bin" / "example_config_2pop.yaml"
 
 _MANUAL_NAME_MODE = "Enter names manually"
 _DETECT_NAME_MODE = "Detect names from FASTA headers"

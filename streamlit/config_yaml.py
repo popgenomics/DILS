@@ -8,8 +8,8 @@ from typing import Any
 import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-CONFIG_1POP = REPO_ROOT / "DILS" / "bin" / "example_config_1pop.yaml"
-CONFIG_2POP = REPO_ROOT / "DILS" / "bin" / "example_config_2pop.yaml"
+CONFIG_1POP = REPO_ROOT / "bin" / "example_config_1pop.yaml"
+CONFIG_2POP = REPO_ROOT / "bin" / "example_config_2pop.yaml"
 
 FIELDS_1POP = [
     "mail_address",
