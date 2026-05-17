@@ -1,274 +1,145 @@
-# Table of contents
-1. [Snakemake](#1---snakemake)   
-	1. [info](#info)  
-	2. [execution](#execution)  
-	3. [dependencies](#dependencies)  
-2. [Scripts in python](#2---python)  
-	1. [scripts](#scripts)  
-	2. [python dependencies](#python-dependencies)  
-3. [Scripts in R](#3---r)  
-	1. [scripts](#scripts)  
-	2. [R dependencies](#r-dependencies)  
-	3. [webinterface](#webinterface)  
-4. [Codes in C](#4---c)  
-	1. [msnsam (by Jeffrey Ross-Ibarra)](#msnsam)  
-	2. [RNAseqFGT (by Laurent Duret)](#RNAseqFGT)  
-5. [Config files](#6---config-files)  
-	1. [cluster.json](#clusterjson)  
-	2. [config.yaml](#configyaml)  
-6. [Workflow](#7---workflow)  
-	1. [Two populations](#two-populations)  
+# DILS
 
-# 1 - snakemake  
-## info  
-**The entire workflow is based on snakemake.**  
-https://snakemake.readthedocs.io/en/stable/  
-  
-## execution  
-Please adapt the pathway to your system.  
-```  
-snakemake --snakefile /shared/mfs/data/home/croux/softwares/DILS/bin/Snakefile_2pop -p -j 50 --configfile /shared/home/croux/scratch/myProject/config.yaml --cluster-config /shared/home/croux/scratch/myProject/cluster.json --cluster "sbatch --nodes={cluster.node} --ntasks={cluster.n} --cpus-per-task={cluster.cpusPerTask} --time={cluster.time}"  
-```  
-  
-## dependencies  
-Needs:  
-1 Snakefile  
-1 config.yaml file  
-1 cluster.json file  
-  
-# 2 - python  
-**Executables are all found in the bin/ subdirectory. The pathway of subdirectory has to be indicated in the Snakefiles. This is the only required file modification**  
-## scripts  
-bin/fasta2ABC_1pop.py  
-bin/fasta2ABC_2pops.py  
-bin/mscalc_1pop_observedDataset_SFS.py  
-bin/mscalc_1pop_SFS.py  
-bin/mscalc_2pop_observedDataset.py  
-bin/mscalc_2pop_observedDataset_SFS.py  
-bin/mscalc_2pop.py  
-bin/mscalc_2pop_SFS.py  
-bin/priorgen_1pop.py  
-bin/priorgen_2pop_popGrowth.py  
-bin/priorgen_2pop.py  
-bin/priorgen_gof_1pop.py  
-bin/priorgen_gof_2pop_popGrowth.py  
-bin/priorgen_gof_2pop.py  
-bin/priorgen_gof_2pop_test_monolocus.py  
-bin/submit_simulations_1pop.py  
-bin/submit_simulations_2pop_popGrowth.py  
-bin/submit_simulations_2pop.py  
-bin/submit_simulations_2pop_test_monolocus.py  
-bin/submit_simulations_gof_1pop.py  
-bin/submit_simulations_gof_2pop_popGrowth.py  
-bin/submit_simulations_gof_2pop.py  
+DILS means **Demographic Inferences with Linked Selection**.
 
-## python dependencies  
-**some scripts uses pypy as python interpreter**    
-from math import ceil  
-from numpy import log  
-from numpy import median  
-from numpy.random import beta  
-from numpy.random import binomial  
-from numpy.random import randint  
-from numpy.random import uniform  
-from random import choice  
-from random import randint  
-from random import sample  
-from random import shuffle  
-import os  
-import random  
-import sys  
-import time  
-   
-# 3 - R  
-## scripts  
-**uses Rscript from /usr/bin or elsewhere**  
-bin/collaborative_plot.R  
-bin/estimates_1pop_best.R  
-bin/estimates_2pop_best.R  
-bin/estimates_2pop.R  
-bin/get_parameters_1pop_CV.R  
-bin/get_parameters_1pop.R  
-bin/get_parameters_2pop.R  
-bin/gof_1pop.R  
-bin/gof_2pop.R  
-bin/model_comp_1pop_allModels.R  
-bin/model_comp_2pop_allModels.R  
-bin/model_comp_2pop_locus.R  
-bin/model_comp_2pop.R  
-bin/PCA.R  
-   
-## R dependencies  
-library(abcrf)  
-library(data.table)  
-library(FactoMineR)  
-library(ggplot2)  
-library(ggpubr)  
-library(nnet)  
-library(plotly)  
-library(tidyverse)  
-library(viridis)  
+DILS is a workflow for demographic inference from multilocus DNA sequence data. It uses Approximate Bayesian Computation (ABC) for model comparison, parameter estimation, and goodness-of-fit analyses.
 
-## webinterface  
-Install R libraries for the user interface:  
-```  
-list_libraries = c('shiny', 'shinythemes', 'shinydashboard', 'shinydashboardPlus', 'DT', 'shinyWidgets', 'dashboardthemes', 'devtools', 'shinyhelper', 'plotly', 'viridis', 'tidyr', 'RColorBrewer', 'yaml', 'ggpubr', 'FactoMineR', 'shinycssloaders')  
+## Documentation
 
-for(lib_tmp in list_libraries){  
-	install.packages(lib_tmp, dep=T)  
-}  
+- User manual: [`docs/user_manual.md`](docs/user_manual.md)
+- Cluster/admin deployment guide: [`docs/cluster_deployment.md`](docs/cluster_deployment.md)
+- Streamlit configuration example: [`streamlit/settings.example.yaml`](streamlit/settings.example.yaml)
 
-library(devtools)  
-install_github("nik01010/dashboardthemes")  
-```  
+## Ways to Use DILS
 
-library(shiny)  
-library(shinythemes)  
-library(shinydashboard)  
-library(shinydashboardPlus)  
-library(DT)  
-library(shinyWidgets)  
-library(dashboardthemes) # library(devtools); install_github("nik01010/dashboardthemes")  
-library(shinyhelper)  
-library(plotly)  
-library(viridis)  
-library(tidyr)  
-library(RColorBrewer)  
-library(yaml)  
-library(ggpubr)  
-library(FactoMineR)  
-library(shinycssloaders)  
+DILS can currently be used in two main ways:
 
-Can be launched as follows from the ```webinterface``` subdirectory:  
+1. **Streamlit web interface**: upload a FASTA file, configure an analysis, submit it through Slurm, download the results archive, and inspect outputs in the Results viewer.
+2. **Command-line Snakemake workflow**: run the DILS Snakefiles directly with a YAML configuration file.
+
+The repository may still contain the older R/Shiny web interface under `webinterface/`. It is kept as legacy code and is not the recommended interface for new deployments.
+
+## Streamlit Web Interface
+
+The Streamlit interface lets users:
+
+- submit a DILS analysis;
+- monitor Slurm job status;
+- download the final `.tar.gz` results archive;
+- inspect results in the Results viewer;
+- read the integrated Help page.
+
+Local launch example:
+
+```bash
+python -m streamlit run streamlit/app.py
 ```
-Rscript app.R host=127.0.0.9 port=8162  
+
+For configuration, copy and edit:
+
+```bash
+cp streamlit/settings.example.yaml streamlit/settings.yaml
 ```
-   
-# 4 - C
-## msnsam  
-### info  
-C code, compiled by executing the command ```./clms``` (calling gcc) in the msnsam/ directory  
-   
-## RNAseqFGT  
-### info  
-C code compiled by: ```gcc -Wall -o RNAseqFGT RNAseqFGT.c RNAseqFGT_seq_reading.c RNAseqFGT_analysis.c -I RNAseqFGT.h```  
-  
-# 5 - config files  
-## cluster.json  
-This file contains informations for **Slurm** about the submited jobs, in particular, the required resources (CPU, memory, duration).  
+
+`streamlit/settings.yaml` is local configuration and is ignored by Git. Cluster deployment is documented in [`docs/cluster_deployment.md`](docs/cluster_deployment.md).
+
+## Command-Line Snakemake Workflow
+
+DILS can also be run directly with Snakemake and a YAML configuration file.
+
+1-population analysis:
+
+```bash
+snakemake --snakefile bin/Snakefile_1pop -p -j 10 --configfile config_1pop.yaml
 ```
-{
-    "__default__" :
-    {
-        "node" : 1,
-        "ntasks" : 1,
-        "n" : 1,
-	"cpusPerTask" : 1,
-	"memPerCpu" : 3000,
-	"time" : "02:00:00"
-    },
-    "fasta2ABC_2pops" :
-    {
-	"cpusPerTask" : 8,
-	"time" : "02:00:00",
-	"memPerCpu" : 2000
-    },
-    "RNAseqFGT" :
-    {
-	"cpusPerTask" : 1,
-	"time" : "01:00:00",
-	"memPerCpu" : 10000
-    },
-    "modelComparison" :
-    {
-	"cpusPerTask" : 8,
-	"time" : "01:30:00",
-	"memPerCpu" : 4000
-    },
-    "estimation" :
-    {
-	"cpusPerTask" : 8,
-	"time" : "01:30:00",
-	"memPerCpu" : 3000
-    },
-    "estimation_best_model" :
-    {
-	"cpusPerTask" : 8,
-	"time" : "01:30:00",
-	"memPerCpu" : 3000
-    },
-    "estimation_best_model_2" :
-    {
-	"cpusPerTask" : 8,
-	"time" : "01:30:00",
-	"memPerCpu" : 3000
-    },
-    "estimation_best_model_3" :
-    {
-	"cpusPerTask" : 8,
-	"time" : "01:30:00",
-	"memPerCpu" : 3000
-    },
-    "estimation_best_model_4" :
-    {
-	"cpusPerTask" : 8,
-	"time" : "01:30:00",
-	"memPerCpu" : 3000
-    },
-    "estimation_best_model_5" :
-    {
-	"cpusPerTask" : 8,
-	"time" : "01:30:00",
-	"memPerCpu" : 3000
-    },
-    "locus_modelComp" :
-    {
-	"cpusPerTask" : 8,
-	"time" : "01:30:00",
-	"memPerCpu" : 3000
-    },
-    "PCA_SS" :
-    {
-	"cpusPerTask" : 1,
-	"time" : "01:00:00",
-	"memPerCpu" : 5000
-    }
-}
-``` 
-  
-## config.yaml  
-Configuration file used by Snakemake to adapt the workflow to a particular analysis. Contains information such as species names, genomic region (coding, noncoding), prior boundaries, etc...  
-```  
-mail_address: user@gmail.com   
-infile: /shared/home/croux/scratch/moules/sequences.fas  
-region: coding  
-nspecies: 2  
-nameA: Spring  
-nameB: Sydney  
+
+2-population analysis:
+
+```bash
+snakemake --snakefile bin/Snakefile_2pop -p -j 10 --configfile config_2pop.yaml
+```
+
+The Streamlit interface generates YAML internally. Command-line users should provide their own YAML file.
+
+## YAML Configuration Examples
+
+### 1-Population Example
+
+```yaml
+mail_address: user@example.org
+infile: /path/to/input.fas
+region: coding
+nspecies: 1
+nameA: PopulationA
+nameOutgroup: NA
+lightMode: TRUE
+config_yaml: /path/to/config_1pop.yaml
+timeStamp: my_1pop_run
+max_N_tolerated: 0.2
+Lmin: 100
+nMin: 6
+mu: 0.00000002763
+rho_over_theta: 0.5
+N_min: 1000
+N_max: 500000
+Tchanges_min: 100
+Tchanges_max: 1000000
+```
+
+### 2-Population Example
+
+```yaml
+mail_address: user@example.org
+infile: /path/to/input.fas
+region: coding
+nspecies: 2
+nameA: PopulationA
+nameB: PopulationB
+nameOutgroup: NA
+lightMode: TRUE
 useSFS: 0
-nameOutgroup: NA  
-config_yaml: /shared/home/croux/scratch/moules/config.yaml  
-timeStamp: SpringSydney  
-population_growth: constant  
-modeBarrier: bimodal  
-max_N_tolerated: 0.2  
-Lmin: 100  
-nMin: 6  
-mu: 0.00000002763  
-rho_over_theta: 0.5  
-N_min: 1000  
-N_max: 500000  
-Tsplit_min: 10000  
-Tsplit_max: 1750000  
-M_min: 1  
-M_max: 40  
-```  
-   
-# 6 - workflow  
-## two populations  
-![DAG (directed acyclic graph)](https://raw.githubusercontent.com/popgenomics/ABConline/master/webinterface/pictures_folder/dag_2pops.pdf.png)  
-  
-# 7 - example
-![grey zone](https://raw.githubusercontent.com/popgenomics/ABConline/master/figure_greyzone.html)  
-  
+config_yaml: /path/to/config_2pop.yaml
+timeStamp: my_2pop_run
+population_growth: constant
+modeBarrier: bimodal
+max_N_tolerated: 0.2
+Lmin: 100
+nMin: 6
+mu: 0.00000002763
+rho_over_theta: 0.5
+N_min: 1000
+N_max: 500000
+Tsplit_min: 10000
+Tsplit_max: 1750000
+M_min: 1
+M_max: 40
+```
 
+## Runtime Dependencies
+
+Runtime dependencies depend on whether DILS is used through the Streamlit interface or directly with Snakemake. In general, DILS requires:
+
+- Python;
+- PyPy where required by legacy scripts;
+- R and required R packages;
+- Snakemake;
+- Slurm for cluster submission;
+- Streamlit dependencies from `streamlit/requirements.txt`;
+- C helper binaries such as `msnsam` and `RNAseqFGT`.
+
+Cluster administrators should use [`docs/cluster_deployment.md`](docs/cluster_deployment.md) for deployment-specific details.
+
+## Repository Layout
+
+- `bin/`: DILS Snakemake workflows and analysis scripts.
+- `streamlit/`: current Streamlit web interface.
+- `docs/`: user and administrator documentation.
+- `example/`: example input and results files.
+- `webinterface/`: legacy R/Shiny interface.
+- `msnsam/`, `RNAseqFGT_src/`: C sources and helper binaries.
+
+## Citation / Support
+
+For scientific background, usage details, and references, see the user manual:
+
+[`docs/user_manual.md`](docs/user_manual.md)
