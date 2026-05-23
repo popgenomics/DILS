@@ -28,6 +28,21 @@
 #################################################################################################################################
 #################################################################################################################################
 
+parse_useSFS <- function(x) {
+	x <- trimws(as.character(x))
+	if(x %in% c("0", "1")) {
+		return(as.integer(x))
+	}
+	xl <- tolower(x)
+	if(xl %in% c("false", "f")) {
+		return(0L)
+	}
+	if(xl %in% c("true", "t")) {
+		return(1L)
+	}
+	stop(paste("Invalid useSFS value:", x))
+}
+
 for(i in commandArgs()){
 	tmp = strsplit(i, '=')
 	if(tmp[[1]][1] == 'Nref'){ Nref = as.double(tmp[[1]][2]) }
@@ -38,7 +53,7 @@ for(i in commandArgs()){
 	if(tmp[[1]][1] == 'nSubdir'){ nSubdir = as.integer(tmp[[1]][2]) } # number of subdirectories where simulations were ran
 	if(tmp[[1]][1] == 'ncores'){ ncores = as.integer(tmp[[1]][2]) } # number of cores for the random forest
 	if(tmp[[1]][1] == 'ntree'){ ntree = as.integer(tmp[[1]][2]) }
-	if(tmp[[1]][1] == 'useSFS'){ useSFS = as.integer(tmp[[1]][2]) } # 0: SFS used. 1: SFS used
+	if(tmp[[1]][1] == 'useSFS'){ useSFS = parse_useSFS(tmp[[1]][2]) } # 0: no SFS used. 1: SFS used
 	if(tmp[[1]][1] == 'bestModel'){ bestModel = tmp[[1]][2] } # name of the best model
 	if(tmp[[1]][1] == 'timeStamp'){ timeStamp = tmp[[1]][2] } # name of timeStamp
 	if(tmp[[1]][1] == 'nPosterior'){ nPosterior = as.integer(tmp[[1]][2]) }

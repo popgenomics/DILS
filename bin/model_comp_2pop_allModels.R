@@ -28,6 +28,22 @@
 
 library('abcrf')
 library('viridis')
+
+parse_useSFS <- function(x) {
+	x <- trimws(as.character(x))
+	if(x %in% c("0", "1")) {
+		return(as.integer(x))
+	}
+	xl <- tolower(x)
+	if(xl %in% c("false", "f")) {
+		return(0L)
+	}
+	if(xl %in% c("true", "t")) {
+		return(1L)
+	}
+	stop(paste("Invalid useSFS value:", x))
+}
+
 # model_comp_2pop.R nameA=txn nameB=ama nSubdir=20  ntree=1000 
 for(i in commandArgs()){
 	tmp = strsplit(i, '=')
@@ -43,7 +59,7 @@ for(i in commandArgs()){
 	if(tmp[[1]][1] == 'modeBarrier'){ modeBarrier = tmp[[1]][2] } # beta; bimodal
 	if(tmp[[1]][1] == 'binpath'){ binpath = tmp[[1]][2] } # path to the bin directory
 	if(tmp[[1]][1] == 'posterior2use'){ posterior2use = tmp[[1]][2] } # path to the posterior file used for the locus specific model comp
-	if(tmp[[1]][1] == 'useSFS'){ useSFS = as.integer(tmp[[1]][2]) } # 0: no SFS used. 1: SFS used
+	if(tmp[[1]][1] == 'useSFS'){ useSFS = parse_useSFS(tmp[[1]][2]) } # 0: no SFS used. 1: SFS used
 }
 
 outfile = paste(timeStamp, '/', sub_dir_sim, '/report_', nameA, '_', nameB, '.txt', sep='')
